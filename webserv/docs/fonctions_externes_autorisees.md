@@ -1,5 +1,3 @@
-# webserv
-
 
 # Fonctions Externes Autorisées et Leur Utilité
 
