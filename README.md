@@ -1,5 +1,7 @@
 # Projet Webserv en C++ 98
 
+Ce projet vise à construire un serveur HTTP en respectant la norme C++ 98, pour approfondir la connaissance du protocole HTTP et des principes de base de la programmation réseau.
+
 ## Table des Matières
 
 - [Introduction au Projet Webserv](#introduction-au-projet-webserv)
@@ -76,17 +78,6 @@
   - [Notification d'événements pour BSD](#syseventh)
   - [Manipulation des attributs d'un fichier ouvert](#fcntlh)
   - [Gestion de processus, signaux, informations sur les fichiers, et répertoires](#syswaith-signalh-sysstath-direnth)
-
-- [Methodes HTTP avec leur valeur de retour](##MethodesHTTPavecleurvaleurderetour)
-
-
-# Projet Webserv en C++ 98
-
-Ce projet vise à construire un serveur HTTP en respectant la norme C++ 98, pour approfondir la connaissance du protocole HTTP et des principes de base de la programmation réseau.
-
-## Table des Matières
-
-(Ajoutez ici la table des matières comme fournie précédemment)
 
 ## Introduction au Projet Webserv
 
