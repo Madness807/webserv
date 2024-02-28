@@ -1,45 +1,93 @@
 # webserv
 
+# Table des matieres
+
+- [Fonctions Externes et Librairies avec Paramètres et Valeurs de Retour](#fonctions-externes-et-librairies-avec-paramètres-et-valeurs-de-retour)
+  - [Interfaces d'entrée/sortie de base](#unistdh)
+  - [Création et manipulation de sockets](#syssocketh)
+  - [Manipulation de chaînes de caractères](#stringh)
+  - [Résolution de noms de domaine](#netdbh)
+  - [Gestion des numéros d'erreur](#errnoh)
+  - [Manipulation d'adresses réseau](#netinetinh)
+  - [Surveillance de descripteurs de fichiers](#sysselecth-et-pollh)
+  - [Surveillance efficace de descripteurs de fichiers sur Linux](#sysepollh)
+  - [Notification d'événements pour BSD](#syseventh)
+  - [Manipulation des attributs d'un fichier ouvert](#fcntlh)
+  - [Gestion de processus, signaux, informations sur les fichiers, et répertoires](#syswaith-signalh-sysstath-direnth)
+
+- [Methodes HTTP avec leur valeur de retour](##MethodesHTTPavecleurvaleurderetour)
+
 
 # Fonctions Externes Autorisées et Leur Utilité
 
-| Fonction        | Utilité                                                                 | Librairie       |
-|-----------------|-------------------------------------------------------------------------|-----------------|
-| `execve`        | Exécute un programme                                                    | `unistd.h`      |
-| `dup`/`dup2`    | Duplique un descripteur de fichier                                      | `unistd.h`      |
-| `pipe`          | Crée un tube (pipe) pour la communication entre processus               | `unistd.h`      |
-| `strerror`      | Renvoie une chaîne décrivant l'erreur numéro d'erreur                   | `string.h`      |
-| `gai_strerror`  | Renvoie une description de l'erreur pour getaddrinfo                    | `netdb.h`       |
-| `errno`         | Numéro de l'erreur du dernier appel de fonction                         | `errno.h`       |
-| `fork`          | Crée un processus fils                                                  | `unistd.h`      |
-| `socketpair`    | Crée une paire de sockets connectés                                      | `sys/socket.h`  |
-| `htons`/`htonl` | Convertit des valeurs entre l'ordre des octets hôte et réseau           | `netinet/in.h`  |
-| `ntohs`/`ntohl` | Convertit des valeurs entre l'ordre des octets réseau et hôte           | `netinet/in.h`  |
-| `select`        | Surveille un ensemble de descripteurs de fichiers pour voir s'ils sont prêts à effectuer une E/S | `sys/select.h` |
-| `poll`          | Comme `select`, mais potentiellement plus efficace                      | `poll.h`        |
-| `epoll_create`, `epoll_ctl`, `epoll_wait` | Gère de multiples descripteurs de fichiers de manière efficace | `sys/epoll.h` |
-| `kqueue`, `kevent`| Mécanisme de notification d'événements pour BSD                         | `sys/event.h`   |
-| `socket`        | Crée un point de communication (socket)                                 | `sys/socket.h`  |
-| `accept`        | Accepte une connexion sur un socket                                     | `sys/socket.h`  |
-| `listen`        | Écoute sur un socket                                                    | `sys/socket.h`  |
-| `send`/`recv`   | Envoie/reçoit des données sur un socket                                 | `sys/socket.h`  |
-| `chdir`         | Change le répertoire courant du processus                               | `unistd.h`      |
-| `bind`          | Associe une adresse à un socket                                         | `sys/socket.h`  |
-| `connect`       | Établit une connexion sur un socket                                     | `sys/socket.h`  |
-| `getaddrinfo`, `freeaddrinfo`| Récupère les informations d'adresse, libère les informations d'adresse| `netdb.h`     |
-| `setsockopt`    | Configure les options du socket                                         | `sys/socket.h`  |
-| `getsockname`   | Obtient l'adresse locale associée à un socket                           | `sys/socket.h`  |
-| `getprotobyname`| Obtient les informations de protocole par nom                          | `netdb.h`       |
-| `fcntl`         | Manipule le descripteur de fichier                                      | `fcntl.h`       |
-| `close`         | Ferme un descripteur de fichier                                         | `unistd.h`      |
-| `read`/`write`  | Lit/écrit sur un descripteur de fichier                                 | `unistd.h`      |
-| `waitpid`       | Attend la fin d'exécution d'un processus fils                           | `sys/wait.h`    |
-| `kill`          | Envoie un signal à un processus                                         | `signal.h`      |
-| `signal`        | Installe un gestionnaire de signal                                      | `signal.h`      |
-| `access`        | Vérifie les droits d'accès d'un fichier                                 | `unistd.h`      |
-| `stat`          | Obtient les informations sur le fichier                                 | `sys/stat.h`    |
-| `open`          | Ouvre un fichier                                                        | `fcntl.h`       |
-| `opendir`, `readdir`, `closedir`| Gère la lecture dans les répertoires                           | `dirent.h`      |
+### `netdb.h`
+**Utilité**: Fonctions pour la résolution des noms de domaine et la manipulation des informations de réseau.
+
+| Fonction          | Utilité                                 | Paramètres                                               | Valeur de retour                                    |
+|-------------------|-----------------------------------------|----------------------------------------------------------|-----------------------------------------------------|
+| `gai_strerror`    | Renvoie une description de l'erreur     | int errcode                                              | const char* (message d'erreur)                      |
+| `getaddrinfo`     | Récupère les informations d'adresse     | const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res | 0 en cas de succès, autre valeur en cas d'erreur   |
+| `freeaddrinfo`    | Libère les informations d'adresse       | struct addrinfo *res                                     | void                                                |
+| `getprotobyname`  | Obtient les informations de protocole   | const char *name                                         | struct protoent* ou NULL                            |
+
+### `errno.h`
+**Utilité**: Définit le numéro d'erreur du dernier appel de fonction échoué.
+
+| Fonction | Utilité                                   | Paramètres     | Valeur de retour                                |
+|----------|-------------------------------------------|----------------|-------------------------------------------------|
+| `errno`  | Numéro de l'erreur du dernier appel       | (pas de paramètre, mais une variable externe)  | int (numéro d'erreur)                            |
+
+### `netinet/in.h`
+**Utilité**: Définit des structures et des fonctions pour la manipulation d'adresses réseau.
+
+| Fonction        | Utilité                                   | Paramètres                                 | Valeur de retour                             |
+|-----------------|-------------------------------------------|--------------------------------------------|----------------------------------------------|
+| `htons`/`htonl` | Convertit des valeurs ordre des octets    | uint16_t hostshort, uint32_t hostlong      | valeur en ordre des octets réseau            |
+| `ntohs`/`ntohl` | Convertit des valeurs ordre des octets    | uint16_t netshort, uint32_t netlong        | valeur en ordre des octets hôte              |
+
+### `sys/select.h` et `poll.h`
+**Utilité**: Fournissent des interfaces pour surveiller de multiples descripteurs de fichiers.
+
+| Fonction | Utilité                                   | Paramètres                                                | Valeur de retour                             |
+|----------|-------------------------------------------|-----------------------------------------------------------|----------------------------------------------|
+| `select` | Surveille des descripteurs de fichiers    | int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout | int (nombre de descripteurs) ou -1 (erreur)  |
+| `poll`   | Comme `select`, mais plus efficace        | struct pollfd *fds, nfds_t nfds, int timeout              | int (nombre de descripteurs) ou -1 (erreur)  |
+
+### `sys/epoll.h`
+**Utilité**: Offre un mécanisme efficace pour surveiller de multiples descripteurs de fichiers sur Linux.
+
+| Fonction              | Utilité                                 | Paramètres                                           | Valeur de retour                                    |
+|-----------------------|-----------------------------------------|------------------------------------------------------|-----------------------------------------------------|
+| `epoll_create`, `epoll_ctl`, `epoll_wait` | Gère des descripteurs de fichiers    | int size, int epfd, int op, int fd, struct epoll_event *event, struct epoll_event *events, int maxevents, int timeout | int (succès ou nombre d'événements) ou -1 (erreur)  |
+
+### `sys/event.h`
+**Utilité**: Propose des interfaces pour les mécanismes de notification d'événements, spécifiques à BSD.
+
+| Fonction     | Utilité                                 | Paramètres                                       | Valeur de retour                                    |
+|--------------|-----------------------------------------|--------------------------------------------------|-----------------------------------------------------|
+| `kqueue`, `kevent`| Mécanisme de notification d'événements | (divers selon la fonction)                       | int (succès ou nombre d'événements) ou -1 (erreur)  |
+
+### `fcntl.h`
+**Utilité**: Fournit des interfaces pour manipuler les attributs d'un fichier ouvert.
+
+| Fonction | Utilité                                   | Paramètres                                      | Valeur de retour                                    |
+|----------|-------------------------------------------|-------------------------------------------------|-----------------------------------------------------|
+| `fcntl`  | Manipule le descripteur de fichier        | int fd, int cmd, ...                            | Divers (succès) ou -1 (erreur)                       |
+| `open`   | Ouvre un fichier                          | const char *pathname, int flags, mode_t mode    | Descripteur de fichier ou -1 en cas d'erreur        |
+
+### `sys/wait.h`, `signal.h`, `sys/stat.h`, `dirent.h`
+**Utilité**: Fournissent diverses fonctionnalités pour la gestion de processus, signaux, informations sur les fichiers et manipulation des répertoires.
+
+| Fonction           | Utilité                                 | Paramètres                                       | Valeur de retour                                    |
+|--------------------|-----------------------------------------|--------------------------------------------------|-----------------------------------------------------|
+| `waitpid`          | Attend la fin d'un processus fils       | pid_t pid, int *status, int options              | pid_t (PID du processus) ou -1 (erreur)             |
+| `kill`             | Envoie un signal à un processus         | pid_t pid, int sig                               | 0 (succès) ou -1 (erreur)                           |
+| `signal`           | Installe un gestionnaire de signal      | int signum, sighandler_t handler                 | Pointeur vers l'ancien gestionnaire ou SIG_ERR      |
+| `stat`             | Obtient les informations sur le fichier | const char *pathname, struct stat *statbuf       | 0 (succès) ou -1 (erreur)                           |
+| `opendir`, `readdir`, `closedir` | Gère la lecture dans les répertoires | const char *name, DIR *dirp                      | DIR* (répertoire) ou NULL, struct dirent* ou NULL   |
+
+Note : Les descriptions des paramètres et valeurs de retour sont simplifiées pour une lecture facile. Pour des détails complets et précis, y compris les types de données et les cas d'erreur spécifiques, il est recommandé de consulter la documentation de la librairie standard de votre système ou environnement de développement.
+
 
 
 # Methodes HTTP avec leur valeur de retour
