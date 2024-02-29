@@ -4,11 +4,6 @@ Ce projet vise à construire un serveur HTTP en respectant la norme C++ 98, pour
 
 ## Table des Matières
 
-- [Introduction au Projet Webserv](#introduction-au-projet-webserv)
-  - Objectifs et portée du projet
-  - Vue d'ensemble du protocole HTTP
-  - Importance de la norme C++ 98
-
 - [Fondamentaux du Serveur HTTP](#fondamentaux-du-serveur-http)
   - Fonctionnement d'un serveur HTTP
   - Rôle et gestion des méthodes HTTP: GET, POST, DELETE
@@ -16,7 +11,7 @@ Ce projet vise à construire un serveur HTTP en respectant la norme C++ 98, pour
 - [Protocole HTTP](#protocole-http)
   - Détails de la RFC HTTP
   - Gestion des en-têtes HTTP
-  - [Codes d'état HTTP](###Codesd'étatHTTP)
+  - [Codes d'état HTTP](#codes-detat-http)
 
 - [Interfaces d'Entrée/Sortie de Base](#interfaces-dentréesortie-de-base)
   - Lecture et écriture sur des sockets
@@ -79,45 +74,90 @@ Ce projet vise à construire un serveur HTTP en respectant la norme C++ 98, pour
   - [Manipulation des attributs d'un fichier ouvert](#fcntlh)
   - [Gestion de processus, signaux, informations sur les fichiers, et répertoires](#syswaith-signalh-sysstath-direnth)
 
-## Introduction au Projet Webserv
-
-### Objectifs et portée du projet
-Expliquez les objectifs du projet Webserv, y compris ce que vous espérez apprendre et accomplir en le réalisant.
-
-### Vue d'ensemble du protocole HTTP
-Une brève introduction au protocole HTTP, son importance dans le développement web et comment il fonctionne.
-
-### Importance de la norme C++ 98
-Discutez de la décision d'utiliser C++ 98 pour ce projet et de ses implications.
-
 ## Fondamentaux du Serveur HTTP
 
 ### Fonctionnement d'un serveur HTTP
-Décrivez comment un serveur HTTP traite les requêtes et envoie des réponses.
+Réception de la Requête : Tout commence quand un client (généralement un navigateur web ou un robot d'indexation) envoie une requête HTTP au serveur. Cette requête inclut une méthode HTTP (comme GET, POST, DELETE), l'URL de la ressource demandée, et éventuellement d'autres en-têtes et données.
+
+Analyse de la Requête : Le serveur reçoit la requête et l'analyse pour déterminer l'action requise. Cela implique d'extraire la méthode HTTP, l'URL demandée, et d'autres informations potentiellement incluses dans les en-têtes HTTP et le corps de la requête (pour les méthodes comme POST).
+
+Traitement de la Requête : Selon la méthode HTTP et l'URL demandée, le serveur effectue l'action appropriée. Cela peut inclure la récupération d'un fichier statique depuis le système de fichiers, la génération dynamique d'une page web, ou l'exécution d'un script CGI pour générer du contenu dynamique.
+
+Accès aux Ressources : Si la requête demande une ressource statique (comme une page HTML, une image, ou un fichier CSS), le serveur recherche le fichier dans son répertoire racine ou le chemin spécifié dans la configuration. Pour les contenus dynamiques, il peut exécuter des scripts ou des programmes externes.
+
+Création de la Réponse : Une fois l'action requise terminée, le serveur prépare une réponse HTTP. Cette réponse inclut un code d'état (comme 200 OK ou 404 Not Found), des en-têtes HTTP (comme le type de contenu), et le corps de la réponse, qui peut contenir le contenu demandé, un message d'erreur, ou les résultats d'un script CGI.
+
+Envoi de la Réponse : Le serveur envoie la réponse au client. Si la ressource a été trouvée et est accessible, le corps de la réponse contiendra les données demandées. Dans le cas contraire, le serveur peut renvoyer une page d'erreur ou un code d'état indiquant le problème.
+
+Gestion des Connexions : Après l'envoi de la réponse, le serveur décide, en fonction des en-têtes HTTP (comme Connection: keep-alive), si la connexion doit être fermée ou maintenue ouverte pour de futures requêtes.
+
+Logs et Monitoring : Le serveur enregistre la requête et la réponse dans ses logs, ce qui permet un suivi pour le débogage, la surveillance de la performance, et la sécurité.
 
 ### Rôle et gestion des méthodes HTTP: GET, POST, DELETE
-Expliquez chaque méthode HTTP prise en charge par votre serveur et son utilisation.
+| Méthode   | Description                                                                                             |
+|:----------|:--------------------------------------------------------------------------------------------------------|
+| GET       | Demande une représentation de la ressource spécifiée. Utilisée pour récupérer des données.              | 
+| POST      | Envoie des données au serveur pour créer/mettre à jour une ressource.                                   | 
+| HEAD      | Identique à GET, mais le serveur ne retourne que les en-têtes de réponse.                               | 
+| PUT       | Remplace toutes les représentations actuelles de la ressource ciblée par la charge utile de la requête. | 
+| DELETE    | Supprime la ressource spécifiée.                                                                        | 
+| CONNECT   | Établit un tunnel vers le serveur identifié par la ressource ciblée.                                    | 
+| OPTIONS   | Décrit les options de communication pour la ressource ciblée.                                           | 
+| TRACE     | Effectue un test de boucle retour le long du chemin vers la ressource ciblée.                           | 
+| PATCH     | Utilisée pour appliquer des modifications partielles à une ressource.                                   |
 
 ## Protocole HTTP
 
 ### Détails de la RFC HTTP
-Abordez les aspects clés de la RFC HTTP que vous avez implémentés.
+🔴Abordez les aspects clés de la RFC HTTP que vous avez implémentés.🔴
 
 ### Gestion des en-têtes HTTP
-Expliquez comment votre serveur gère les en-têtes HTTP.
+🔴Expliquez comment votre serveur gère les en-têtes HTTP.🔴
 
 ### Codes d'état HTTP
-| Méthode   | Description                                                                                             | Codes d'erreur courants                 | Signification des codes                                   |
-|:----------|:--------------------------------------------------------------------------------------------------------|:----------------------------------------|:----------------------------------------------------------|
-| GET       | Demande une représentation de la ressource spécifiée. Utilisée pour récupérer des données.              | 200 OK, 404 Not Found                   | Succès ou ressource non trouvée.                          |
-| POST      | Envoie des données au serveur pour créer/mettre à jour une ressource.                                   | 200 OK, 201 Created, 400 Bad Request    | Succès, ressource créée ou requête invalide.              |
-| HEAD      | Identique à GET, mais le serveur ne retourne que les en-têtes de réponse.                               | 200 OK, 404 Not Found                   | Succès ou ressource non trouvée.                          |
-| PUT       | Remplace toutes les représentations actuelles de la ressource ciblée par la charge utile de la requête. | 200 OK, 201 Created, 204 No Content     | Succès, ressource créée ou pas de contenu.                |
-| DELETE    | Supprime la ressource spécifiée.                                                                        | 200 OK, 202 Accepted, 404 Not Found     | Succès, accepté pour traitement ou ressource non trouvée. |
-| CONNECT   | Établit un tunnel vers le serveur identifié par la ressource ciblée.                                    | 200 OK, 400 Bad Request                 | Succès ou requête invalide.                               |
-| OPTIONS   | Décrit les options de communication pour la ressource ciblée.                                           | 200 OK, 204 No Content                  | Succès ou pas de contenu.                                 |
-| TRACE     | Effectue un test de boucle retour le long du chemin vers la ressource ciblée.                           | 200 OK, 405 Method Not Allowed          | Succès ou méthode non autorisée.                          |
-| PATCH     | Utilisée pour appliquer des modifications partielles à une ressource.                                   | 200 OK, 204 No Content, 400 Bad Request | Succès, pas de contenu ou requête invalide.               |
+
+❕ Réponses Informatives (1xx)
+| Code | Signification         | Explication                                                                 |
+|------|-----------------------|-----------------------------------------------------------------------------|
+| 100  | Continue              | La requête initiale a été reçue, le client peut continuer avec sa requête. |
+| 101  | Switching Protocols   | Le serveur accepte la demande de changement de protocole du client.        |
+| 102  | Processing            | La requête est en cours de traitement, réponse principalement utilisée par WebDAV. |
+
+✅ Succès (2xx)
+| Code | Signification     | Explication                                                             |
+|------|-------------------|-------------------------------------------------------------------------|
+| 200  | OK                | La requête a réussi.                                                    |
+| 201  | Created           | La requête a réussi et une nouvelle ressource a été créée.              |
+| 202  | Accepted          | La requête a été acceptée pour traitement, mais le traitement n'est pas terminé. |
+| 204  | No Content        | La requête a réussi mais ne nécessite pas de retour d’information.     |
+| 206  | Partial Content   | La requête a réussi et le client a reçu une partie du contenu demandé. |
+
+⤴️ Redirections (3xx)
+| Code | Signification     | Explication                                                         |
+|------|-------------------|---------------------------------------------------------------------|
+| 301  | Moved Permanently | La ressource a été déplacée de manière permanente vers une nouvelle URL. |
+| 302  | Found             | La ressource demandée a été temporairement déplacée vers une nouvelle URL. |
+| 304  | Not Modified      | Il n’y a pas eu de modification de la ressource depuis la dernière demande. |
+
+🔴 Erreurs Client (4xx)
+| Code | Signification         | Explication                                                                      |
+|------|-----------------------|----------------------------------------------------------------------------------|
+| 400  | Bad Request           | La syntaxe de la requête est erronée.                                            |
+| 401  | Unauthorized          | Authentification requise pour accéder à la ressource.                            |
+| 403  | Forbidden             | Le serveur a compris la requête, mais refuse de l'exécuter.                      |
+| 404  | Not Found             | La ressource demandée n'a pas été trouvée.                                       |
+| 405  | Method Not Allowed    | La méthode de requête est connue par le serveur mais n'a pas été activée pour la ressource. |
+
+🔴 Erreurs Serveur (5xx)
+| Code | Signification         | Explication                                                                 |
+|------|-----------------------|-----------------------------------------------------------------------------|
+| 500  | Internal Server Error | Une erreur interne du serveur a été rencontrée.                             |
+| 501  | Not Implemented       | Le serveur ne prend pas en charge la fonctionnalité requise pour traiter la requête. |
+| 502  | Bad Gateway           | Le serveur a reçu une réponse invalide de la part d'un serveur en amont.    |
+| 503  | Service Unavailable   | Le serveur n'est pas prêt à traiter la requête (surcharge ou arrêt pour maintenance). |
+| 504  | Gateway Timeout       | Le serveur agissant en tant que passerelle n'a pas reçu de réponse à temps. |
+
+
 
 ## Interfaces d'Entrée/Sortie de Base
 
