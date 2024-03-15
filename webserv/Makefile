@@ -14,6 +14,7 @@ LOGO = "\
 # Sources / Objs
 SRC				=		src/main.cpp\
 						src/Server.cpp\
+						src/Client.cpp\
 						src/Response.cpp\
 						src/Request.cpp\
 						src/Connection.cpp\
