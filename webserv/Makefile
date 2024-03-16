@@ -22,7 +22,7 @@ SRC				=		src/main.cpp\
 						src/CGIHandler.cpp\
 
 OBJ_DIR			=		build/
-OBJS			=		$(patsubst srcs/%,$(OBJ_DIR)%,$(SRC:.c=.o))
+OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))
 
 # Compiler and flags
 CXX				=		g++
@@ -38,18 +38,18 @@ logo:
 start:
 	@echo "Compilation started..."
 
-$(OBJ_DIR)%.o: srcs/%.cpp
+$(OBJ_DIR)%.o: src/%.cpp
 	@mkdir -p $(dir $@)
 	@echo "Compiling $<..."
 	@$(CXX) $(CXXFLAGS) -I include -c $< -o $@
 
 
-$(NAME): $(OBJS)
-	@$(CXX) $(OBJS) -o $(NAME)
+$(NAME): $(OBJ)
+	@$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME)
 	@echo "Compilation of $(NAME) finished."
 
 clean:
-	@rm -f $(OBJS)
+	@rm -f $(OBJ)
 	@echo "Cleaned up object files."
 
 fclean: clean
@@ -57,3 +57,5 @@ fclean: clean
 	@echo "Cleaned up compiled binary."
 
 re: fclean all
+
+.PHONY: all clean fclean re
