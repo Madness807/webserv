@@ -16,6 +16,7 @@ class Server
     int _port;
     int _ipAdress;
     struct sockaddr_in _addr;
+    std::string _buffer;
     //int _setsockopt;
 
     public:

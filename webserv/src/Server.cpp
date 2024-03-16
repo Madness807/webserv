@@ -9,6 +9,7 @@ Server::~Server(){
 Server::Server(int ipAdress, int port) : _port(port), _ipAdress(ipAdress) {
 	_serverSocket = 0;
 	_newSocket = 0;
+	_buffer[1024];
 	_addr.sin_family = AF_INET;
 	_addr.sin_port = htons(_port);
 	_addr.sin_addr.s_addr = htonl(_ipAdress);
