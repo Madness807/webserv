@@ -9,8 +9,12 @@ Server::~Server(){
 Server::Server(int ipAdress, int port) : _port(port), _ipAdress(ipAdress) {
 	_serverSocket = 0;
 	_newSocket = 0;
-	_buffer[1024];
+	_opt = 1;
+	_reading = 0;
+	_test = "salut from server";
+	//_testC = "salut from server";
 	_addr.sin_family = AF_INET;
+	//_address.sin_addr.s_addr = INADDR_ANY;
 	_addr.sin_port = htons(_port);
 	_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
@@ -31,20 +35,19 @@ Server &Server::operator=(const Server &other) {
 }
 
 int Server::Init() {
-	int opt = 1;
-	std::string test = "salut from server";
+
 	// socket creation
 	// -> int sockfd = socket(domain, type, protocol)
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
 	if (_serverSocket == -1) {
-		std::cerr << "Error: socket creation failed" << std::endl;
+		std::cerr << "Error: server socket creation failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 	// option to prevent error "address already in use”."
 	// -> int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen); // permet de reutiliser le port
-	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) < 0) {
-		std::cerr << "Error: setsockopt failed" << std::endl;
+	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &_opt, sizeof(_opt)) < 0) {
+		std::cerr << "Error: server setsockopt failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -59,6 +62,7 @@ int Server::Init() {
 }
 
 int Server::Run() {
+	const char* cstr = _test.c_str();
 	//int listen(int sockfd, int backlog); // met le socket en mode ecoute, backlog = nombre de connexions en attente
 	if(listen(_serverSocket, 3) < 0) {
 		std::cerr << "Error: listen failed" << std::endl;
@@ -76,8 +80,11 @@ int Server::Run() {
 	}
 
 	//At this point, the connection is established between client and server, and they are ready to transfer data.
-
-	//int close(int sockfd);
+	_reading = read(_newSocket, _buffer, 1024 - 1);
+	send(_newSocket, cstr, strlen(cstr), 0);
+    std::cout << "Hello message sent, server" << std::endl;
+	close(_newSocket);
+	close(_serverSocket);
 	return(0);
 }
 

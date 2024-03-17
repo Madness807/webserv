@@ -6,17 +6,21 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 
 
 class Server
 {
     private:
+    int _opt;
     int _serverSocket;
     int _newSocket;
     int _port;
     int _ipAdress;
+    size_t _reading;
     struct sockaddr_in _addr;
-    std::string _buffer;
+    std::string _buffer[1024];
+    std::string _test;
     //int _setsockopt;
 
     public:
