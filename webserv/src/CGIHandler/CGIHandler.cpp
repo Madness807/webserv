@@ -1,4 +1,4 @@
-#include "../include/CGIHandler.hpp"
+#include "../../include/CGIHandler/CGIHandler.hpp"
 
 // Méthodes
 // GETTERS

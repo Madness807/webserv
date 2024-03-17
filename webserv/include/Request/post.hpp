@@ -2,7 +2,7 @@
 #define POST_HPP
 
 #include <iostream>
-#include "../Request.hpp"
+#include "Request.hpp"
 
 class Post : public Request{
     private:

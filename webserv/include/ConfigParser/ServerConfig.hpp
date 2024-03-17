@@ -3,18 +3,23 @@
 
 #include <string>
 #include <map>
+#include <list>
 
-class parsingSrvConf{
+class Serverconfig{
     private:
-        // LES ATTRIBUTS CORRESPONDANT AUX VARIABLES DU FICHER DE CONFIGURATION
+        std::string _server_name;
+        std::string _port;
+        std::string _ip;
+        std::string _max_body_size;
+
     public:
         // constructeur et destructeur
-            parsingSrvConf();
-            ~parsingSrvConf();
+            Serverconfig();
+            ~Serverconfig();
+
         // Méthodes///////////////////
         // GETTERS
         // SETTERS
-
 };
 
 #endif

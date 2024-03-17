@@ -14,18 +14,7 @@ int main(int argc, char **argv)
     // gestion des signaux pour arret propre du serveur
 
     std::cout << "config_file: " << config_file << std::endl;
-
-    // lire le fichier de configuration
-    // enregistre les valeurs dans une map
-    // pour chaque clé, on a une valeur
-    // exemple: "port" => "8080"
-    //        "server_name" => "localhost"
-    //        "root" => "/var/www/html"
-    //        "index" => "index.html"
-    //        "error_page" => "error.html"
-    //        "location" => "/api"
-    // 
-
+    std::ifstream file(config_file);
     
     return 0;
 }

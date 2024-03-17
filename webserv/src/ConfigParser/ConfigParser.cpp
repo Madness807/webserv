@@ -1,9 +1,8 @@
-#include "../include/ConfigParser.hpp"
+#include "../include/ConfigParser/ConfigParser.hpp"
 
 //Méthodes
 //GETTERS
 //SETTERS
-
 
 // constructeur
 parsingSrvConf::parsingSrvConf() {

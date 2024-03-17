@@ -1,4 +1,4 @@
-#include "../include/Request.hpp"
+#include "../include/Request/Request.hpp"
 
 // Méthodes
 // GETTERS

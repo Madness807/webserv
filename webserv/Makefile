@@ -13,13 +13,18 @@ LOGO = "\
 
 # Sources / Objs
 SRC				=		src/main.cpp\
-						src/Server.cpp\
-						src/Client.cpp\
-						src/Response.cpp\
-						src/Request.cpp\
-						src/Connection.cpp\
-						src/ConfigParser.cpp\
-						src/CGIHandler.cpp\
+						src/ConfigParser/ConfigParser.cpp\
+						src/ConfigParser/LocationConfig.cpp\
+						src/ConfigParser/ServerConfig.cpp\
+						src/Server/Server.cpp\
+						src/Client/Client.cpp\
+						src/Response/Response.cpp\
+						src/Request/Request.cpp\
+						src/Request/delete.cpp\
+						src/Request/get.cpp\
+						src/Request/post.cpp\
+						src/Connection/Connection.cpp\
+						src/CGIHandler/CGIHandler.cpp\
 
 OBJ_DIR			=		build/
 OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))

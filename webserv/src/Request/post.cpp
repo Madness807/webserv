@@ -1,14 +1,14 @@
-#include "webserv/include/Request/post.hpp"
+#include "../../include/Request/post.hpp"
 
 // Méthodes///////////////////
 // Setters
 // Getters
 
 // Constructeur
-Request::Request() {
+Post::Post() {
     
 }
 // Destructeur
-Request::~Request() {
+Post::~Post() {
     
 }

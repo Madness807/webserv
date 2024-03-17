@@ -1,8 +1,8 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "ConfigParser.hpp"
-#include "Connection.hpp"
+#include "../../include/ConfigParser/ConfigParser.hpp"
+#include "../../include/Connection/Connection.hpp"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
