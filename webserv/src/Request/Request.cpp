@@ -1,18 +1,15 @@
-#include "../include/Request.hpp"
+#include "../../include/Request.hpp"
 
-// Méthodes
-// GETTERS
-// SETTERS
-
-// Constructeur & Destructeur
+/* -------------------- Constructeur & Destructeur --------------------*/
 Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port(80), _path(""), _query(""), _raw(str)
 {
-
+	resetHeaders();
+	_env.clear();
 }
 
 Request::~Request() {}
 
-// Copie d'assignation
+/* -------------------- Operateur d'assignation --------------------*/
 Request &Request::operator=(const Request &other)
 {
 	this->_method = other.getMethod();
@@ -27,7 +24,7 @@ Request &Request::operator=(const Request &other)
 	return (*this);
 }
 
-// Getters
+/* -------------------- Getters --------------------*/
 const std::string	&Request::getMethod() const
 {
 	return (_method);
@@ -78,6 +75,23 @@ const std::string	&Request::getRaw() const
 	return (_raw);
 }
 
+/* -------------------- Setters --------------------*/
+void Request::setMethod(const std::string &method)
+{
+	this->_method = method;
+}
+
+void Request::setBody(const std::string &line)
+{
+	this->_body = line;
+}
+
+void Request::setRet(int ret)
+{
+	this->_ret = ret;
+}
+
+/* -------------------- Initialization Methods Vector --------------------*/
 std::vector<std::string>	Request::initMethods()
 {
 	std::vector<std::string> methods;
@@ -89,6 +103,7 @@ std::vector<std::string>	Request::initMethods()
 	return (methods);
 }
 
+/* -------------------- Reset Map Headers --------------------*/
 void	Request::resetHeaders()
 {
 	this->_headers.clear();
@@ -113,6 +128,24 @@ void	Request::resetHeaders()
 	this->_headers["Transfer-Encoding"] = "";
 	this->_headers["User-Agent"] = "";
 	this->_headers["WWW-Authenticate"] = "";
+}
 
+/* -------------------- Parsing --------------------*/
+int	Request::readFirstLine(const std::string &str)
+{
+	size_t len;
+	std::string line;
+
+	len = str.find_first_of('\n');
+	line = str.substr(0, len);
+	len = str.find_first_of(' ');
+	if (len = std::string::npos)
+	{
+		setRet(400);
+		std::cerr << COLOR_RED << "No space after method" << COLOR_RESET << std::endl;
+		return (400);
+	}
+	this->_method.assign(line, 0, len);
+	return ();
 }
 

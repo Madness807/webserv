@@ -15,7 +15,7 @@ LOGO = "\
 SRC				=		src/main.cpp\
 						src/Server.cpp\
 						src/Response.cpp\
-						src/Request.cpp\
+						src/Request/Request.cpp\
 						src/Connection.cpp\
 						src/ConfigParser.cpp\
 						src/CGIHandler.cpp\
