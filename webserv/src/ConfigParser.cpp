@@ -6,7 +6,7 @@
 
 
 // constructeur
-parsingSrvConf::parsingSrvConf() {
+parsingSrvConf::parsingSrvConf(){
 }
 // destructeur
 parsingSrvConf::~parsingSrvConf() {

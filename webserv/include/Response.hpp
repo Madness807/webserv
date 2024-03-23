@@ -5,9 +5,7 @@
 #include <map>
 
 class Response {
-    private:
         // Attributs///////////////////
-
 
     public:
         // constructeur et destructeur
