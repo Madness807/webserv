@@ -6,6 +6,7 @@
 class Request 
 {
     std::string							_method;
+	std::vector<std::string>			_methods;
 	std::string							_version;
 	std::map<std::string, std::string>	_headers;
 	std::map<std::string, std::string>	_env;
@@ -18,6 +19,8 @@ class Request
 
 	//Parsing
 	int									readFirstLine(const std::string &str);
+	int									readPath(std::string str, size_t index);
+	int									readVersion(std::string str, size_t index);
     
     public:
     // Constructeur et destructeur
@@ -34,6 +37,7 @@ class Request
 
     // Getters
 		const std::string							&getMethod() const;
+		const std::string							&getMethods(int index) const;
 		const std::string							&getVersion() const;
         const std::map<std::string, std::string>	&getHeaders() const;
 		const std::map<std::string, std::string>	&getEnv() const;
