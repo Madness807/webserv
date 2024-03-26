@@ -5,12 +5,10 @@
 #include <map>
 #include <list>
 #include "ServerConfig.hpp"
-#include "LocationConfig.hpp"
 
 class parsingSrvConf{
     private:
     ServerConfig* _serverConfig;
-    LocationConfig* _locationConfig;
 
     public:
         // Constructeur
@@ -25,7 +23,6 @@ class parsingSrvConf{
 
         // GETTERS
         ServerConfig* getServerConfig();
-        LocationConfig* getLocationConfig();
         // SETTERS
 };
 

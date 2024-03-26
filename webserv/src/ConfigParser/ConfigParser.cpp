@@ -1,6 +1,5 @@
 #include "../include/ConfigParser/ConfigParser.hpp"
 #include "../include/ConfigParser/ServerConfig.hpp"
-#include "../include/ConfigParser/LocationConfig.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -9,9 +8,6 @@
 //GETTERS
 ServerConfig* parsingSrvConf::getServerConfig(){
     return _serverConfig;
-}
-LocationConfig* parsingSrvConf::getLocationConfig(){
-    return _locationConfig;
 }
 //SETTERS
 
@@ -41,32 +37,23 @@ void parsingSrvConf::readConfigFile(std::string filename) {
                     _serverConfig->setMaxBodySize(line.substr(line.find("max_body_size") + 14, line.find(":") - line.find("max_body_size") - 15));
                 }
                 if (line.find("location_start") != std::string::npos) {
+                    std::string path = line.substr(line.find("location") + 9, line.find(":") - line.find("location") - 10);
+                    std::map<std::string, std::string> locationConfig;
                     while (std::getline(configFile, line)) {
                         if (line.find("location_end") != std::string::npos) {
                             break;
                         }
                         if (line.find("path") != std::string::npos) {
-                            _locationConfig->setPath(line.substr(line.find("path") + 5, line.find(":") - line.find("path") - 6));
-                        }
-                        if (line.find("methods") != std::string::npos) {
-                            std::string methods = line.substr(line.find("methods") + 8, line.find(":") - line.find("methods") - 9);
-                            std::vector<std::string> methodsVector;
-                            std::string delimiter = " ";
-                            size_t pos = 0;
-                            std::string token;
-                            while ((pos = methods.find(delimiter)) != std::string::npos) {
-                                token = methods.substr(0, pos);
-                                methodsVector.push_back(token);
-                                methods.erase(0, pos + delimiter.length());
-                            }
-                            methodsVector.push_back(methods);
-                            _locationConfig->setMethods(methodsVector);
+                            locationConfig["path"] = line.substr(line.find("path") + 5, line.find(":") - line.find("path") - 6);
                         }
                         if (line.find("redirect") != std::string::npos) {
-                            _locationConfig->setRedirect(line.substr(line.find("redirect") + 9, line.find(":") - line.find("redirect") - 10));
+                            locationConfig["redirect"] = line.substr(line.find("redirect") + 9, line.find(":") - line.find("redirect") - 10);
+                        }
+                        if (line.find("directory_listing") != std::string::npos) {
+                            locationConfig["directory_listing"] = line.substr(line.find("directory_listing") + 18, line.find(":") - line.find("directory_listing") - 19);
                         }
                     }
-                    _serverConfig->addLocation(_locationConfig);
+                    _serverConfig->addLocation(path, locationConfig);
                 }
             }
         }
@@ -81,7 +68,6 @@ parsingSrvConf::parsingSrvConf() {
 // Constructeur par copie
 parsingSrvConf::parsingSrvConf(const parsingSrvConf& other) {
     _serverConfig = new ServerConfig(*other._serverConfig);
-    _locationConfig = new LocationConfig(*other._locationConfig);
 }
 // Destructeur
 parsingSrvConf::~parsingSrvConf() {

@@ -14,7 +14,6 @@ LOGO = "\
 # Sources / Objs
 SRC				=		src/main.cpp\
 						src/ConfigParser/ConfigParser.cpp\
-						src/ConfigParser/LocationConfig.cpp\
 						src/ConfigParser/ServerConfig.cpp\
 						src/Server/Server.cpp\
 						src/Client/Client.cpp\
