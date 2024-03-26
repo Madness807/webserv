@@ -6,14 +6,16 @@ Client::Client() {
 	_testClient = "salut from client";
 }
 
-Client::Client(int ipAdress, int port) : _serverPort(port), _serverIpAdress(ipAdress) {
+Client::Client(const char* ipAdress, int port) : _serverPort(port), _serverIpAdress(ipAdress) {
 	_socketClient = 0;
 	_opt = 1;
 	_reading = 0;
 	_testClient = "salut from client";
 	_addrServer.sin_family = AF_INET;
 	_addrServer.sin_port = htons(_serverPort);
-	_addrServer.sin_addr.s_addr = htonl(_serverIpAdress);
+	//_addrServer.sin_addr.s_addr = htonl(_serverIpAdress);
+	_addrServer.sin_addr.s_addr = INADDR_ANY;
+	std::cout << _serverIpAdress << std::endl;
 }
 
 Client::~Client() {
@@ -44,12 +46,12 @@ int Client::Init() {
 		exit(EXIT_FAILURE);
 	}
 	// Convert IPv4 and IPv6 addresses from text to binary
-    // form
-    if (inet_pton(AF_INET, "127.0.0.1", &_addrServer.sin_addr)
-        <= 0) {
-        std::cerr << "\nInvalid address/ Address not supported" << std::endl;
-        return -1;
-    }
+	// form
+	if (inet_pton(AF_INET, "127.0.0.1", &_addrServer.sin_addr)
+		<= 0) {
+		std::cerr << "\nInvalid address/ Address not supported" << std::endl;
+		return -1;
+	}
 
 	return 0;
 }
@@ -63,16 +65,16 @@ int Client::Run() {
 		exit(EXIT_FAILURE);
 	}
 	if ((connect(_socketClient, (struct sockaddr*)&_addrServer, sizeof(_addrServer))) < 0) {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-    send(_socketClient, cstr, strlen(cstr), 0);
-    std::cout << "Hello message sent, client" << std::endl;
-    _reading = read(_socketClient, _buffer, 1024 - 1); // subtract 1 for the null terminator at the end
-    std::cout << _buffer << std::endl;
+		printf("\nConnection Failed \n");
+		return -1;
+	}
+	send(_socketClient, cstr, strlen(cstr), 0);
+	std::cout << "Hello message sent, client" << std::endl;
+	_reading = read(_socketClient, _buffer, 1024 - 1); // subtract 1 for the null terminator at the end
+	std::cout << _buffer << std::endl;
 
-    // closing the connected socket
-    close(_socketClient);
+	// closing the connected socket
+	close(_socketClient);
 	return 0;
 }
 

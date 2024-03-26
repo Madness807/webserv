@@ -7,25 +7,27 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-
+#include <arpa/inet.h>
+#include <string.h>
 
 class Server
 {
     private:
     int _opt;
-    int _serverSocket;
+    int _serverSocket; // listening socket
+    fd_set _masterFd; // master file descriptor set
     int _newSocket;
     int _port;
-    int _ipAdress;
+    const char* _ipAdress;
     size_t _reading;
     struct sockaddr_in _addr;
-    std::string _buffer[1024];
+    char _buffer[1024];
     std::string _test;
     //int _setsockopt;
 
     public:
         // constructeur et destructeur
-        Server(int ipAdress, int port);
+        Server(const char* ipAdress, int port);
         Server();
         ~Server();
         Server(const Server &other);
@@ -37,6 +39,12 @@ class Server
         // GETTERS
         // SETTERS
 
+    protected:
+        virtual void onClientConnected(int clientSocket);
+        virtual void onClientDisconnected(int clientSocket);
+        virtual void onMessageReceived(int clientSocket, const char* message, int messageSize); // gestion de message recu d un client
+        void sendToClient(int clientSocket, const char* message, int messageSize); // send message to client
+        void sendToAllClients(int sendingClientSocket, const char* message, int messageSize); // send message to all clients
 };
 
 #endif
