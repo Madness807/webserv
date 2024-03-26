@@ -3,9 +3,6 @@
 /* -------------------- Constructeur & Destructeur --------------------*/
 Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port(80), _path(""), _query(""), _raw(str)
 {
-	_methods.push_back("GET");
-	_methods.push_back("POST");
-	_methods.push_back("POST");
 	resetHeaders();
 	_env.clear();
 }
@@ -31,11 +28,6 @@ Request &Request::operator=(const Request &other)
 const std::string	&Request::getMethod() const
 {
 	return (_method);
-}
-
-const std::string	&Request::getMethods(int index) const
-{
-	return (_methods[index]);
 }
 
 const std::string	&Request::getVersion() const
@@ -136,72 +128,4 @@ void	Request::resetHeaders()
 	this->_headers["Transfer-Encoding"] = "";
 	this->_headers["User-Agent"] = "";
 	this->_headers["WWW-Authenticate"] = "";
-}
-
-/* -------------------- Parsing --------------------*/
-int	Request::readFirstLine(const std::string &str)
-{
-	size_t index;
-	std::string line;
-	std::string method;
-
-	index = str.find_first_of('\n');
-	line = str.substr(0, index);
-	index = str.find_first_of(' ');
-	if (index == std::string::npos)
-	{
-		setRet(400);
-		std::cerr << COLOR_RED << "No space after method" << COLOR_RESET << std::endl;
-		return (400);
-	}
-	method = line.assign(line, 0, index);
-	if (method.compare(getMethods(0))
-		&& method.compare(getMethods(1))
-		&& method.compare(getMethods(2)))
-	{
-		setRet(400);
-		std::cerr << COLOR_RED << "Wrong method" << COLOR_RESET << std::endl;
-		return (400);
-	}
-	this->_method.assign(line, 0, index);
-	return (this->readPath(line, index));
-}
-
-int	Request::readPath(std::string str, size_t index)
-{
-	size_t j;
-
-
-	if ((j = str.find_first_not_of(' ', index)) == std::string::npos)
-	{
-		setRet(400);
-		std::cerr << COLOR_RED << "No PATH / HTTP version" << COLOR_RESET << std::endl;
-		return (400);
-	}
-	if ((index = str.find_first_of(' ', j)) == std::string::npos)
-	{
-		setRet(400);
-		std::cerr << COLOR_RED << "No HTTP version" << COLOR_RESET << std::endl;
-		return (400);
-	}
-	this->_path.assign(str, j, index - j);
-	return this->readVersion(str, index);
-}
-
-int Request::readVersion(std::string str, size_t index)
-{
-	if ((index = str.find_first_not_of(' ', index)) == std::string::npos)
-	{
-		setRet(400);
-		std::cerr << COLOR_RED << "No HTTP version" << COLOR_RESET << std::endl;
-		return 400;
-	}
-	if (!str.compare(0, 5, "HTTP/"))
-		_version = str.assign(str, index + 5, 3);
-	if (_version.compare("1.0") && _version.compare("1.1"))
-	{
-		setRet(400);
-		std::cerr << COLOR_RED << "BAD HTTP VERSION (" << this->_version << ")" << COLOR_RESET << std::endl;
-		return (this->_ret);
-	}
 }
