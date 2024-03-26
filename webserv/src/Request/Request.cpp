@@ -3,8 +3,12 @@
 /* -------------------- Constructeur & Destructeur --------------------*/
 Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port(80), _path(""), _query(""), _raw(str)
 {
-	resetHeaders();
-	_env.clear();
+	this->_methods = this->initMethods();
+	this->resetHeaders();
+	this->_env.clear();
+	this->parse(str);
+	if (this->getRet() != 200)
+		std::cerr << COLOR_RED << "Parse error: " << this->getRet() << COLOR_RESET << std::endl;
 }
 
 Request::~Request() {}
