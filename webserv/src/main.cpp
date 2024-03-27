@@ -3,7 +3,7 @@
 #include "../include/define.hpp"
 #include "../include/ConfigParser/ConfigParser.hpp"
 #include "../include/ConfigParser/ServerConfig.hpp"
-#include "../verbose/verbose.hpp"
+#include "../include/verbose/verbose.hpp"
 
 int main(int argc, char **argv)
 {
@@ -17,8 +17,8 @@ int main(int argc, char **argv)
     parse_config.readConfigFile(config_file);// read the config file
     serverconfig = *parse_config.getServerConfig(); // get the server config
 
-   
-    void printSRVConfig(ServerConfig serverconfig);
+   // Print the server config && location config
+    printSRVConfig(serverconfig);
    
     return 0;
 }

@@ -1,5 +1,7 @@
  #include "../include/ConfigParser/ConfigParser.hpp"
  #include "../include/ConfigParser/ServerConfig.hpp"
+ #include "../include/verbose/verbose.hpp"
+
    #include <iostream>
    #include <fstream>
    #include <vector>
