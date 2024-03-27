@@ -1,5 +1,5 @@
 #include "../include/Server.hpp"
-
+#include <sstream>
 //INADDR_ANY == localhost
 
 Server::Server(){
@@ -66,21 +66,20 @@ int Server::Init()
 		exit(EXIT_FAILURE);
 	}
 
-	if(listen(_serverSocket, 3) < 0) // == SOCKET_ERROR
+	if(listen(_serverSocket, 1) < 0) // == SOCKET_ERROR // mettre variable pour waiting list
 	{
 		std::cerr << "Error: listen failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	FD_ZERO(&_masterFd); // initialise a 0 masterFD, en lien avec select
-	FD_SET(_serverSocket, &_masterFd); // ajoute un fd a un ensemble de fd, en lien avec select, ajoute _serverSocket a _masterFd
 
-	/*
-		Ces ensembles de descripteurs de fichiers sont ensuite utilisés avec la fonction `select`, qui peut surveiller plusieurs descripteurs de fichiers pour voir s'ils sont prêts pour la lecture, l'écriture ou si une exception s'est produite.
-	*/
+	FD_ZERO(&_masterFdRead);
+	FD_ZERO(&_masterFdWrite);
+	FD_SET(_serverSocket, &_masterFdRead); // ajoute un fd a un ensemble de fd, en lien avec select, ajoute _serverSocket a _masterFd
 
 	return (0);
 }
 
+/*
 int Server::Run()
 {
 	bool running = true;
@@ -116,8 +115,8 @@ int Server::Run()
 						//char buf[4096];
 						memset(_buffer, 0, sizeof(_buffer));
 				// Receive message
-			//	int bytesIn = recv(sock, buf, 4096, 0);
-						int bytesIn = recv(i, _buffer, sizeof(_buffer), 0);
+					//	int bytesIn = recv(clientSocket, _buffer, sizeof(_buffer), 0);
+						int bytesIn = recv(i, _buffer, 4096, 0);
 						if (bytesIn <= 0)
 						{
 						// Drop the client
@@ -129,6 +128,8 @@ int Server::Run()
 						else
 						{
 							std::cout << "Received: \n" << _buffer << std::endl;
+							//onMessageReceived(clientSocket, _buffer, bytesIn);
+							//onMessageReceived(i, _buffer, bytesIn);
 	//onMessageReceived(i, _buffer, bytesIn);
 					// Check to see if it's a command. \quit kills the server
 					// if (_buffer[0] == '\\')
@@ -153,8 +154,11 @@ int Server::Run()
 							{
 								if (FD_ISSET(j, &_masterFd) && j != _serverSocket && j != i)
 								{
+									std::ostringstream oss;
+									oss << "Client " << i << " : " << _buffer;
 									//(j, _buffer, bytesIn, 0);
-									onMessageReceived(j, _buffer, bytesIn);
+									send(j, _buffer, bytesIn, 0);
+									//onMessageReceived(j, _buffer, bytesIn);
 								}
 							}
 						}
@@ -165,10 +169,109 @@ int Server::Run()
 		}
 	}
 
-	close(_serverSocket);
 	while (FD_ISSET(_serverSocket, &_masterFd)) {
 		FD_CLR(_serverSocket, &_masterFd);
 	}
+	close(_serverSocket);
+
+	return 0;
+}
+*/
+
+////////////////////////////////////////////////////
+int Server::Run()
+{
+	bool running = true;
+	int max_sd = _serverSocket;
+
+	while (running)
+	{
+		fd_set copy = _masterFdRead;
+		// See who's talking to us
+		int socketCount = select(max_sd + 1, &copy, nullptr, nullptr, nullptr); // pour gerer plusieurs fd, pour voir si il y a des data a lire, si on peut ecrire et si il y a des exceptions
+
+		// Loop through all the current connections / potential connect
+		for (int i = 0; socketCount > 0; i++)
+		{
+			if (FD_ISSET(i, &copy))
+			{
+				if (i == _serverSocket)
+				{
+					sockaddr_in client;
+					socklen_t clientSize = sizeof(client);
+					int clientSocket = accept(_serverSocket, (sockaddr*)&client, &clientSize);
+					if (clientSocket == -1)
+					{
+						std::cerr << "Error in accepting client";
+					}
+					if (clientSocket > 0)
+					{
+						FD_SET(clientSocket, &_masterFd);
+						onClientConnected(clientSocket);
+					}
+					else // It's an inbound message
+					{
+						//char buf[4096];
+						memset(_buffer, 0, sizeof(_buffer));
+				// Receive message
+					//	int bytesIn = recv(clientSocket, _buffer, sizeof(_buffer), 0);
+						int _reading = recv(i, _buffer, 4096, 0);
+						if (_reading <= 0)
+						{
+						// Drop the client
+							onClientDisconnected(i);
+							close(i);
+							FD_CLR(i, &_masterFd);
+						// client is disconnected
+						}
+						else
+						{
+							std::cout << "Received: \n" << _buffer << std::endl;
+							//onMessageReceived(clientSocket, _buffer, bytesIn);
+							//onMessageReceived(i, _buffer, bytesIn);
+	//onMessageReceived(i, _buffer, bytesIn);
+					// Check to see if it's a command. \quit kills the server
+					// if (_buffer[0] == '\\')
+					// {
+					// 	// Is the command quit?
+					// 	std::string cmd = std::string(_buffer, bytesIn);
+					// 	if (cmd == "\\quit")
+					// 	{
+					// 		running = false;
+					// 		break;
+					// 	}
+
+					// 	// Unknown command
+					// 	//continue;
+					// }
+
+					// Send message to other clients, and definiately NOT the listening socket
+
+					//else
+					//{
+							for (int j = 0; j <= max_sd; ++j)
+							{
+								if (FD_ISSET(j, &_masterFdRead) && j != _serverSocket && j != i)
+								{
+									std::ostringstream oss;
+									oss << "Client " << i << " : " << _buffer;
+									//(j, _buffer, bytesIn, 0);
+									send(j, _buffer, _reading, 0);
+									//onMessageReceived(j, _buffer, bytesIn);
+								}
+							}
+						}
+					}
+				}
+				--socketCount;
+			}
+		}
+	}
+
+	while (FD_ISSET(_serverSocket, &_masterFdRead)) {
+		FD_CLR(_serverSocket, &_masterFdRead);
+	}
+	close(_serverSocket);
 
 	return 0;
 }
@@ -208,7 +311,7 @@ void Server::sendToClient(int clientSocket, const char* message, int messageSize
 	send(clientSocket, message, messageSize, 0);
 }
 
-void Server::sendToAllClients(int sendingClientSocket, const char* message, int messageSize) // send message to all clients
+void Server::sendToAllClients(int sendingClient, const char* message, int messageSize) // send message to all clients
 {
 	fd_set copy = _masterFd;
 	int max_sd = _serverSocket;
@@ -219,7 +322,7 @@ void Server::sendToAllClients(int sendingClientSocket, const char* message, int 
 	{
 		if (FD_ISSET(i, &copy))
 		{
-			if (i != _serverSocket && i != sendingClientSocket)
+			if (i != _serverSocket && i != sendingClient)
 			{
 				sendToClient(i, message, messageSize);
 			}

@@ -12,39 +12,42 @@
 
 class Server
 {
-    private:
-    int _opt;
-    int _serverSocket; // listening socket
-    fd_set _masterFd; // master file descriptor set
-    int _newSocket;
-    int _port;
-    const char* _ipAdress;
-    size_t _reading;
-    struct sockaddr_in _addr;
-    char _buffer[1024];
-    std::string _test;
-    //int _setsockopt;
+	private:
 
-    public:
-        // constructeur et destructeur
-        Server(const char* ipAdress, int port);
-        Server();
-        ~Server();
-        Server(const Server &other);
-        Server &operator=(const Server &other);
+		int         _opt;
+		int         _serverSocket; // listening socket
+		fd_set      _masterFd; // master file descriptor set
+		fd_set	    _masterFdRead;
+		fd_set	    _masterFdWrite;
+		int         _newSocket;
+		int         _port;
+		const char* _ipAdress;
+		size_t      _reading;
+		struct      sockaddr_in _addr;
+		char        _buffer[4096];
 
-        int Init();
-        int Run();
-        // Méthodes///////////////////
-        // GETTERS
-        // SETTERS
+	public:
 
-    protected:
-        virtual void onClientConnected(int clientSocket);
-        virtual void onClientDisconnected(int clientSocket);
-        virtual void onMessageReceived(int clientSocket, const char* message, int messageSize); // gestion de message recu d un client
-        void sendToClient(int clientSocket, const char* message, int messageSize); // send message to client
-        void sendToAllClients(int sendingClientSocket, const char* message, int messageSize); // send message to all clients
+		Server(const char* ipAdress, int port);
+		Server();
+		~Server();
+		Server(const Server &other);
+		Server &operator=(const Server &other);
+
+		int Init();
+		int Run();
+
+	protected:
+
+		virtual void onClientConnected(int clientSocket);
+
+		virtual void onClientDisconnected(int clientSocket);
+
+		void sendToClient(int clientSocket, const char* message, int messageSize); // send message to client
+
+		void sendToAllClients(int sendingClient, const char* message, int messageSize); // send message from a client to all clients
+
+		virtual void onMessageReceived(int clientSocket, const char* message, int messageSize); // gestion de message recu d un client
 };
 
 #endif

@@ -3,7 +3,6 @@
 void Client2::onClientConnected(int clientSocket)
 {
 	std::string message = "Welcome to the server\n";
-	//send(clientSocket, message, message.size() + 1, 0);
 	sendToClient(clientSocket, message.c_str(), message.size() + 1);
 }
 
@@ -15,9 +14,8 @@ void Client2::onClientDisconnected(int clientSocket)
 
 void Client2::onMessageReceived(int clientSocket, const char* message, int messageSize) // gestion de message recu d un client
 {
-	(void)clientSocket;
-	(void)messageSize;
-	(void)message;
+//	(void)clientSocket;
+//	(void)messageSize;
 	std::cout << "Received: \n" << message << std::endl;
-	//broadcast(clientSocket, message, messageSize);
+	sendToAllClients(clientSocket, message, messageSize);
 }
