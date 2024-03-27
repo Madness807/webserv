@@ -61,7 +61,6 @@ LocationConfig ServerConfig::getLocationConfig(std::string path) {
 //##################################################################
 void ServerConfig::addLocation(const std::string& path, const LocationConfig& _locationConfig) {
     _locations_map[path] = _locationConfig;
-    //std::cout << _locations_map[path].getPath() << std::endl;
 }
 
 //##################################################################

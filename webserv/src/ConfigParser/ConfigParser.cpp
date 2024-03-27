@@ -19,6 +19,7 @@ void parsingSrvConf::readConfigFile(std::string filename) {
         return;
     }
     std::string line;
+    LocationConfig location = LocationConfig();
     while (std::getline(configFile, line)) {
         if (line.find("server") != std::string::npos) {
             while (std::getline(configFile, line)) {
@@ -45,28 +46,29 @@ void parsingSrvConf::readConfigFile(std::string filename) {
                 }
                 else if (line.find("root") != std::string::npos) {
                     _serverConfig->setRoot(line.substr(line.find("root") + 6, line.find(":") - line.find("root") - 7));
-                }
+                }//fin de la partie configuration de base du serveur
                 else if (line.find("location_start") != std::string::npos)
                 {
-                    std::cout << "line: " << line << std::endl;
-                    LocationConfig location = LocationConfig();
-                    if (line.find("path") != std::string::npos)
-                    {   
-                        location.setPath(line.substr(line.find("path") + 5, line.find(":") - line.find("path") - 6));
-                    }
-                    if (line.find("redirect") != std::string::npos)
-                    {
-                        location.setRedirect(line.substr(line.find("redirect") + 9, line.find(":") - line.find("redirect") - 10));
-                    }
-                    if (line.find("methods") != std::string::npos)
-                    {
+                    location = LocationConfig();
+                }
+                else if (line.find("path") != std::string::npos)
+                {   
+                    location.setPath(line.substr(line.find("path") + 6, line.find(":") - line.find("path") - 6));
+                }
+                if (line.find("redirect") != std::string::npos)
+                {
+                    location.setRedirect(line.substr(line.find("redirect") + 10, line.find(":") - line.find("redirect") - 10));
+                }
+                if (line.find("methods") != std::string::npos)
+                {
                         std::cout << "Attribut methods non implémenté" << std::endl;
-                    }
-                    if (line.find("directory_listing") != std::string::npos)
-                    {
-                        location.setDirectoryListing(false);
-                    }
-                    //std::cout << "pute" << location.getPath() << std::endl;
+                }
+                if (line.find("directory_listing") != std::string::npos)
+                {
+                    location.setDirectoryListing(false);
+                }
+                if (line.find("location_end") != std::string::npos)
+                {
                     _serverConfig->addLocation(location.getPath() ,location);
                 }
             }

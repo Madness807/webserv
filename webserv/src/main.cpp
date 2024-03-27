@@ -34,9 +34,30 @@ int main(int argc, char **argv)
     std::cout << "" << std::endl;
     std::cout << "\033[31mLOCATIONCONFIG-------------------------\033[0m" << std::endl;
 
+    std::cout << "\033[1;34mLOCATION 1\033[0m" << std::endl;
+    std::cout << "\033[1;34m----------\033[0m" << std::endl;
     std::cout << "Path: " << serverconfig.getLocationConfig("/").getPath() << std::endl;
     std::cout << "Redirection: " << serverconfig.getLocationConfig("/").getRedirect() << std::endl;
     std::cout << "DirectoryListing: " << serverconfig.getLocationConfig("/").getDirectoryListing() << std::endl;
+    std::cout << "" << std::endl;
+
+    std::cout << "\033[1;34mLOCATION 2\033[0m" << std::endl;
+    std::cout << "\033[1;34m----------\033[0m" << std::endl;
+    std::cout << "Path: " << serverconfig.getLocationConfig("/uploads").getPath() << std::endl;
+    std::cout << "Redirection: " << serverconfig.getLocationConfig("/uploads").getRedirect() << std::endl;
+    std::cout << "DirectoryListing: " << serverconfig.getLocationConfig("/uploads").getDirectoryListing() << std::endl;
+    std::cout << "" << std::endl;
+
+    std::cout << "\033[1;34mLOCATION 3\033[0m" << std::endl;
+    std::cout << "\033[1;34m----------\033[0m" << std::endl;
+    std::cout << "Path: " << serverconfig.getLocationConfig("/home.html").getPath() << std::endl;
+    std::cout << "Redirection: " << serverconfig.getLocationConfig("/home.html").getRedirect() << std::endl;
+    std::cout << "DirectoryListing: " << serverconfig.getLocationConfig("/home.html").getDirectoryListing() << std::endl;
+    std::cout << "" << std::endl;
+
+    std::cout << "" << std::endl;
+
+
    
     return 0;
 }
