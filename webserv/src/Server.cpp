@@ -14,8 +14,6 @@ Server::Server(const char* ipAdress, int port) :_port(port),  _ipAdress(ipAdress
 	_newSocket = 0;
 	_opt = 1;
 	_reading = 0;
-	_test = "salut from server";
-	//_testC = "salut from server";
 
 	_addr.sin_family = AF_INET;
 
@@ -92,8 +90,7 @@ int Server::Run()
 	{
 		fd_set copy = _masterFd;
 		// See who's talking to us
-		//int socketCount = select(0, &copy, nullptr, nullptr, nullptr);
-		int socketCount = select(max_sd + 1, &copy, nullptr, nullptr, nullptr);
+		int socketCount = select(max_sd + 1, &copy, nullptr, nullptr, nullptr); // pour gerer plusieurs fd, pour voir si il y a des data a lire, si on peut ecrire et si il y a des exceptions
 
 		// Loop through all the current connections / potential connect
 		for (int i = 0; socketCount > 0; i++)
@@ -113,27 +110,26 @@ int Server::Run()
 					{
 						FD_SET(clientSocket, &_masterFd);
 						onClientConnected(clientSocket);
-
 					}
 					else // It's an inbound message
 					{
 						//char buf[4096];
 						memset(_buffer, 0, sizeof(_buffer));
-					}
 				// Receive message
 			//	int bytesIn = recv(sock, buf, 4096, 0);
-				int bytesIn = recv(i, _buffer, sizeof(_buffer), 0);
-				if (bytesIn <= 0)
-				{
-					// Drop the client
-					onClientDisconnected(i);
-					close(i);
-					FD_CLR(i, &_masterFd);
-					// client is disconnected
-				}
-				else
-				{
-					onMessageReceived(i, _buffer, bytesIn);
+						int bytesIn = recv(i, _buffer, sizeof(_buffer), 0);
+						if (bytesIn <= 0)
+						{
+						// Drop the client
+							onClientDisconnected(i);
+							close(i);
+							FD_CLR(i, &_masterFd);
+						// client is disconnected
+						}
+						else
+						{
+							std::cout << "Received: \n" << _buffer << std::endl;
+	//onMessageReceived(i, _buffer, bytesIn);
 					// Check to see if it's a command. \quit kills the server
 					// if (_buffer[0] == '\\')
 					// {
@@ -157,11 +153,12 @@ int Server::Run()
 							{
 								if (FD_ISSET(j, &_masterFd) && j != _serverSocket && j != i)
 								{
-									send(j, _buffer, bytesIn, 0);
+									//(j, _buffer, bytesIn, 0);
+									onMessageReceived(j, _buffer, bytesIn);
 								}
 							}
-					//}
-				}
+						}
+					}
 				}
 				--socketCount;
 			}
@@ -233,14 +230,18 @@ void Server::sendToAllClients(int sendingClientSocket, const char* message, int 
 
 void Server::onMessageReceived(int clientSocket, const char* message, int messageSize)
 {
-
+	(void)clientSocket;
+	(void)messageSize;
+	(void)message;
+	std::cout << "Server ft: Received: \n" << message << std::endl;
+	//broadcast(clientSocket, message, messageSize);
 }
 void Server::onClientConnected(int clientSocket)
 {
-
+	(void)clientSocket;
 }
 
 void Server::onClientDisconnected(int clientSocket)
 {
-
+	(void)clientSocket;
 }

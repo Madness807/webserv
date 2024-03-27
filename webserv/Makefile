@@ -15,6 +15,7 @@ LOGO = "\
 SRC				=		src/main.cpp\
 						src/Server.cpp\
 						src/Client.cpp\
+						src/Client2.cpp\
 						src/Response.cpp\
 						src/Request.cpp\
 						src/Connection.cpp\

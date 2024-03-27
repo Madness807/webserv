@@ -7,12 +7,15 @@
 
 int main(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
     Client2 mcc("0.0.0.0", 8080);
     if (mcc.Init() == -1)
         return -1;
-    std::string config_file = "./config/webserv.conf";
-    if (argc > 1)
-        config_file = argv[1];
+    mcc.Run();
+    // std::string config_file = "./config/webserv.conf";
+    // if (argc > 1)
+    //     config_file = argv[1];
   //  Client test_c();
     //Server test_s();
 
@@ -20,7 +23,7 @@ int main(int argc, char **argv)
     // instanciation de la classe parsingSrvConf
     // gestion des signaux pour arret propre du serveur
 
-    std::cout << "config_file: " << config_file << std::endl;
+   // std::cout << "config_file: " << config_file << std::endl;
 
     // lire le fichier de configuration
     // enregistre les valeurs dans une map

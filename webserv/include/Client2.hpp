@@ -11,10 +11,11 @@
 class Client2 : public Server
 {
 	public :
-	Client2(const char* ipAdress, int port);
+	Client2(const char* ipAdress, int port):
+		Server(ipAdress, port){}
 
 	protected:
- 	virtual void onClientConnected(int clientSocket);
-    virtual void onClientDisconnected(int clientSocket);
-    virtual void onMessageReceived(int clientSocket, const char* message, int messageSize); // gestion de message recu d un client
+ 		virtual void onClientConnected(int clientSocket);
+   	 	virtual void onClientDisconnected(int clientSocket);
+   	 	virtual void onMessageReceived(int clientSocket, const char* message, int messageSize); // gestion de message recu d un client
 };
