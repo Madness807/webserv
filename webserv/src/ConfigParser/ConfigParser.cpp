@@ -59,11 +59,23 @@ void parsingSrvConf::readConfigFile(std::string filename) {
                 {
                     location.setRedirect(line.substr(line.find("redirect") + 10, line.find(":") - line.find("redirect") - 10));
                 }
-                if (line.find("methods") != std::string::npos)
+                else if (line.find("methods") != std::string::npos)
                 {
-                        std::cout << "Attribut methods non implémenté" << std::endl;
+                    std::string methodsSubstr = line.substr(line.find("methods") + 9 , line.find(":") - line.find("methods") - 9);
+                    methodsSubstr.erase(0, methodsSubstr.find_first_not_of(" "));
+                    std::stringstream ss(methodsSubstr);
+                    std::string method;
+                    std::vector<std::string> methods;
+                    
+                    while (std::getline(ss, method, ','))
+                    {
+                        method.erase(0, method.find_first_not_of(" "));
+                        method.erase(method.find_last_not_of(" ") + 1);
+                        methods.push_back(method);
+                    }
+                    location.setMethods(methods);
                 }
-                if (line.find("directory_listing") != std::string::npos)
+                else if (line.find("directory_listing") != std::string::npos)
                 {
                     location.setDirectoryListing(false);
                 }

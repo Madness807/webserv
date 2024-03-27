@@ -6,6 +6,7 @@
 #include <list>
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 class LocationConfig{
     private:
@@ -33,6 +34,7 @@ class LocationConfig{
         bool getDirectoryListing();
 
         // Méthodes
+        void addMethod(std::string method);
         
 };
 

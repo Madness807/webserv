@@ -7,7 +7,7 @@ void LocationConfig::setPath(std::string path) {
     _path = path;
 }
 void LocationConfig::setMethods(std::vector<std::string> methods) {
-    methods = _methods;
+    _methods = methods;
 }
 void LocationConfig::setRedirect(std::string redirect) {
     _redirect = redirect;
@@ -33,8 +33,11 @@ std::vector<std::string> LocationConfig::getMethods() {
 }
 
 //##################################################################
-//                          TEST                                   #
+//                          Methodes                               #
 //##################################################################
+void LocationConfig::addMethod(std::string method) {
+    _methods.push_back(method);
+}
 
 //##################################################################
 //                   Constructor && Destructor                     #

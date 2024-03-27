@@ -25,13 +25,14 @@ SRC				=		src/main.cpp\
 						src/Request/post.cpp\
 						src/Connection/Connection.cpp\
 						src/CGIHandler/CGIHandler.cpp\
+						verbose/verbose.cpp\
 
 OBJ_DIR			=		build/
 OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))
 
 # Compiler and flags
 CXX				=		g++
-CXXFLAGS		=		-Wall -Wextra -Werror -std=c++98
+CXXFLAGS		=		-Wall -Wextra -Werror -std=c++98 -g
 
 # Recipes
 all: logo start $(NAME)
