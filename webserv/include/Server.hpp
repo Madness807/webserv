@@ -16,7 +16,6 @@ class Server
 
 		int         _opt;
 		int         _serverSocket; // listening socket
-		fd_set      _masterFd; // master file descriptor set
 		fd_set	    _masterFdRead;
 		fd_set	    _masterFdWrite;
 		int         _newSocket;
@@ -25,6 +24,7 @@ class Server
 		size_t      _reading;
 		struct      sockaddr_in _addr;
 		char        _buffer[4096];
+		int 	   _socketCount;
 
 	public:
 
