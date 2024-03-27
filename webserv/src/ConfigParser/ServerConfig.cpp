@@ -1,6 +1,8 @@
 #include "../include/ConfigParser/ServerConfig.hpp"
 
-//SETTERS////////////////////////////////////////////////////////////
+//##################################################################
+//                          SETTERS                                #
+//##################################################################
 void ServerConfig::setServerName(std::string server_name) {
     _server_name = server_name;
 }
@@ -13,14 +15,22 @@ void ServerConfig::setIp(std::string ip) {
 void ServerConfig::setMaxBodySize(std::string max_body_size) {
     _max_body_size = max_body_size;
 }
-void ServerConfig::setPath(std::string path){
-    _path = path;
+void ServerConfig::setDefaultFile(std::string default_file) {
+    _default_file = default_file;
 }
-void ServerConfig::setRedirect(std::string redirect){
-    _redirect = redirect;
+void ServerConfig::setErrorPage(std::string error_page) {
+    _error_page = error_page;
+}
+void ServerConfig::setRoot(std::string root) {
+    _root = root;
+}
+void ServerConfig::setLocations_map(std::map<std::string, LocationConfig> locations_map) {
+    _locations_map = locations_map;
 }
 
-//GETTERS////////////////////////////////////////////////////////////
+//##################################################################
+//                          GETTERS                                #
+//##################################################################
 std::string ServerConfig::getServerName() {
     return _server_name;
 }
@@ -33,21 +43,38 @@ std::string ServerConfig::getIp() {
 std::string ServerConfig::getMaxBodySize() {
     return _max_body_size;
 }
-std::string ServerConfig::getPath(){
-    return _path;
+std::string ServerConfig::getDefaultFile() {
+    return _default_file;
 }
-std::string ServerConfig::getRedirect(){
-    return _redirect;
+std::string ServerConfig::getErrorPage() {
+    return _error_page;
+}
+std::string ServerConfig::getRoot() {
+    return _root;
+}
+LocationConfig ServerConfig::getLocationConfig(std::string path) {
+    return _locations_map.at(path);
 }
 
-//Méthodes////////////////////////////////////////////////////////////
-void ServerConfig::addLocation(const std::string& path, const std::map<std::string, std::string>& locationConfig) {
-    locations_map[path] = locationConfig;
+//##################################################################
+//                           Methodes                              #
+//##################################################################
+void ServerConfig::addLocation(const std::string& path, const LocationConfig& _locationConfig) {
+    _locations_map[path] = _locationConfig;
+    //std::cout << _locations_map[path].getPath() << std::endl;
 }
-// Constructeur et destructeur////////////////////////////////////////
-// constructeur
+
+//##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
 ServerConfig::ServerConfig() {
+    _server_name = "";
+    _port = "";
+    _ip = "";
+    _max_body_size = "";
+    _default_file = "";
+    _error_page = "";
+    _root = "";
 }
-// destructeur
 ServerConfig::~ServerConfig() {
 }

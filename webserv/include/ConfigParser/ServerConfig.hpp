@@ -4,22 +4,20 @@
 #include <string>
 #include <map>
 #include <list>
+#include <iostream>
+#include "LocationConfig.hpp"
 
 class ServerConfig{
     private:
-        // Attributs Configuration de base du serveur
+        // Attributs Configuration de base du serveur✅
         std::string _server_name;
         std::string _ip;
         std::string _port;
         std::string _max_body_size;
-
-        // Attributs Configuration des locations
-        // MAP 1 : LocationConfig
-        std::map<std::string, std::map<std::string, std::string> > locations_map;
-        // MAP 2 : LocationConfig
-        std::string _path;
-        std::string _redirect;
-        bool _directory_listing;
+        std::string _default_file;
+        std::string _error_page;
+        std::string _root;
+        std::map<std::string, LocationConfig > _locations_map;
 
     public:
         // constructeur et destructeur
@@ -32,26 +30,23 @@ class ServerConfig{
         void setPort(std::string port);
         void setIp(std::string ip);
         void setMaxBodySize(std::string max_body_size);
+        void setDefaultFile(std::string default_file);
+        void setErrorPage(std::string error_page);
+        void setRoot(std::string root);
+        void setLocations_map(std::map<std::string, LocationConfig > _locations_map);
         // GETTERS
         std::string getServerName();
         std::string getPort();
         std::string getIp();
         std::string getMaxBodySize();
+        std::string getDefaultFile();
+        std::string getErrorPage();
+        std::string getRoot();
+        LocationConfig getLocationConfig(std::string path);
 
-        // Méthodes Configuration des locations///////////////////
-        void addLocation(const std::string& path, const std::map<std::string, std::string>& locationConfig);
-        // SETTERS
-        void setPath(std::string path);
-        void setMethods(std::vector<std::string> methods);
-        void setRedirect(std::string redirect);
-        void setDirectoryListing(bool directory_listing);
-        // GETTERS
-        std::map<std::string, std::string> getLocationConfig(const std::string& path);
-        std::string getPath();
-        std::vector<std::string> getMethods();
-        std::string getRedirect();
-        bool getDirectoryListing();
-
+        // Méthodes
+        void addLocation(const std::string& path, const LocationConfig& _locationConfig);
+    
 };
 
 #endif

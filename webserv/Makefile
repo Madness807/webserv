@@ -15,6 +15,7 @@ LOGO = "\
 SRC				=		src/main.cpp\
 						src/ConfigParser/ConfigParser.cpp\
 						src/ConfigParser/ServerConfig.cpp\
+						src/ConfigParser/LocationConfig.cpp\
 						src/Server/Server.cpp\
 						src/Client/Client.cpp\
 						src/Response/Response.cpp\
