@@ -12,7 +12,7 @@ class Request
 	std::map<std::string, std::string>	_env;
 	int									_ret;
 	std::string							_body;
-	int									_port;
+	std::string							_port;
 	std::string							_path;
 	std::string							_query;
 	std::string							&_raw;
@@ -24,6 +24,7 @@ class Request
 	int									readVersion(std::string str, size_t index);
 	std::string							nextLine(const std::string &str, size_t &index);
 	int									checkMethod();
+	void								findQuery();
     
     public:
     // Constructeur et destructeur
@@ -45,17 +46,17 @@ class Request
 		const std::map<std::string, std::string>	&getEnv() const;
 		int											getRet() const;
 		const std::string							&getBody() const;
-		int											getPort() const;
+		const std::string							getPort() const;
 		const std::string							&getPath() const;
 		const std::string							&getQuery() const;
 		const std::string							&getRaw() const;
 
 	// Utils
 		void										resetHeaders();
-		void										stripAll();
+		// void										stripAll();
 		void										displayHeaders() const;
-		std::string									readKey(std::string &str);
-		std::string									readValue(std::string &str);
+		// std::string									readKey(std::string &str);
+		// std::string									readValue(std::string &str);
 
 		static	std::vector<std::string>			initMethods();
 };

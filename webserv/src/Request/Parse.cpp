@@ -4,11 +4,12 @@
 /* -------------------- Read First Line function --------------------*/
 int	Request::readFirstLine(const std::string &str)
 {
-	size_t index;
-	std::string line;
+	size_t		index;
+	std::string	line;
 
-	index = str.find_first_of("\r\n");
+	index = str.find_first_of('\n');
 	line = str.substr(0, index);
+	std::cout << line << std::endl;
 	index = str.find_first_of(' ');
 	if (index == std::string::npos)
 	{
@@ -42,17 +43,6 @@ int	Request::readPath(std::string str, size_t index)
 	return (this->readVersion(str, index));
 }
 
-/* -------------------- Check Method function --------------------*/
-int	Request::checkMethod()
-{
-	for (size_t index = 0; index < getMethod().size(); index++)
-		if (this->_methods[index] == this->getMethod())
-			return (this->getRet());
-	std::cerr << COLOR_RED << "Invalide Method" << COLOR_RESET << std::endl;
-	this->setRet(400);
-	return (this->getRet());
-}
-
 /* -------------------- Read Version function --------------------*/
 int Request::readVersion(std::string str, size_t index)
 {
@@ -73,6 +63,17 @@ int Request::readVersion(std::string str, size_t index)
     return (this->checkMethod());
 }
 
+/* -------------------- Check Method function --------------------*/
+int	Request::checkMethod()
+{
+	for (size_t index = 0; index < getMethod().size(); index++)
+		if (this->_methods[index] == this->getMethod())
+			return (this->getRet());
+	std::cerr << COLOR_RED << "Invalide Method" << COLOR_RESET << std::endl;
+	this->setRet(400);
+	return (this->getRet());
+}
+
 /* -------------------- Next Line function --------------------*/
 std::string Request::nextLine(const std::string &str, size_t &index)
 {
@@ -82,6 +83,10 @@ std::string Request::nextLine(const std::string &str, size_t &index)
         return ("");
     j = str.find_first_of('\n', index);
     tmp = str.substr(index, j - index);
+	if (j == std::string::npos)
+		index = j;
+	else
+		index = j + 1;
     return (tmp);
 }    
 /* -------------------- Parse function --------------------*/
@@ -90,16 +95,31 @@ int	Request::parse(const std::string &str)
 	std::string key;
 	std::string value;
 	std::string line;
-    // size_t index = 0;
+    size_t		i = 0;
+	size_t		j = 0;
 
     std::cout << "-------------------------------------------------------------------" << std::endl;
-    this->readFirstLine(str);
+    this->readFirstLine(nextLine(str, i));
+	while ((line = nextLine(str, i)) != "\r" && line != "" && this->_ret != 400)
+	{
+		j = line.find_first_of(':');
+		key = line.substr(0, j);
+		value = line.substr(j + 1, line.size());
+		this->_headers[key] = value;
+		if (key == "Host")
+		{
+			j = line.find_first_of(':', j + 1);
+			value = line.substr(j + 1, line.size());
+			this->_port = value;
+		}
+	}
+	if (this->_headers["Www-Authenticate"] != "")
+			this->_env["Www-Authenticate"] = this->_headers["Www-Authenticate"];
+	this->setBody(str.substr(i, std::string::npos));
+	this->findQuery();
+	std::cout << getBody() << std::endl;
     std::cout << "-------------------------------------------------------------------" << std::endl;
-	// while ((line = nextLine(str, index)) !=  "\r" && line != "" && this->getRet() != 400)
-	// {
-	// 	std::cout << line << std::endl;
-	// }
-    return (1);
+    return (this->getRet());
 }
 
 std::ostream	&operator<<(std::ostream &out, const Request &request)
@@ -110,6 +130,7 @@ std::ostream	&operator<<(std::ostream &out, const Request &request)
 	out << " | HTTP version: " << request.getVersion() << std::endl;
 	out << "Port: " << request.getPort() << std::endl;
 	out << "Path: " << request.getPath() << std::endl;
+	out << "Query: " << request.getQuery() << std::endl;
 
 	for (it = request.getHeaders().begin(); it != request.getHeaders().end(); it++)
 		out << it->first << " : " << it->second << std::endl;

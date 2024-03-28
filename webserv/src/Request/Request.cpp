@@ -1,7 +1,7 @@
 #include "../../include/Request.hpp"
 
 /* -------------------- Constructeur & Destructeur --------------------*/
-Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port(80), _path(""), _query(""), _raw(str)
+Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port("80"), _path(""), _query(""), _raw(str)
 {
 	this->_methods = this->initMethods();
 	this->resetHeaders();
@@ -59,7 +59,7 @@ const std::string	&Request::getBody() const
 	return (_body);
 }
 
-int	Request::getPort() const
+const std::string	Request::getPort() const
 {
 	return (_port);
 }
@@ -133,3 +133,16 @@ void	Request::resetHeaders()
 	this->_headers["User-Agent"] = "";
 	this->_headers["WWW-Authenticate"] = "";
 }
+
+void				Request::findQuery()
+{
+	size_t		i;
+
+	i = this->_path.find_first_of('?');
+	if (i != std::string::npos)
+	{
+		this->_query.assign(this->_path, i + 1, std::string::npos);
+		this->_path = this->_path.substr(0, i);
+	}
+}
+
