@@ -1,6 +1,6 @@
 #include "../include/Server.hpp"
 #include <sstream>
-//INADDR_ANY == localhost
+
 
 Server::Server(){
 }
@@ -15,11 +15,10 @@ Server::Server(const char* ipAdress, int port) :_port(port),  _ipAdress(ipAdress
 	_opt = 1;
 	_reading = 0;
 	_socketCount = 0;
+
 	_addr.sin_family = AF_INET;
-
-	//_addr.sin_addr.s_addr = INADDR_ANY;
+	//_addr.sin_addr.s_addr = INADDR_ANY; INADDR_ANY == localhost
 	inet_pton(AF_INET, _ipAdress, &_addr.sin_addr); // converti une adresse IP de la forme texte ("127.0.0.1") en une forme binaire structurée que les fonctions de réseau peuvent utiliser.
-
 	_addr.sin_port = htons(_port);
 	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
@@ -50,6 +49,7 @@ int Server::Init()
 		std::cerr << "Error: server socket creation failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+
 	// option to prevent error "address already in use”."
 	// -> int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen); // permet de reutiliser le port
 	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
@@ -81,8 +81,7 @@ int Server::Init()
 
 int Server::Run()
 {
-
-	(void)_buffer;
+	//(void)_buffer;
 	bool running = true;
 	int max_sd = _serverSocket;
 
@@ -91,7 +90,7 @@ int Server::Run()
 		fd_set copy = _masterFdRead;
 		// See who's talking to us
 		_socketCount = select(max_sd + 1, &copy, NULL, NULL, NULL); // pour gerer plusieurs fd, pour voir si il y a des data a lire, si on peut ecrire et si il y a des exceptions
-		//std::cout << _socketCount << std::endl;
+
 		// Loop through all the current connections / potential connect
 		for (int i = 0; i <= max_sd; i++) //(int i = 0; _socketCount > 0; i++)
 		{
@@ -117,7 +116,8 @@ int Server::Run()
 			}
 			if (FD_ISSET(i, &copy) && i != _serverSocket)
 			{
-				_reading = recv(i, _buffer, 1024, 0);
+				memset(_buffer, 0, sizeof(_buffer));
+				_reading = recv(i, _buffer,sizeof(_buffer), 0);
 				if (_reading <= 0)
 				{
 					close(i);
@@ -126,7 +126,6 @@ int Server::Run()
 				}
 				else
 				{
-					//this->sendToAllClients(i, max_sd, _buffer, _reading);
 					this->sendToClient(i, _buffer, _reading);
 				}
 				break;
@@ -190,15 +189,14 @@ void Server::sendToAllClients(int sending_client, int max_sd, const char* messag
 	}
 }
 
-
 void Server::onClientConnected(int clientSocket)
 {
-	std::string message = "Server: Welcome to the server\n";
+	std::string message = "Welcome to the server\n";
 	sendToClient(clientSocket, message.c_str(), message.size() + 1);
 }
 
 void Server::onClientDisconnected(int clientSocket)
 {
-	std::string message = "Server: Goodbye\n";
+	std::string message = "Goodbye\n";
 	sendToClient(clientSocket, message.c_str(), message.size() + 1);
 }
