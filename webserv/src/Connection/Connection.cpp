@@ -1,4 +1,4 @@
-#include "../include/Connection.hpp"
+#include "../../include/Connection/Connection.hpp"
 
 // Méthodes
 // GETTERS

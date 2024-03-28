@@ -1,14 +1,13 @@
-#include "webserv/include/Request/delete.hpp"
+#include "../../include/Request/delete.hpp"
 
 // Méthodes///////////////////
 // Setters
 // Getters
 
 // Constructeur
-Request::Request() {
+Delete::Delete() {
     
 }
 // Destructeur
-Request::~Request() {
-    
+Delete::~Delete() {
 }

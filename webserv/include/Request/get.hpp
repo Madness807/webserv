@@ -2,7 +2,7 @@
 #define GET_HPP
 
 #include <iostream>
-#include "../Request.hpp"
+#include "Request.hpp"
 
 class Get : public Request{
     private:

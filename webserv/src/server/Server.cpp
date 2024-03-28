@@ -1,6 +1,4 @@
-#include "../include/Server.hpp"
-#include <sstream>
-
+#include "../../include/Server/Server.hpp"
 
 Server::Server(){
 }

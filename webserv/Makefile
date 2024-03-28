@@ -13,20 +13,26 @@ LOGO = "\
 
 # Sources / Objs
 SRC				=		src/main.cpp\
-						src/Server.cpp\
-						src/Client.cpp\
-						src/Response.cpp\
-						src/Request.cpp\
-						src/Connection.cpp\
-						src/ConfigParser.cpp\
-						src/CGIHandler.cpp\
+						src/ConfigParser/ConfigParser.cpp\
+						src/ConfigParser/ServerConfig.cpp\
+						src/ConfigParser/LocationConfig.cpp\
+						src/Server/Server.cpp\
+						src/Client/Client.cpp\
+						src/Response/Response.cpp\
+						src/Request/Request.cpp\
+						src/Request/delete.cpp\
+						src/Request/get.cpp\
+						src/Request/post.cpp\
+						src/Connection/Connection.cpp\
+						src/CGIHandler/CGIHandler.cpp\
+						src/verbose/verbose.cpp\
 
 OBJ_DIR			=		build/
 OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))
 
 # Compiler and flags
 CXX				=		g++
-CXXFLAGS		=		-Wall -Wextra -Werror -std=c++98
+CXXFLAGS		=		-Wall -Wextra -Werror -std=c++98 -g
 
 # Recipes
 all: logo start $(NAME)
