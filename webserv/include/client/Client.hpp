@@ -1,10 +1,7 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include "ConfigParser.hpp"
-#include "Connection.hpp"
-#include "ConfigParser.hpp"
-#include "Connection.hpp"
+#include "../Connection/Connection.hpp"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>

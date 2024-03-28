@@ -1,4 +1,4 @@
-#include "../include/Client.hpp"
+#include "../include/client/Client.hpp"
 
 Client::Client() : _socketClient(0), _clientRequete(""), _clientReponse(""){
 	memset(_buffer, 0, sizeof(_buffer));
