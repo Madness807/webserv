@@ -15,7 +15,7 @@ class LocationConfig{
         std::string _redirect;
         std::vector<std::string> _methods;
         bool _directory_listing;
-
+        
     public:
         // constructeur et destructeur
             LocationConfig();
