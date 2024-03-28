@@ -1,24 +1,46 @@
 #include <iostream>
 #include "fstream"
-#include "../include/define.hpp"
-#include "../include/ConfigParser/ConfigParser.hpp"
-#include "../include/ConfigParser/ServerConfig.hpp"
-#include "../include/verbose/verbose.hpp"
+#include "include/define.hpp"
+#include "include/ConfigParser/ConfigParser.hpp"
+#include "include/ConfigParser/ServerConfig.hpp"
+#include "include/verbose/verbose.hpp"
+#include "include/Server/Server.hpp"
+#include "include/client/Client.hpp"
 
 int main(int argc, char **argv)
 {
+    std::cout << "Hello, World!" << std::endl;
+
     std::string config_file;
     if (argc > 1)
         config_file = argv[1];
 
-    ServerConfig serverconfig;
-    parsingSrvConf parse_config;
+//##################################################################
+//                          JOTERRET                               #
+//##################################################################
+    // ServerConfig serverconfig;
+    // parsingSrvConf parse_config;
 
-    parse_config.readConfigFile(config_file);// read the config file
-    serverconfig = *parse_config.getServerConfig(); // get the server config
+    // parse_config.readConfigFile(config_file);// read the config file
+    // serverconfig = *parse_config.getServerConfig(); // get the server config
 
-   // Print the server config && location config
-    printSRVConfig(serverconfig);
+    // printSRVConfig(serverconfig);
+
+//##################################################################
+//                          JDEFAYES                               #
+//##################################################################
+    // Server test("0.0.0.0", 8080);
+    // if (test.Init() < 0)
+    //     return -1;
+    // test.Run();
+
+
+
+
+//##################################################################
+//                          NROSSEL                                #
+//##################################################################
+
 
     return 0;
 }

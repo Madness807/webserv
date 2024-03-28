@@ -12,7 +12,7 @@ LOGO = "\
 "
 
 # Sources / Objs
-SRC				=		src/main.cpp\
+SRC				=		main.cpp\
 						src/ConfigParser/ConfigParser.cpp\
 						src/ConfigParser/ServerConfig.cpp\
 						src/ConfigParser/LocationConfig.cpp\
