@@ -30,13 +30,13 @@ void parsingSrvConf::readConfigFile(std::string filename) {
                     _serverConfig->setServerName(line.substr(line.find("server_name") + 12, line.find(":") - line.find("server_name") - 13));
                 }
                 else if (line.find("ip") != std::string::npos) {
-                    _serverConfig->setIp(line.substr(line.find("ip") + 3, line.find(":") - line.find("ip") - 4));
+                    _serverConfig->setIp(line.substr(line.find("ip") + 4, line.find(":") - line.find("ip") - 4));
                 }
                 else if (line.find("port") != std::string::npos) {
                     _serverConfig->setPort(line.substr(line.find("port") + 5, line.find(":") - line.find("port") - 6));
                 }
                 else if (line.find("max_body_size") != std::string::npos) {
-                    _serverConfig->setMaxBodySize(line.substr(line.find("max_body_size") + 14, line.find(":") - line.find("max_body_size") - 15));
+                    _serverConfig->setMaxBodySize(line.substr(line.find("max_body_size") + 15, line.find(":") - line.find("max_body_size") - 15));
                 }
                 else if (line.find("default_file") != std::string::npos) {
                     _serverConfig->setDefaultFile(line.substr(line.find("default_file") + 12, line.find(":") - line.find("default_file") - 13));

@@ -69,5 +69,12 @@
         i++;
     }  
     std::cout << "" << std::endl;
+
+    std::cout << "" << std::endl;
+    std::cout << "\033[31mRESULTAT INERANT A LA PARTIE SOCKET ET RESEAU\033[0m" << std::endl;
+    std::cout << "" << std::endl;
+   
+
+
  }
 

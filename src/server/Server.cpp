@@ -6,17 +6,23 @@ Server::Server(){
 Server::~Server(){
 }
 
-Server::Server(const char* ipAdress, int port) :_port(port),  _ipAdress(ipAdress)
+Server::Server(std::string ipAdress, int port) :_port(port),  _ipAdress(ipAdress)
 {
 	_serverSocket = 0;
 	_newSocket = 0;
 	_opt = 1;
 	_reading = 0;
 	_socketCount = 0;
-
 	_addr.sin_family = AF_INET;
+	
 	//_addr.sin_addr.s_addr = INADDR_ANY; INADDR_ANY == localhost
-	inet_pton(AF_INET, _ipAdress, &_addr.sin_addr); // converti une adresse IP de la forme texte ("127.0.0.1") en une forme binaire structurée que les fonctions de réseau peuvent utiliser.
+	int result = inet_pton(AF_INET, _ipAdress.c_str(), &_addr.sin_addr); // converti une adresse IP de la forme texte ("127.0.0.1") en une forme binaire structurée que les fonctions de réseau peuvent utiliser.
+	if (result == 0) {
+        std::cerr << "Erreur : l'adresse '" << _ipAdress << "' n'est pas une adresse IPv4 valide." << std::endl;
+    } else if (result < 0) {
+        std::cerr << "Erreur lors de la conversion de l'adresse IPv4 : " << strerror(errno) << std::endl;
+    }
+	
 	_addr.sin_port = htons(_port);
 	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
@@ -60,6 +66,7 @@ int Server::Init()
 	//int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
 	{
+		perror("bind");
 		std::cerr << "Error: bind failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -83,6 +90,7 @@ int Server::Run()
 	bool running = true;
 	int max_sd = _serverSocket;
 
+	std::cout << "Server is running" << std::endl;
 	while (running)
 	{
 		fd_set copy = _masterFdRead;

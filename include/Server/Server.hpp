@@ -20,7 +20,7 @@ class Server
 		fd_set	    _masterFdWrite;
 		int         _newSocket;
 		int         _port;
-		const char* _ipAdress;
+		std::string _ipAdress;
 		size_t      _reading;
 		struct      sockaddr_in _addr;
 		char        _buffer[4096];
@@ -28,7 +28,7 @@ class Server
 
 	public:
 
-		Server(const char* ipAdress, int port);
+		Server(std::string ipAdress, int port);
 		Server();
 		~Server();
 		Server(const Server &other);

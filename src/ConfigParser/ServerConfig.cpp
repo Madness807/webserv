@@ -7,7 +7,8 @@ void ServerConfig::setServerName(std::string server_name) {
     _server_name = server_name;
 }
 void ServerConfig::setPort(std::string port) {
-    _port = port;
+    //convertir string en int
+    _port = std::stoi(port);
 }
 void ServerConfig::setIp(std::string ip) {
     _ip = ip;
@@ -34,7 +35,7 @@ void ServerConfig::setLocations_map(std::map<std::string, LocationConfig> locati
 std::string ServerConfig::getServerName() {
     return _server_name;
 }
-std::string ServerConfig::getPort() {
+int ServerConfig::getPort() {
     return _port;
 }
 std::string ServerConfig::getIp() {
@@ -68,7 +69,7 @@ void ServerConfig::addLocation(const std::string& path, const LocationConfig& _l
 //##################################################################
 ServerConfig::ServerConfig() {
     _server_name = "";
-    _port = "";
+    _port = 0;
     _ip = "";
     _max_body_size = "";
     _default_file = "";

@@ -9,8 +9,6 @@
 
 int main(int argc, char **argv)
 {
-    std::cout << "Hello, World!" << std::endl;
-
     std::string config_file;
     if (argc > 1)
         config_file = argv[1];
@@ -18,29 +16,28 @@ int main(int argc, char **argv)
 //##################################################################
 //                          JOTERRET                               #
 //##################################################################
-    // ServerConfig serverconfig;
-    // parsingSrvConf parse_config;
 
-    // parse_config.readConfigFile(config_file);// read the config file
-    // serverconfig = *parse_config.getServerConfig(); // get the server config
+    ServerConfig serverconfig;
+    parsingSrvConf parse_config;
 
-    // printSRVConfig(serverconfig);
+    parse_config.readConfigFile(config_file);// read the config file
+    serverconfig = *parse_config.getServerConfig(); // get the server config
+
+    printSRVConfig(serverconfig);
 
 //##################################################################
 //                          JDEFAYES                               #
 //##################################################################
-    // Server test("0.0.0.0", 8080);
-    // if (test.Init() < 0)
-    //     return -1;
-    // test.Run();
 
-
-
+     Server test(serverconfig.getIp(), serverconfig.getPort());
+     if (test.Init() < 0)
+         return -1;
+    test.Run();
+    std::cout << "Server is running" << std::endl;
 
 //##################################################################
 //                          NROSSEL                                #
 //##################################################################
-
 
     return 0;
 }
