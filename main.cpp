@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     serverconfig = *parse_config.getServerConfig(); // get the server config
 
    // Print the server config && location config
-    //printSRVConfig(serverconfig);
+    printSRVConfig(serverconfig);
 
     return 0;
 }
