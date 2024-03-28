@@ -45,9 +45,8 @@ class Server
 
 		void sendToClient(int clientSocket, const char* message, int messageSize); // send message to client
 
-		void sendToAllClients(int sendingClient, const char* message, int messageSize); // send message from a client to all clients
+		void sendToAllClients(int sending_client, int max_sd, const char* message, int messageSize); // send message from a client to all clients
 
-		virtual void onMessageReceived(int clientSocket, const char* message, int messageSize); // gestion de message recu d un client
 };
 
 #endif

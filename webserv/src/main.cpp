@@ -3,16 +3,20 @@
 #include "../include/define.hpp"
 #include "../include/Client.hpp"
 #include "../include/Server.hpp"
-#include "../include/Client2.hpp"
+
 
 int main(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    Client2 mcc("0.0.0.0", 8080);
-    if (mcc.Init() == -1)
+    // Client2 mcc("0.0.0.0", 8080);
+    // if (mcc.Init() == -1)
+    //     return -1;
+    // mcc.Run();
+    Server test("0.0.0.0", 8080);
+    if (test.Init() == -1)
         return -1;
-    mcc.Run();
+    test.Run();
     // std::string config_file = "./config/webserv.conf";
     // if (argc > 1)
     //     config_file = argv[1];

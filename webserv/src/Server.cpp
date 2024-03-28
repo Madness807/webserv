@@ -45,28 +45,28 @@ int Server::Init()
 	// socket creation
 	// -> int sockfd = socket(domain, type, protocol)
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
-	if (_serverSocket == -1) // == INVALID_SOCKET
+	if (_serverSocket == -1)
 	{
 		std::cerr << "Error: server socket creation failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-
 	// option to prevent error "address already in use”."
 	// -> int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen); // permet de reutiliser le port
-	// if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &_opt, sizeof(_opt)) < 0) {
-	// 	std::cerr << "Error: server setsockopt failed" << std::endl;
-	// 	exit(EXIT_FAILURE);
-	// }
+	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
+		perror("setsockopt");
+		std::cerr << "Error: server setsockopt failed" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 
 	// bind the socket to an address
 	//int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0) // == SOCKET_ERROR
+	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
 	{
 		std::cerr << "Error: bind failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	if(listen(_serverSocket, 1) < 0) // == SOCKET_ERROR // mettre variable pour waiting list
+	if(listen(_serverSocket, 1) < 0)// mettre variable pour waiting list
 	{
 		std::cerr << "Error: listen failed" << std::endl;
 		exit(EXIT_FAILURE);
@@ -79,108 +79,10 @@ int Server::Init()
 	return (0);
 }
 
-/*
 int Server::Run()
 {
-	bool running = true;
-	int max_sd = _serverSocket;
 
-	while (running)
-	{
-		fd_set copy = _masterFd;
-		// See who's talking to us
-		int socketCount = select(max_sd + 1, &copy, nullptr, nullptr, nullptr); // pour gerer plusieurs fd, pour voir si il y a des data a lire, si on peut ecrire et si il y a des exceptions
-
-		// Loop through all the current connections / potential connect
-		for (int i = 0; socketCount > 0; i++)
-		{
-			if (FD_ISSET(i, &copy))
-			{
-				if (i == _serverSocket)
-				{
-					sockaddr_in client;
-					socklen_t clientSize = sizeof(client);
-					int clientSocket = accept(_serverSocket, (sockaddr*)&client, &clientSize);
-					if (clientSocket == -1)
-					{
-						std::cerr << "Error in accepting client";
-					}
-					if (clientSocket > 0)
-					{
-						FD_SET(clientSocket, &_masterFd);
-						onClientConnected(clientSocket);
-					}
-					else // It's an inbound message
-					{
-						//char buf[4096];
-						memset(_buffer, 0, sizeof(_buffer));
-				// Receive message
-					//	int bytesIn = recv(clientSocket, _buffer, sizeof(_buffer), 0);
-						int bytesIn = recv(i, _buffer, 4096, 0);
-						if (bytesIn <= 0)
-						{
-						// Drop the client
-							onClientDisconnected(i);
-							close(i);
-							FD_CLR(i, &_masterFd);
-						// client is disconnected
-						}
-						else
-						{
-							std::cout << "Received: \n" << _buffer << std::endl;
-							//onMessageReceived(clientSocket, _buffer, bytesIn);
-							//onMessageReceived(i, _buffer, bytesIn);
-	//onMessageReceived(i, _buffer, bytesIn);
-					// Check to see if it's a command. \quit kills the server
-					// if (_buffer[0] == '\\')
-					// {
-					// 	// Is the command quit?
-					// 	std::string cmd = std::string(_buffer, bytesIn);
-					// 	if (cmd == "\\quit")
-					// 	{
-					// 		running = false;
-					// 		break;
-					// 	}
-
-					// 	// Unknown command
-					// 	//continue;
-					// }
-
-					// Send message to other clients, and definiately NOT the listening socket
-
-					//else
-					//{
-							for (int j = 0; j <= max_sd; ++j)
-							{
-								if (FD_ISSET(j, &_masterFd) && j != _serverSocket && j != i)
-								{
-									std::ostringstream oss;
-									oss << "Client " << i << " : " << _buffer;
-									//(j, _buffer, bytesIn, 0);
-									send(j, _buffer, bytesIn, 0);
-									//onMessageReceived(j, _buffer, bytesIn);
-								}
-							}
-						}
-					}
-				}
-				--socketCount;
-			}
-		}
-	}
-
-	while (FD_ISSET(_serverSocket, &_masterFd)) {
-		FD_CLR(_serverSocket, &_masterFd);
-	}
-	close(_serverSocket);
-
-	return 0;
-}
-*/
-
-////////////////////////////////////////////////////
-int Server::Run()
-{
+	(void)_buffer;
 	bool running = true;
 	int max_sd = _serverSocket;
 
@@ -188,107 +90,58 @@ int Server::Run()
 	{
 		fd_set copy = _masterFdRead;
 		// See who's talking to us
-		_socketCount = select(max_sd + 1, &copy, nullptr, nullptr, nullptr); // pour gerer plusieurs fd, pour voir si il y a des data a lire, si on peut ecrire et si il y a des exceptions
-		std::cout << _socketCount << std::endl;
+		_socketCount = select(max_sd + 1, &copy, NULL, NULL, NULL); // pour gerer plusieurs fd, pour voir si il y a des data a lire, si on peut ecrire et si il y a des exceptions
+		//std::cout << _socketCount << std::endl;
 		// Loop through all the current connections / potential connect
-		for (int i = 0; _socketCount > 0; i++)
+		for (int i = 0; i <= max_sd; i++) //(int i = 0; _socketCount > 0; i++)
 		{
-			if (FD_ISSET(i, &copy))
+			if (FD_ISSET(i, &copy) && i == _serverSocket)
 			{
-				if (i == _serverSocket)
+				sockaddr_in client;
+				socklen_t clientSize = sizeof(client);
+				int clientSocket = accept(_serverSocket, (sockaddr*)&client, &clientSize);
+				if (clientSocket == -1)
 				{
-					sockaddr_in client;
-					socklen_t clientSize = sizeof(client);
-					int clientSocket = accept(_serverSocket, (sockaddr*)&client, &clientSize);
-					if (clientSocket == -1)
-					{
-						std::cerr << "Error in accepting client";
-					}
-					if (clientSocket > 0)
-					{
-						FD_SET(clientSocket, &_masterFdRead);
-						onClientConnected(clientSocket);
-				//onMessageReceived(clientSocket, _buffer, _reading);
-					}
-					else // It's an inbound message
-					{
-						std::cout << "inbound message" << std::endl;
-						memset(_buffer, 0, 4096);
-				// Receive message
-					//	int bytesIn = recv(clientSocket, _buffer, sizeof(_buffer), 0);
-						int _reading = recv(i, _buffer, 4096, 0);
-						if (_reading == -1)
-						{
-						// Drop the client
-							onClientDisconnected(i);
-							close(i);
-							FD_CLR(i, &_masterFdRead);
-							FD_CLR(i, &_masterFdWrite);
-						// client is disconnected
-						}
-						else if (_reading == 0)
-						{
-							onClientDisconnected(i);
-							close(i);
-							FD_CLR(i, &_masterFdRead);
-							FD_CLR(i, &_masterFdWrite);
-						}
-						else if (_reading > 0)
-						{
-							FD_CLR(i, &_masterFdRead);
-							FD_SET(i, &_masterFdWrite);
-							std::cout << "Received: \n" << _buffer << std::endl;
-							//onMessageReceived(clientSocket, _buffer, bytesIn);
-							//onMessageReceived(i, _buffer, bytesIn);
-	//onMessageReceived(i, _buffer, bytesIn);
-					// Check to see if it's a command. \quit kills the server
-					// if (_buffer[0] == '\\')
-					// {
-					// 	// Is the command quit?
-					// 	std::string cmd = std::string(_buffer, bytesIn);
-					// 	if (cmd == "\\quit")
-					// 	{
-					// 		running = false;
-					// 		break;
-					// 	}
-
-
-					// 	//continue;
-					// }
-
-					// Send message to other clients, and definiately NOT the listening socket
-
-					//else
-					//{
-							for (int j = 0; j <= max_sd; ++j)
-							{
-								if (FD_ISSET(j, &_masterFdRead) && j != _serverSocket && j != i)
-								{
-									std::ostringstream oss;
-									oss << "Client " << i << " : " << _buffer;
-									//(j, _buffer, bytesIn, 0);
-									send(j, _buffer, _reading, 0);
-									//onMessageReceived(j, _buffer, bytesIn);
-								}
-							}
-
-
-
-						}
-					}
+					std::cerr << "Error in accepting client";
 				}
-				--_socketCount;
+				if (clientSocket > max_sd)
+				{
+        			max_sd = clientSocket;
+    			}
+				FD_SET(clientSocket, &_masterFdRead);
+				if (clientSocket > 0)
+				{
+					onClientConnected(clientSocket);
+				}
+				break;
+			}
+			if (FD_ISSET(i, &copy) && i != _serverSocket)
+			{
+				_reading = recv(i, _buffer, 1024, 0);
+				if (_reading <= 0)
+				{
+					close(i);
+					FD_CLR(i, &_masterFdRead);
+					onClientDisconnected(i);
+				}
+				else
+				{
+					//this->sendToAllClients(i, max_sd, _buffer, _reading);
+					this->sendToClient(i, _buffer, _reading);
+				}
+				break;
 			}
 		}
 	}
 
-	while (FD_ISSET(_serverSocket, &_masterFdRead)) {
+	while (FD_ISSET(_serverSocket, &_masterFdRead))
+	{
 		FD_CLR(_serverSocket, &_masterFdRead);
 	}
 	close(_serverSocket);
-
 	return 0;
 }
+
 
 	//int listen(int sockfd, int backlog); // met le socket en mode ecoute, backlog = nombre de connexions en attente
 
@@ -325,41 +178,27 @@ void Server::sendToClient(int clientSocket, const char* message, int messageSize
 	send(clientSocket, message, messageSize, 0);
 }
 
-void Server::sendToAllClients(int sendingClient, const char* message, int messageSize) // send message to all clients
+void Server::sendToAllClients(int sending_client, int max_sd, const char* message, int messageSize) // send message to all clients
 {
-	fd_set copy = _masterFdRead;
-	int j = _socketCount;
-	for (int i = 0; j > 0; i++)
+
+	for (int i = 0; i <= max_sd; i++)
 	{
-		std::cout << "stal : 3" << std::endl;
-		if (FD_ISSET(i, &copy))
+		if (FD_ISSET(i, &_masterFdRead) && i != _serverSocket && i != sending_client)
 		{
-			std::cout << "stal : 4" << std::endl;
-			if (i != _serverSocket && i != sendingClient)
-			{std::cout << "stal : 5" << std::endl;
-				sendToClient(i, message, messageSize);
-			}
+			send(i, message, messageSize, 0);
 		}
-		--j;
 	}
-	std::cout << "Server ft: Senttoallclient: " << "message: " << message << std::endl;
 }
 
-void Server::onMessageReceived(int clientSocket, const char* message, int messageSize)
-{
-	(void)clientSocket;
-	(void)messageSize;
-	(void)message;
-	std::cout << "Server ft: Received: \n" << message << std::endl;
-	//broadcast(clientSocket, message, messageSize);
-}
 
 void Server::onClientConnected(int clientSocket)
 {
-	(void)clientSocket;
+	std::string message = "Server: Welcome to the server\n";
+	sendToClient(clientSocket, message.c_str(), message.size() + 1);
 }
 
 void Server::onClientDisconnected(int clientSocket)
 {
-	(void)clientSocket;
+	std::string message = "Server: Goodbye\n";
+	sendToClient(clientSocket, message.c_str(), message.size() + 1);
 }
