@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Request.hpp"
 
-class Post : public Request{
+class Post{
     private:
 
     public:

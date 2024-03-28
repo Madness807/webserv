@@ -1,6 +1,7 @@
  #include "../include/ConfigParser/ConfigParser.hpp"
  #include "../include/ConfigParser/ServerConfig.hpp"
  #include "../include/verbose/verbose.hpp"
+ #include "../include/define.hpp"
 
    #include <iostream>
    #include <fstream>
@@ -8,12 +9,13 @@
    #include <string>
    #include <map>
    #include <list>
+   
 
  void printSRVConfig(ServerConfig serverconfig)
  {
     //Print the server config
     std::cout << "" << std::endl;
-    std::cout << "\033[31mRESULTAT DU PARSING DU FICHIER DE CONFIGURATION DU SERVEUR\033[0m" << std::endl;
+    std::cout << "\033[31m# RESULTAT DU PARSING DU FICHIER DE CONFIGURATION DU SERVEUR\033[0m" << std::endl;
     std::cout << "" << std::endl;
     std::cout << "\033[31mSERVERCONFIG-------------------------\033[0m" << std::endl;
     std::cout << "Server Name: " << serverconfig.getServerName() << std::endl;
@@ -71,10 +73,8 @@
     std::cout << "" << std::endl;
 
     std::cout << "" << std::endl;
-    std::cout << "\033[31mRESULTAT INERANT A LA PARTIE SOCKET ET RESEAU\033[0m" << std::endl;
+    std::cout << COLOR_YELLOW <<"#RESULTAT INERANT A LA PARTIE SOCKET ET RESEAU" << COLOR_RESET << std::endl;
     std::cout << "" << std::endl;
    
-
-
  }
 

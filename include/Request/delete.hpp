@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Request.hpp"
 
-class Delete : public Request{
+class Delete{
     private:
 
     public:

@@ -23,6 +23,7 @@ SRC				=		main.cpp\
 						src/Request/delete.cpp\
 						src/Request/get.cpp\
 						src/Request/post.cpp\
+						src/Request/Parse.cpp\
 						src/Connection/Connection.cpp\
 						src/CGIHandler/CGIHandler.cpp\
 						src/verbose/verbose.cpp\
