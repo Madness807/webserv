@@ -1,8 +1,9 @@
 #include "../include/client/Client.hpp"
+#include <string>
+#include <iostream>
 
 Client::Client() : _socketClient(0), _clientRequete(""), _clientReponse(""){
 	memset(_buffer, 0, sizeof(_buffer));
-	(void)_socketClient;
 }
 
 Client::~Client() {}
@@ -40,4 +41,15 @@ std::string Client::getReponse() const
 int Client::getSocketClient() const
 {
 	return this->_socketClient;
+}
+
+std::string Client::getBuffer() const
+{
+	std::string str(this->_buffer[1024 - 1]);
+	return str;
+}
+
+void Client::setBuffer(std::string message)
+{
+	this->_buffer[1024 - 1] = message;
 }

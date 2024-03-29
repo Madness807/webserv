@@ -1,4 +1,5 @@
 #include "../../include/Server/Server.hpp"
+#include "../../include/client/Client.hpp"
 
 Server::Server(){
 }
@@ -14,15 +15,16 @@ Server::Server(std::string ipAdress, int port) :_port(port),  _ipAdress(ipAdress
 	_reading = 0;
 	_socketCount = 0;
 	_addr.sin_family = AF_INET;
-	
+
 	//_addr.sin_addr.s_addr = INADDR_ANY; INADDR_ANY == localhost
 	int result = inet_pton(AF_INET, _ipAdress.c_str(), &_addr.sin_addr); // converti une adresse IP de la forme texte ("127.0.0.1") en une forme binaire structurée que les fonctions de réseau peuvent utiliser.
+	// socketpair htons, htonl, ntohs, ntohl
 	if (result == 0) {
         std::cerr << "Erreur : l'adresse '" << _ipAdress << "' n'est pas une adresse IPv4 valide." << std::endl;
     } else if (result < 0) {
         std::cerr << "Erreur lors de la conversion de l'adresse IPv4 : " << strerror(errno) << std::endl;
     }
-	
+
 	_addr.sin_port = htons(_port);
 	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
@@ -45,6 +47,7 @@ Server &Server::operator=(const Server &other)
 
 int Server::Init()
 {
+
 	// socket creation
 	// -> int sockfd = socket(domain, type, protocol)
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
@@ -86,9 +89,9 @@ int Server::Init()
 
 int Server::Run()
 {
-	//(void)_buffer;
 	bool running = true;
 	int max_sd = _serverSocket;
+	std::vector<Client> clients(100);
 
 	std::cout << "Server is running" << std::endl;
 	while (running)
@@ -102,28 +105,40 @@ int Server::Run()
 		{
 			if (FD_ISSET(i, &copy) && i == _serverSocket)
 			{
-				sockaddr_in client;
-				socklen_t clientSize = sizeof(client);
-				int clientSocket = accept(_serverSocket, (sockaddr*)&client, &clientSize);
-				if (clientSocket == -1)
+				int socketClient = 0;
+				//sockaddr_in client;
+
+				//socklen_t clientSize = sizeof(client);
+				//int clientSocket = accept(_serverSocket, (sockaddr*)&client, &clientSize);
+				//socklen_t clientAddrSize = clients[i].getAddrClientSize();
+
+				socklen_t clientSize = clients[i].getAddrClientSize();
+				clients[i].setAddrClientSize(clientSize);
+
+				socketClient = accept(_serverSocket, (sockaddr*)&clients[i].getAddrClient(), &clientSize);
+				clients[i].setSocketClient(socketClient, clientSize);
+				//clients[i].setSocketClient(socketClient) = accept(_serverSocket, (sockaddr*)&clients[i].getAddrClient(), &clients[i].getAddrClientSize());
+				if(socketClient == -1) //if (clientSocket == -1)
 				{
 					std::cerr << "Error in accepting client";
 				}
-				if (clientSocket > max_sd)
+				if(socketClient > max_sd)//if (clientSocket > max_sd)
 				{
-        			max_sd = clientSocket;
+        			max_sd = socketClient;
     			}
-				FD_SET(clientSocket, &_masterFdRead);
-				if (clientSocket > 0)
+				std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
+				FD_SET(clients[i].getSocketClient(), &_masterFdRead);
+				if (socketClient > 0)
 				{
-					onClientConnected(clientSocket);
+					onClientConnected(socketClient);
 				}
 				break;
 			}
 			if (FD_ISSET(i, &copy) && i != _serverSocket)
 			{
 				memset(_buffer, 0, sizeof(_buffer));
-				_reading = recv(i, _buffer,sizeof(_buffer), 0);
+				_reading = recv(i, _buffer, sizeof(_buffer), 0);
+				//std::cout << "Received: " << _buffer << std::endl;
 				if (_reading <= 0)
 				{
 					close(i);
@@ -132,7 +147,9 @@ int Server::Run()
 				}
 				else
 				{
+					//setBuffer(i, _buffer);
 					this->sendToClient(i, _buffer, _reading);
+					//std::cout << "getBuffer: " << getBuffer(i) << std::endl;
 				}
 				break;
 			}
@@ -206,3 +223,11 @@ void Server::onClientDisconnected(int clientSocket)
 	std::string message = "Goodbye\n";
 	sendToClient(clientSocket, message.c_str(), message.size() + 1);
 }
+
+// • Il doit être non bloquant et n’utiliser qu’un seul poll() (SELECT) (ou équivalent) pour toutes les opérations entrées/sorties entre le client et le serveur (listen inclus).
+// read/recv ou write/send
+// si vous essayez d’utiliser read/recv ou write/send avec n’importe quel FD sans utiliser poll() (ou équivalent), votre note sera de 0.
+// Votre serveur doit pouvoir écouter sur plusieurs ports (cf. Fichier de configuration).
+// Vu que MacOS n’implémente pas write() comme les autres Unix, vous pouvez utiliser fcntl(). Vous devez utiliser des descripteurs de fichier en mode non bloquant afin d’obtenir un résultat similaire à celui des autres Unix
+// Toutefois, vous ne pouvez utiliser fcntl() que de la façon suivante : F_SETFL, O_NONBLOCK et FD_CLOEXEC. Tout autre flag est interdit.
+

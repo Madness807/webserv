@@ -25,6 +25,7 @@ class Server
 		struct      sockaddr_in _addr;
 		char        _buffer[4096];
 		int 	   _socketCount;
+//		Request	 	_request;
 
 	public:
 
