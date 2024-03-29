@@ -31,6 +31,7 @@ int main(int argc, char **argv)
 //##################################################################
 
      Server test(serverconfig.getIp(), serverconfig.getPort());
+
      if (test.Init() < 0)
          return -1;
     test.Run();
@@ -48,3 +49,6 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+
+// mettre buffer 1000 et boucler, strcat + pour former str finale.

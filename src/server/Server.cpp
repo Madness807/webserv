@@ -146,8 +146,8 @@ int Server::Run()
 				}
 				else
 				{
-					std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-					// std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+					//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+					std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
 
 					std::stringstream buffer;
 					buffer << file.rdbuf();
@@ -155,8 +155,8 @@ int Server::Run()
 					//const char *bufferCStr = bufferStr.c_str();
 					//std::cout << "bufferStr: " << bufferCStr << std::endl;
 
-					//std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-					std::string response = "HTTP/1.1 200 OK\n\nContent-Type: image/jpeg\n\n" + buffer.str();
+					std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+					//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
 					// std::string response = buffer.str();
 
 					//send(i, bufferCStr, sizeof(bufferCStr), 0);
