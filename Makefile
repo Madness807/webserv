@@ -7,7 +7,7 @@ LOGO = "\
 | |  | | ___| |__  ___  ___ _ ____   __\n\
 | |/\| |/ _ \\ '_ \\/ __|/ _ \\ '__\\ \\ / /\n\
 \  /\  /  __/ |_) \\__ \\  __/ |   \\ V / \n\
- \/  \/ \\___|_.__/|___/\\___|_|    \\_/  \n\
+\/  \/ \\___|_.__/|___/\\___|_|    \\_/  \n\
                                         \n\
 "
 
@@ -64,5 +64,8 @@ fclean: clean
 	@echo "Cleaned up compiled binary."
 
 re: fclean all
+
+leaks:
+	@leaks --atExit -- ./$(NAME) ./config/default.conf
 
 .PHONY: all clean fclean re
