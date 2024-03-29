@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <fstream>
 
 #define BUFFER_SIZE 1024
 class Server
@@ -26,6 +27,7 @@ class Server
 		struct      sockaddr_in _addr;
 		char        _buffer[BUFFER_SIZE];
 		int 	   _socketCount;
+		//char	   _testWebsite[];
 //		Request	 	_request;
 
 	public:

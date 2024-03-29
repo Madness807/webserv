@@ -1,6 +1,7 @@
 #include "../../include/Server/Server.hpp"
 #include "../../include/client/Client.hpp"
 
+
 Server::Server(){
 }
 
@@ -118,10 +119,12 @@ int Server::Run()
     			}
 				//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
 				FD_SET(clients[i].getSocketClient(), &_masterFdRead);
-				if (clients[i].getSocketClient() > 0)
-				{
-					onClientConnected(clients[i].getSocketClient());
-				}
+				// if (clients[i].getSocketClient() > 0)
+				// {
+				// 	onClientConnected(clients[i].getSocketClient());
+				// 	close(i);
+
+				// }
 				break;
 			}
 			if (FD_ISSET(i, &copy) && i != _serverSocket)
@@ -132,21 +135,43 @@ int Server::Run()
 				// if (_buffer == "/quit")
 				// {
 				// 	running = false;
-				// 	onClientDisconnected(i);
+				 	//onClientDisconnected(i);
 				// 	break;
 				// }
 				if (_reading <= 0)
 				{
 					close(i);
 					FD_CLR(i, &_masterFdRead);
-					onClientDisconnected(i);
+					//onClientDisconnected(i);
 				}
 				else
 				{
-					clients[i].setBuffer(_buffer);
-					this->sendToClient(i, _buffer, _reading);
-					//std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
+					std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+					// std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+
+					std::stringstream buffer;
+					buffer << file.rdbuf();
+					//std::string bufferStr = buffer.str();
+					//const char *bufferCStr = bufferStr.c_str();
+					//std::cout << "bufferStr: " << bufferCStr << std::endl;
+
+					//std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+					std::string response = "HTTP/1.1 200 OK\n\nContent-Type: image/jpeg\n\n" + buffer.str();
+					// std::string response = buffer.str();
+
+					//send(i, bufferCStr, sizeof(bufferCStr), 0);
+					send(i, response.c_str(), response.size(), 0);
+
+					close(i);
+
 				}
+				// else
+				// {
+
+				// 	clients[i].setBuffer(_buffer);
+				// 	this->sendToClient(i, _buffer, _reading);
+				// 	std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
+				// }
 				break;
 			}
 		}
