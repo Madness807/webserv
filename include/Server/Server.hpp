@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 
+#define BUFFER_SIZE 1024
 class Server
 {
 	private:
@@ -23,7 +24,7 @@ class Server
 		std::string _ipAdress;
 		size_t      _reading;
 		struct      sockaddr_in _addr;
-		char        _buffer[4096];
+		char        _buffer[BUFFER_SIZE];
 		int 	   _socketCount;
 //		Request	 	_request;
 

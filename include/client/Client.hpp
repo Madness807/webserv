@@ -9,13 +9,14 @@
 #include <arpa/inet.h>
 #include <string.h>
 
+#define BUFFER_SIZE 1024
 class Client
 {
 	private:
 		int					_socketClient;
 		std::string			_clientRequete;
 		std::string			_clientReponse;
-		std::string			_buffer[1024]; // pour upload image et pour pas bloquer sur \0 qui se promene
+		std::string			_buffer[BUFFER_SIZE]; // pour upload image et pour pas bloquer sur \0 qui se promene
 		struct sockaddr_in 	_addrClient;
 		socklen_t			_addrClientSize;
 
@@ -26,6 +27,8 @@ class Client
 		Client(const Client &other);
 		Client &operator=(const Client &other);
 
+		void fillInfo(int serverSocket);
+
 		std::string getRequete() const;
 		void setRequete(std::string requete);
 
@@ -33,28 +36,17 @@ class Client
 		void setReponse(std::string reponse);
 
 		int getSocketClient() const;
-		void setSocketClient(int socketClient, socklen_t addrSize) {
-    		_socketClient = socketClient;
-    		_addrClientSize = addrSize;
-		}
-
+		void setSocketClient(int socketClient, socklen_t addrSize);
+		void setSocketClient(int socketClient);
 
 		std::string getBuffer() const;
 		void setBuffer(std::string message);
 
+		socklen_t getAddrClientSize() const;
+		void setAddrClientSize(socklen_t size);
 
-		socklen_t getAddrClientSize() const {
-        	return sizeof(this->_addrClient);
-    	}
-		void setAddrClientSize(socklen_t size) {
-
-			_addrClientSize = size;
-		}
-
-		const struct sockaddr_in& getAddrClient() const {
-			return _addrClient;
-		}
-
+		const struct sockaddr_in& getAddrClient() const;
+		void setAddrClient(struct sockaddr_in addrClient);
 };
 
 #endif
