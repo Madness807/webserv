@@ -10,8 +10,7 @@
 
 class parsingSrvConf{
     private:
-    ServerConfig* _serverConfig;
-    // std::vector<ServerConfig> _serverConfigs;
+    std::vector<ServerConfig> _serverConfigs;
 
     public:
         // Constructeur
@@ -26,11 +25,17 @@ class parsingSrvConf{
         void parseServerConfig(std::string line);
         LocationConfig parseLocationConfig(std::string line, LocationConfig& location);
 
-        // rajouter une methodes findserverconfig pour selectinonner le bon serverconfig
 
         // GETTERS
-        ServerConfig* getServerConfig();
+        ServerConfig* getServerConfig(const std::string& ip, int port);
         // SETTERS
 };
 
 #endif
+
+
+//todo modidfier le parsing pour quil prenne en compte les multiples server
+//modifier la boucle du parsing pour quil prenne en compte les multiples server
+//ajouter un getter pour recuperer un serverconfig en fonction de l'ip et du port
+//ajouter un getter pour recuperer un locationconfig en fonction du path
+//ajouter un getter pour recuperer un locationconfig en fonction du path et du serverconfig

@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     parsingSrvConf parse_config;
 
     parse_config.readConfigFile(config_file);// read the config file
-    serverconfig = *parse_config.getServerConfig(); // get the server config
+    serverconfig = *parse_config.getServerConfig("127.0.0.1", 8888); // get the server config
 
     printSRVConfig(serverconfig);
 

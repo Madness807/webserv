@@ -5,14 +5,21 @@
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
-ServerConfig* parsingSrvConf::getServerConfig(){
-    return _serverConfig;
+ServerConfig* parsingSrvConf::getServerConfig(const std::string& ip, int port) {
+    for (ServerConfig& config : _serverConfigs) {
+        if (config.getIp() == ip && config.getPort() == port) {
+            return &config; // Retourne l'adresse de la configuration trouvée
+        }
+    }
+    return nullptr; // Retourne nullptr si aucune configuration correspondante n'est trouvée
 }
+
+
 
 //##################################################################
 //                          Methodes                               #
 //##################################################################
-void parsingSrvConf::parseServerConfig(std::string line)
+void parsingSrvConf::parseServerConfig(std::string line)//
 {
     if (line.find("server_name") != std::string::npos) {
         _serverConfig->setServerName(line.substr(line.find("server_name") + 12, line.find(":") - line.find("server_name") - 13));
@@ -70,7 +77,7 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
     return (location);
 }
 
-void parsingSrvConf::readConfigFile(std::string filename)
+void parsingSrvConf::readConfigFile(std::string filename)//lecture du fichier de configuration
 {
     std::ifstream configFile(filename);//ouverture du fichier
     if (!configFile.is_open())//si le fichier n'est pas ouvert
