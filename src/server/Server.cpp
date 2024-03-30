@@ -3,6 +3,25 @@
 
 
 Server::Server(){
+	_serverSocket = 70;
+	_newSocket = 0;
+	_opt = 1;
+	_reading = 0;
+	_socketCount = 0;
+	_addr.sin_family = AF_INET;
+
+	//_addr.sin_addr.s_addr = INADDR_ANY; INADDR_ANY == localhost
+	int result = inet_pton(AF_INET, _ipAdress.c_str(), &_addr.sin_addr); // converti une adresse IP de la forme texte ("127.0.0.1") en une forme binaire structurée que les fonctions de réseau peuvent utiliser.
+	// socketpair htons, htonl, ntohs, ntohl
+	if (result == 0) {
+        std::cerr << "Erreur : l'adresse '" << _ipAdress << "' n'est pas une adresse IPv4 valide." << std::endl;
+    } else if (result < 0) {
+        std::cerr << "Erreur lors de la conversion de l'adresse IPv4 : " << strerror(errno) << std::endl;
+    }
+
+	_addr.sin_port = htons(_port);
+	std::cout << "Server created with ip : " << _ipAdress << " on port : " << _port  << std::endl;
+	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
 
 Server::~Server(){
@@ -27,6 +46,7 @@ Server::Server(std::string ipAdress, int port) :_port(port),  _ipAdress(ipAdress
     }
 
 	_addr.sin_port = htons(_port);
+	std::cout << "Server created with ip : " << _ipAdress << " on port : " << _port  << std::endl;
 	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
 
@@ -97,9 +117,10 @@ int Server::Run()
 	std::cout << "Server is running" << std::endl;
 	while (running)
 	{
+		std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
 		fd_set copy = _masterFdRead;
 		// See who's talking to us
-		_socketCount = select(max_sd + 1, &copy, NULL, NULL, NULL); // pour gerer plusieurs fd, pour voir si il y a des data a lire, si on peut ecrire et si il y a des exceptions
+		_socketCount = select(max_sd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
 
 		// Loop through all the current connections / potential connect
 		for (int i = 0; i <= max_sd; i++) //(int i = 0; _socketCount > 0; i++)
@@ -146,20 +167,16 @@ int Server::Run()
 				}
 				else
 				{
+					std::ifstream file(getFile().c_str());
 					//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-					std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+					//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
 
 					std::stringstream buffer;
 					buffer << file.rdbuf();
-					//std::string bufferStr = buffer.str();
-					//const char *bufferCStr = bufferStr.c_str();
-					//std::cout << "bufferStr: " << bufferCStr << std::endl;
 
-					std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+					//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
 					//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-					// std::string response = buffer.str();
-
-					//send(i, bufferCStr, sizeof(bufferCStr), 0);
+					std::string response = getResponse() + buffer.str();
 					send(i, response.c_str(), response.size(), 0);
 
 					close(i);
@@ -212,6 +229,41 @@ void Server::onClientDisconnected(int clientSocket)
 {
 	std::string message = "Goodbye\n";
 	sendToClient(clientSocket, message.c_str(), message.size() + 1);
+}
+
+std::string Server::getFile() const
+{
+	return this->_file;
+}
+
+void Server::setFile(std::string file)
+{
+	this->_file = file;
+}
+
+std::string Server::getResponse() const
+{
+	return this->_response;
+}
+
+void Server::setResponse(std::string response)
+{
+	this->_response = response;
+}
+
+int Server::getServerSocket() const
+{
+	return this->_serverSocket;
+}
+
+void Server::setServerSocket(int serverSocket)
+{
+	this->_serverSocket = serverSocket;
+}
+
+int Server::getPort() const
+{
+	return this->_port;
 }
 
 // • Il doit être non bloquant et n’utiliser qu’un seul poll() (SELECT) (ou équivalent) pour toutes les opérations entrées/sorties entre le client et le serveur (listen inclus).

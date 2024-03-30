@@ -16,30 +16,41 @@ class Server
 {
 	private:
 
-		int         _opt;
-		int         _serverSocket; // listening socket
-		fd_set	    _masterFdRead;
-		fd_set	    _masterFdWrite;
-		int         _newSocket;
-		int         _port;
-		std::string _ipAdress;
-		size_t      _reading;
-		struct      sockaddr_in _addr;
-		char        _buffer[BUFFER_SIZE];
-		int 	   _socketCount;
-		//char	   _testWebsite[];
-//		Request	 	_request;
+		int         			_opt;
+		int        	 			_serverSocket; // listening socket
+		fd_set	    			_masterFdRead;
+		fd_set	    			_masterFdWrite;
+		int         			_newSocket;
+		int         			_port;
+		std::string 			_ipAdress;
+		size_t      			_reading;
+		struct sockaddr_in 		_addr;
+		char        			_buffer[BUFFER_SIZE];
+		int 	   				_socketCount;
+		std::string 			_file;
+		std::string 			_response;
 
 	public:
 
 		Server(std::string ipAdress, int port);
 		Server();
-		~Server();
+		virtual ~Server();
 		Server(const Server &other);
 		Server &operator=(const Server &other);
 
 		int Init();
 		int Run();
+
+		std::string getFile() const;
+		void setFile(std::string file);
+
+		std::string getResponse() const;
+		void setResponse(std::string response);
+
+		int getServerSocket() const;
+		void setServerSocket(int serverSocket);
+
+		int getPort() const;
 
 	protected:
 
