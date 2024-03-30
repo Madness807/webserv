@@ -5,6 +5,8 @@
 #include <map>
 #include <list>
 #include "ServerConfig.hpp"
+#include <iostream>
+#include <fstream>
 
 class parsingSrvConf{
     private:
@@ -20,6 +22,8 @@ class parsingSrvConf{
 
         // Méthodes///////////////////
         void readConfigFile(std::string filename);
+        void parseServerConfig(std::string line);
+        LocationConfig parseLocationConfig(std::string line, LocationConfig& location);
 
         // GETTERS
         ServerConfig* getServerConfig();
