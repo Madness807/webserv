@@ -11,6 +11,7 @@
 class parsingSrvConf{
     private:
     ServerConfig* _serverConfig;
+    // std::vector<ServerConfig> _serverConfigs;
 
     public:
         // Constructeur
@@ -24,6 +25,8 @@ class parsingSrvConf{
         void readConfigFile(std::string filename);
         void parseServerConfig(std::string line);
         LocationConfig parseLocationConfig(std::string line, LocationConfig& location);
+
+        // rajouter une methodes findserverconfig pour selectinonner le bon serverconfig
 
         // GETTERS
         ServerConfig* getServerConfig();
