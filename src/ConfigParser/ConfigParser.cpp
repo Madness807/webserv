@@ -19,6 +19,8 @@ ServerConfig* parsingSrvConf::getServerConfig(const std::string& ip, int port) {
 //##################################################################
 //                          Methodes                               #
 //##################################################################
+
+
 void parsingSrvConf::parseServerConfig(std::string line)//
 {
     if (line.find("server_name") != std::string::npos) {
@@ -43,6 +45,9 @@ void parsingSrvConf::parseServerConfig(std::string line)//
         _serverConfig->setRoot(line.substr(line.find("root") + 6, line.find(":") - line.find("root") - 7));
     }
 }
+
+// pour le parsingSRVConfig je dois rajouter le fait que chaque moi que je croise un server je dois creer un nouveau serverConfig
+// et le rajouter dans la liste de serverConfig dans la map de serverManager
 
 LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationConfig& location)
 {

@@ -1086,7 +1086,7 @@
       "containerId": null,
       "originalText": "Return: String",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "rectangle",
@@ -1619,7 +1619,7 @@
       "containerId": null,
       "originalText": "MAP: cle -> valeur",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "diamond",
@@ -5788,7 +5788,7 @@
       "containerId": null,
       "originalText": "int         _opt;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -5826,7 +5826,7 @@
       "containerId": null,
       "originalText": "int         _serverSocket; // listening socket",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -5864,7 +5864,7 @@
       "containerId": null,
       "originalText": "fd_set            _masterFdRead;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -5902,7 +5902,7 @@
       "containerId": null,
       "originalText": "fd_set            _masterFdWrite;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -5940,7 +5940,7 @@
       "containerId": null,
       "originalText": "int         _newSocket;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -5978,7 +5978,7 @@
       "containerId": null,
       "originalText": "int         _port;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6016,7 +6016,7 @@
       "containerId": null,
       "originalText": "std::string _ipAdress;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6054,7 +6054,7 @@
       "containerId": null,
       "originalText": "size_t      _reading;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6092,7 +6092,7 @@
       "containerId": null,
       "originalText": "struct      sockaddr_in _addr;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6130,7 +6130,7 @@
       "containerId": null,
       "originalText": "char        _buffer[4096];",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6168,7 +6168,7 @@
       "containerId": null,
       "originalText": "int            _socketCount;",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6206,7 +6206,7 @@
       "containerId": null,
       "originalText": "virtual void onClientConnected(int clientSocket);",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6244,7 +6244,7 @@
       "containerId": null,
       "originalText": "virtual void onClientDisconnected(int clientSocket);",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6282,7 +6282,7 @@
       "containerId": null,
       "originalText": "void sendToClient(int clientSocket, const char* message, int messageSize); ",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "text",
@@ -6320,7 +6320,7 @@
       "containerId": null,
       "originalText": "void sendToAllClients(int sending_client, int max_sd, const char* message, int messageSize);",
       "lineHeight": 1.15,
-      "baseline": 18
+      "baseline": 19
     },
     {
       "type": "rectangle",
@@ -7753,6 +7753,71 @@
       "originalText": "Parsing Request",
       "lineHeight": 1.15,
       "baseline": 53
+    },
+    {
+      "id": "QlWVIy_TOakJnDFUxmxWF",
+      "type": "rectangle",
+      "x": -2104.6139844703553,
+      "y": 276.616578396408,
+      "width": 1418.156770940047,
+      "height": 1613.5886531525189,
+      "angle": 0,
+      "strokeColor": "#f08c00",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1806913498,
+      "version": 87,
+      "versionNonce": 1203462234,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1712309398703,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "A62panuOH5JmK2LeSYXDo",
+      "type": "text",
+      "x": -1888.0958689773304,
+      "y": 203.25541872345383,
+      "width": 638.7837524414062,
+      "height": 45,
+      "angle": 0,
+      "strokeColor": "#f08c00",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 488878470,
+      "version": 104,
+      "versionNonce": 1844194906,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1712309444317,
+      "link": null,
+      "locked": false,
+      "text": "objet serverManager dans le vector",
+      "fontSize": 36,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 32,
+      "containerId": null,
+      "originalText": "objet serverManager dans le vector",
+      "lineHeight": 1.25
     }
   ],
   "appState": {

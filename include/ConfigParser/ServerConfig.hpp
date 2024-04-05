@@ -34,6 +34,7 @@ class ServerConfig{
         void setErrorPage(std::string error_page);
         void setRoot(std::string root);
         void setLocations_map(std::map<std::string, LocationConfig > _locations_map);
+
         // GETTERS
         std::string getServerName();
         int getPort();
