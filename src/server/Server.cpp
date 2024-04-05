@@ -3,12 +3,13 @@
 
 
 Server::Server(){
-	_serverSocket = 70;
+	_serverSocket = 10;
 	_newSocket = 0;
 	_opt = 1;
 	_reading = 0;
 	_socketCount = 0;
 	_addr.sin_family = AF_INET;
+	_buffer = "";
 
 	//_addr.sin_addr.s_addr = INADDR_ANY; INADDR_ANY == localhost
 	int result = inet_pton(AF_INET, _ipAdress.c_str(), &_addr.sin_addr); // converti une adresse IP de la forme texte ("127.0.0.1") en une forme binaire structurée que les fonctions de réseau peuvent utiliser.
@@ -20,8 +21,6 @@ Server::Server(){
     }
 
 	_addr.sin_port = htons(_port);
-	std::cout << "Server created with ip : " << _ipAdress << " on port : " << _port  << std::endl;
-	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
 
 Server::~Server(){
@@ -29,7 +28,7 @@ Server::~Server(){
 
 Server::Server(std::string ipAdress, int port) :_port(port),  _ipAdress(ipAdress)
 {
-	_serverSocket = 0;
+	_serverSocket = 20;
 	_newSocket = 0;
 	_opt = 1;
 	_reading = 0;
@@ -46,7 +45,7 @@ Server::Server(std::string ipAdress, int port) :_port(port),  _ipAdress(ipAdress
     }
 
 	_addr.sin_port = htons(_port);
-	std::cout << "Server created with ip : " << _ipAdress << " on port : " << _port  << std::endl;
+	//std::cout << "Server created with ip : " << _ipAdress << " on port : " << _port  << std::endl;
 	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
 
@@ -77,7 +76,6 @@ int Server::Init()
 		std::cerr << "Error: server socket creation failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-
 	// option to prevent error "address already in use”."
 	// -> int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen); // permet de reutiliser le port
 	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
@@ -100,105 +98,112 @@ int Server::Init()
 		std::cerr << "Error: listen failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	//std::cout << "serversocket dans init server : " << _serverSocket << std::endl;
+	//FD_ZERO(&_masterFdRead);
+	//FD_ZERO(&_masterFdWrite);
+	//FD_SET(_serverSocket, &_masterFdRead); // ajoute un fd a un ensemble de fd, en lien avec select, ajoute _serverSocket a _masterFd
 
-	FD_ZERO(&_masterFdRead);
-	FD_ZERO(&_masterFdWrite);
-	FD_SET(_serverSocket, &_masterFdRead); // ajoute un fd a un ensemble de fd, en lien avec select, ajoute _serverSocket a _masterFd
-
-	return (0);
+	return (_serverSocket);
 }
+
+
+
+
+
+
 
 int Server::Run()
 {
-	bool running = true;
-	int max_sd = _serverSocket;
-	std::vector<Client> clients(100);
+// 	bool running = true;
+// 	int max_sd = _serverSocket;
+// 	std::vector<Client> clients(100);
 
-	std::cout << "Server is running" << std::endl;
-	while (running)
-	{
-		std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
-		fd_set copy = _masterFdRead;
-		// See who's talking to us
-		_socketCount = select(max_sd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
+// 	std::cout << "Server is running" << std::endl;
+// 	while (running)
+// 	{
+// 		std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
+// 		fd_set copy = _masterFdRead;
+// 		// See who's talking to us
+// 		_socketCount = select(max_sd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
 
-		// Loop through all the current connections / potential connect
-		for (int i = 0; i <= max_sd; i++) //(int i = 0; _socketCount > 0; i++)
-		{
-			if (FD_ISSET(i, &copy) && i == _serverSocket)
-			{
+// 		// Loop through all the current connections / potential connect
+// 		for (int i = 0; i <= max_sd; i++) //(int i = 0; _socketCount > 0; i++)
+// 		{
+// 			if (FD_ISSET(i, &copy) && i == _serverSocket)
+// 			{
 
-				clients[i].fillInfo(_serverSocket);
+// 				clients[i].fillInfo(_serverSocket);
 
-				if(clients[i].getSocketClient() == -1) //if (clientSocket == -1)
-				{
-					std::cerr << "Error in accepting client";
-				}
-				if(clients[i].getSocketClient() > max_sd)//if (clientSocket > max_sd)
-				{
-        			max_sd = clients[i].getSocketClient();
-    			}
-				//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
-				FD_SET(clients[i].getSocketClient(), &_masterFdRead);
-				// if (clients[i].getSocketClient() > 0)
-				// {
-				// 	onClientConnected(clients[i].getSocketClient());
-				// 	close(i);
+// 				if(clients[i].getSocketClient() == -1) //if (clientSocket == -1)
+// 				{
+// 					std::cerr << "Error in accepting client";
+// 				}
+// 				if(clients[i].getSocketClient() > max_sd)//if (clientSocket > max_sd)
+// 				{
+//         			max_sd = clients[i].getSocketClient();
+//     			}
+// 				//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
+// 				FD_SET(clients[i].getSocketClient(), &_masterFdRead);
+// 				// if (clients[i].getSocketClient() > 0)
+// 				// {
+// 				// 	onClientConnected(clients[i].getSocketClient());
+// 				// 	close(i);
 
-				// }
-				break;
-			}
-			if (FD_ISSET(i, &copy) && i != _serverSocket)
-			{
-				memset(_buffer, 0, sizeof(_buffer));
-				_reading = recv(i, _buffer, sizeof(_buffer), 0);
-				//std::cout << "Received: " << _buffer << std::endl;
-				// if (_buffer == "/quit")
-				// {
-				// 	running = false;
-				 	//onClientDisconnected(i);
-				// 	break;
-				// }
-				if (_reading <= 0)
-				{
-					close(i);
-					FD_CLR(i, &_masterFdRead);
-					//onClientDisconnected(i);
-				}
-				else
-				{
-					std::ifstream file(getFile().c_str());
-					//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-					//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+// 				// }
+// 				break;
+// 			}
+// 			if (FD_ISSET(i, &copy) && i != _serverSocket)
+// 			{
+// 				_buffer.assign(BUFFER_SIZE, 0);
+// 				//memset(_buffer, 0, sizeof(_buffer));
+// 				_reading = recv(i, &_buffer[0], sizeof(_buffer), 0);
+// 				//std::cout << "Received: " << _buffer << std::endl;
+// 				// if (_buffer == "/quit")
+// 				// {
+// 				// 	running = false;
+// 				 	//onClientDisconnected(i);
+// 				// 	break;
+// 				// }
+// 				if (_reading <= 0)
+// 				{
+// 					close(i);
+// 					FD_CLR(i, &_masterFdRead);
+// 					//onClientDisconnected(i);
+// 				}
+// 				else
+// 				{
+// 					//std::ifstream file(getFile().c_str());
+// 					//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+// 					std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
 
-					std::stringstream buffer;
-					buffer << file.rdbuf();
+// 					std::stringstream buffer;
+// 					buffer << file.rdbuf();
 
-					//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-					//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-					std::string response = getResponse() + buffer.str();
-					send(i, response.c_str(), response.size(), 0);
+// 					//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+// 					std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+// 					//std::string response = getResponse() + buffer.str();
+// 					send(i, response.c_str(), response.size(), 0);
 
-					close(i);
+// 					close(i);
 
-				}
-				// else
-				// {
+// 				}
+// 				else
+// 				{
 
-				// 	clients[i].setBuffer(_buffer);
-				// 	this->sendToClient(i, _buffer, _reading);
-				// 	std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
-				// }
-				break;
-			}
-		}
-	}
+// 					clients[i].setBuffer(_buffer);
+// 					this->sendToClient(i, _buffer, _reading);
+// 					std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
+// 				}
+// 				break;
+// 			}
+// 		}
+// 	}
 
-	while (FD_ISSET(_serverSocket, &_masterFdRead))
-	{
-		FD_CLR(_serverSocket, &_masterFdRead);
-	}
-	close(_serverSocket);
+// 	while (FD_ISSET(_serverSocket, &_masterFdRead))
+// 	{
+// 		FD_CLR(_serverSocket, &_masterFdRead);
+// 	}
+// 	close(_serverSocket);
 	return 0;
 }
 
@@ -209,14 +214,17 @@ void Server::sendToClient(int clientSocket, const char* message, int messageSize
 
 void Server::sendToAllClients(int sending_client, int max_sd, const char* message, int messageSize) // send message to all clients
 {
-
-	for (int i = 0; i <= max_sd; i++)
-	{
-		if (FD_ISSET(i, &_masterFdRead) && i != _serverSocket && i != sending_client)
-		{
-			send(i, message, messageSize, 0);
-		}
-	}
+	(void)sending_client;
+	(void)max_sd;
+	(void)message;
+	(void)messageSize;
+	// for (int i = 0; i <= max_sd; i++)
+	// {
+	// 	if (FD_ISSET(i, &_masterFdRead) && i != _serverSocket && i != sending_client)
+	// 	{
+	// 		send(i, message, messageSize, 0);
+	// 	}
+	// }
 }
 
 void Server::onClientConnected(int clientSocket)
@@ -264,6 +272,36 @@ void Server::setServerSocket(int serverSocket)
 int Server::getPort() const
 {
 	return this->_port;
+}
+
+std::string Server::getIpAdress() const
+{
+	return this->_ipAdress;
+}
+
+std::string Server::getBuffer() const
+{
+	return this->_buffer;
+}
+
+// int Server::getServerId() const
+// {
+// 	return this->_serverId;
+// }
+
+// void Server::setServerId(int serverId)
+// {
+// 	this->_serverId = serverId;
+// }
+
+void Server::setReading(size_t reading)
+{
+	this->_reading = reading;
+}
+
+size_t Server::getReading() const
+{
+	return this->_reading;
 }
 
 // • Il doit être non bloquant et n’utiliser qu’un seul poll() (SELECT) (ou équivalent) pour toutes les opérations entrées/sorties entre le client et le serveur (listen inclus).

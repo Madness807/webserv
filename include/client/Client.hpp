@@ -14,9 +14,10 @@ class Client
 {
 	private:
 		int					_socketClient;
+		int					_serverSocketAssociated;
 		std::string			_clientRequete;
 		std::string			_clientReponse;
-		std::string			_buffer[BUFFER_SIZE]; // pour upload image et pour pas bloquer sur \0 qui se promene
+		std::string			_buffer; // pour upload image et pour pas bloquer sur \0 qui se promene
 		struct sockaddr_in 	_addrClient;
 		socklen_t			_addrClientSize;
 
@@ -36,7 +37,7 @@ class Client
 		void setReponse(std::string reponse);
 
 		int getSocketClient() const;
-		void setSocketClient(int socketClient, socklen_t addrSize);
+		//void setSocketClient(int socketClient, socklen_t addrSize);
 		void setSocketClient(int socketClient);
 
 		std::string getBuffer() const;
@@ -47,6 +48,9 @@ class Client
 
 		const struct sockaddr_in& getAddrClient() const;
 		void setAddrClient(struct sockaddr_in addrClient);
+
+		int getServerSocketAssociated() const;
+		void setServerSocketAssociated(int serverSocket);
 };
 
 #endif

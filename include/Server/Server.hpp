@@ -16,16 +16,17 @@ class Server
 {
 	private:
 
+		//int 	   				_serverId;
 		int         			_opt;
 		int        	 			_serverSocket; // listening socket
-		fd_set	    			_masterFdRead;
-		fd_set	    			_masterFdWrite;
+		//fd_set	    			_masterFdRead;
+		//fd_set	    			_masterFdWrite;
 		int         			_newSocket;
 		int         			_port;
 		std::string 			_ipAdress;
 		size_t      			_reading;
 		struct sockaddr_in 		_addr;
-		char        			_buffer[BUFFER_SIZE];
+		std::string        		_buffer;
 		int 	   				_socketCount;
 		std::string 			_file;
 		std::string 			_response;
@@ -52,13 +53,25 @@ class Server
 
 		int getPort() const;
 
+		std::string getIpAdress() const;
+
+		std::string getBuffer() const;
+
+		// int getServerId() const;
+		// void setServerId(int serverId);
+
+		void setReading(size_t reading);
+		size_t getReading() const;
+
+		void sendToClient(int clientSocket, const char* message, int messageSize); // send message to client
+
+
 	protected:
 
 		virtual void onClientConnected(int clientSocket);
 
 		virtual void onClientDisconnected(int clientSocket);
 
-		void sendToClient(int clientSocket, const char* message, int messageSize); // send message to client
 
 		void sendToAllClients(int sending_client, int max_sd, const char* message, int messageSize); // send message from a client to all clients
 

@@ -46,6 +46,7 @@ class TCPHandler
 		fd_set _masterFdRead;
 		fd_set _masterFdWrite;
 		int _maxFd;
+		int _nbOfServer;
 };
 
 #endif

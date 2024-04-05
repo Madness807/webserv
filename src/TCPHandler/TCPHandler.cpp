@@ -5,6 +5,7 @@ TCPHandler::TCPHandler()
 		FD_ZERO(&_masterFdRead);
 		FD_ZERO(&_masterFdWrite);
 		_maxFd = 0;
+		_nbOfServer = 2;
 }
 
 TCPHandler::~TCPHandler() {}
@@ -43,14 +44,19 @@ void TCPHandler::setMasterFdWrite(fd_set masterFdWrite) {
 	this->_masterFdWrite = masterFdWrite;
 }
 
-void TCPHandler::setTabServers(int size) {
-	std::vector<Server> servers(size);
+void TCPHandler::setTabServers(int size) { //utiliser une liste chaine et la parcourir pour init ip/port pour chaque server
+	(void)size;
+	std::vector<Server> servers(0);
 	// for (int i = 0; i < size; i++)
 	// {
     // 	servers.push_back(Server(ipAdress, port));
 	// }
 	servers.push_back(Server("127.0.0.1", 8080));
 	servers.push_back(Server("127.0.0.1", 8888));
+
+	std::cout << "ip server : " << servers[0].getIpAdress() << "port server " << servers[0].getPort() << std::endl;
+	std::cout << "ip server : " << servers[1].getIpAdress() << "port server " << servers[1].getPort() << std::endl;
+
 	this->_servers = servers;
 }
 
@@ -64,146 +70,250 @@ std::vector<Server> TCPHandler::getTabServers() {
 
 void TCPHandler::initServer(int nbOfServer) {
 	(void)nbOfServer;
-    // for (int i = 0; i < nbOfServer; i++)
-    // {
-	// 	//this->getTabServers()[i].setIpAdress(serverconfig.getIp(), serverconfig.getPort())
-    //     this->getTabServers()[i].setIpAdress("127.0.0.1");
-	// 	this->getTabServers()[i].setPort(8080);
-	// 	this->getTabServers()[i].setIpAdress("127.0.0.1");
-	// 	this->getTabServers()[i].setPort(8888);
-    // }
-	    // this->getTabServers()[0].setIpAdress("127.0.0.1");
-		// this->getTabServers()[1].setPort(8080);
-		// this->getTabServers()[0].setIpAdress("127.0.0.1");
-		// this->getTabServers()[1].setPort(8888);
-	// socket creation
-	// -> int sockfd = socket(domain, type, protocol)
-	// this->setServerSocket(socket(AF_INET, SOCK_STREAM, 0)); //= socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
-	// if (_serverSocket == -1)
-	// {
-	// 	std::cerr << "Error: server socket creation failed" << std::endl;
-	// 	exit(EXIT_FAILURE);
-	// }
 
-	// // option to prevent error "address already in use”."
-	// // -> int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen); // permet de reutiliser le port
-	// if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
-	// 	perror("setsockopt");
-	// 	std::cerr << "Error: server setsockopt failed" << std::endl;
-	// 	exit(EXIT_FAILURE);
-	// }
+	int serverSocket = 0;
 
-	// // bind the socket to an address
-	// //int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-	// if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
-	// {
-	// 	perror("bind");
-	// 	std::cerr << "Error: bind failed" << std::endl;
-	// 	exit(EXIT_FAILURE);
-	// }
+	for (int i = 0; i < nbOfServer; i++)
+	{
 
-	// if(listen(_serverSocket, 1) < 0)// mettre variable pour waiting list
-	// {
-	// 	std::cerr << "Error: listen failed" << std::endl;
-	// 	exit(EXIT_FAILURE);
-	// }
+		_servers[i].setServerSocket(getTabServers()[i].Init()); // init server
+		//_servers[i].setServerId(i);
+		serverSocket = _servers[i].getServerSocket();
+		if (serverSocket < 0)
+			exit(EXIT_FAILURE);
+		FD_SET(serverSocket, &_masterFdRead);
+		if (serverSocket > _maxFd)
+			_maxFd = serverSocket;
+		getTabServers()[i].setServerSocket(serverSocket);
+		std::cout << "maxFd " << _maxFd << " serversocket: " << serverSocket << std::endl;
+		//std::cout << "serverSocket: " << _servers[i].getServerSocket() << " serverId : " << _servers[i].getServerId() << std::endl;
+		//this->getTabServers()[i].Run();
+	}
 
-	// FD_ZERO(&_masterFdRead);
-	// FD_ZERO(&_masterFdWrite);
-	// FD_SET(_serverSocket, &_masterFdRead); // ajoute un fd a un ensemble de fd, en lien avec select, ajoute _serverSocket a _masterFd
-
-	// return (0);
 }
 
-void TCPHandler::runServer() {
-	// bool running = true;
-	// int max_sd = _serverSocket;
-	// std::vector<Client> clients(100);
 
-	// std::cout << "Server is running" << std::endl;
-	// while (running)
+void TCPHandler::runServer()
+{
+	bool running = true;
+	int socketCount = 0;
+	int reading = 0;
+	std::vector<Client> clients(100);
+
+	while (running)
+	{
+		//std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
+		fd_set copy = _masterFdRead;
+		// See who's talking to us
+		socketCount = select(_maxFd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
+		//std::cout << "socketCount: " << socketCount << std::endl;
+		// Loop through all the current connections / potential connect
+		for (int i = 0; i <= _maxFd; i++)
+		{
+		//	std::cout << "i : " << i << std::endl;
+		//	std::cout << "server PORT : " << _servers[0].getPort() << std::endl;
+		//	std::cout << "server SOCKET : " << _servers[0].getServerSocket() << std::endl;
+
+			if (FD_ISSET(i, &copy))
+			{
+				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+				{
+
+					std::cout << ">> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << std::endl;
+
+					if (i == it->getServerSocket())
+					{
+						std::cout << "i == serverSocket" << std::endl;
+						clients[i].fillInfo(it->getServerSocket());
+
+						if(clients[i].getSocketClient() == -1) //if (clientSocket == -1)
+						{
+							perror("accept");
+							std::cerr << "Error in accepting client";
+						}
+						if(clients[i].getSocketClient() > _maxFd)//if (clientSocket > max_sd)
+						{
+							_maxFd = clients[i].getSocketClient();
+						}
+						//FD_SET(clients[i].getSocketClient(), &_masterFdRead);
+						std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
+				//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
+				// if (clients[i].getSocketClient() > 0)
+				// {
+				// 	onClientConnected(clients[i].getSocketClient());
+				// 	close(i);
+
+				// }
+					break;
+					}
+				}
+			}
+			if (FD_ISSET(i, &copy))
+			{
+				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+				{
+					if (i != it->getServerSocket())
+					{
+						it->getBuffer().assign(BUFFER_SIZE, 0);
+						//reading = recv(i, buffer, sizeof(buffer), 0);
+						std::cout << ">>>> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << " client i : " << i << std::endl;
+
+						//reading = recv(it->getServerSocket(), &(it->getBuffer())[0], sizeof(it->getBuffer()), 0);
+
+						it->setReading(recv(it->getServerSocket(), &(it->getBuffer())[0], sizeof(it->getBuffer()), 0));
+						std::cout << "reading: " << reading << std::endl;
+						if (it->getReading() <= 0)
+						{
+							perror("recv");
+							close(i);
+							FD_CLR(i, &_masterFdRead);
+							//onClientDisconnected(i);
+						}
+						// else
+						// {
+						// 	//std::ifstream file(_servers[i].getFile().c_str());
+						// 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+						// 	std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+
+						// 	std::stringstream buffer;
+						// 	buffer << file.rdbuf();
+
+						// 	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+						// 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+						// 	//std::string response = _servers[i].getResponse() + buffer.str();
+						// 	send(i, response.c_str(), response.size(), 0);
+
+						// 	close(i);
+
+						// }
+						// else
+						// {
+						// 	clients[i].setBuffer(it->getBuffer());
+						// 	it->sendToClient(i, it->getBuffer().c_str(), it->getReading());
+						// 	std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
+						// }
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	//int i = 0;
+	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+	{
+		FD_CLR(it->getServerSocket(), &_masterFdRead);
+		close(it->getServerSocket());
+	}
+
+	// while (FD_ISSET(_servers[i].getServerSocket(), &_masterFdRead))
 	// {
-	// 	std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
-	// 	fd_set copy = _masterFdRead;
-	// 	// See who's talking to us
-	// 	_socketCount = select(max_sd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
-
-	// 	// Loop through all the current connections / potential connect
-	// 	for (int i = 0; i <= max_sd; i++) //(int i = 0; _socketCount > 0; i++)
-	// 	{
-	// 		if (FD_ISSET(i, &copy) && i == _serverSocket)
-	// 		{
-
-	// 			clients[i].fillInfo(_serverSocket);
-
-	// 			if(clients[i].getSocketClient() == -1) //if (clientSocket == -1)
-	// 			{
-	// 				std::cerr << "Error in accepting client";
-	// 			}
-	// 			if(clients[i].getSocketClient() > max_sd)//if (clientSocket > max_sd)
-	// 			{
-    //     			max_sd = clients[i].getSocketClient();
-    // 			}
-	// 			//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
-	// 			FD_SET(clients[i].getSocketClient(), &_masterFdRead);
-	// 			// if (clients[i].getSocketClient() > 0)
-	// 			// {
-	// 			// 	onClientConnected(clients[i].getSocketClient());
-	// 			// 	close(i);
-
-	// 			// }
-	// 			break;
-	// 		}
-	// 		if (FD_ISSET(i, &copy) && i != _serverSocket)
-	// 		{
-	// 			memset(_buffer, 0, sizeof(_buffer));
-	// 			_reading = recv(i, _buffer, sizeof(_buffer), 0);
-	// 			//std::cout << "Received: " << _buffer << std::endl;
-	// 			// if (_buffer == "/quit")
-	// 			// {
-	// 			// 	running = false;
-	// 			 	//onClientDisconnected(i);
-	// 			// 	break;
-	// 			// }
-	// 			if (_reading <= 0)
-	// 			{
-	// 				close(i);
-	// 				FD_CLR(i, &_masterFdRead);
-	// 				//onClientDisconnected(i);
-	// 			}
-	// 			else
-	// 			{
-	// 				std::ifstream file(getFile().c_str());
-	// 				//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-	// 				//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
-
-	// 				std::stringstream buffer;
-	// 				buffer << file.rdbuf();
-
-	// 				//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-	// 				//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-	// 				std::string response = getResponse() + buffer.str();
-	// 				send(i, response.c_str(), response.size(), 0);
-
-	// 				close(i);
-
-	// 			}
-	// 			// else
-	// 			// {
-
-	// 			// 	clients[i].setBuffer(_buffer);
-	// 			// 	this->sendToClient(i, _buffer, _reading);
-	// 			// 	std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
-	// 			// }
-	// 			break;
-	// 		}
-	// 	}
+	// 	FD_CLR(_servers[i].getServerSocket(), &_masterFdRead);
 	// }
-
-	// while (FD_ISSET(_serverSocket, &_masterFdRead))
-	// {
-	// 	FD_CLR(_serverSocket, &_masterFdRead);
-	// }
-	// close(_serverSocket);
-	// return 0;
+	// close(_servers[i].getServerSocket());
 }
+
+// void TCPHandler::runServer() {
+// 	bool running = true;
+// 	int socketCount = 0;
+// 	int reading = 0;
+// 	std::vector<Client> clients(100);
+
+// 	std::cout << "Main Server is running" << std::endl;
+// 	while (running)
+// 	{
+// 		//std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
+// 		fd_set copy = _masterFdRead;
+// 		// See who's talking to us
+// 		socketCount = select(_maxFd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
+// 		std::cout << "socketCount: " << socketCount << std::endl;
+// 		std::cout <<"serverSocket: " << _servers[0].getServerSocket() << std::endl;
+// 		// Loop through all the current connections / potential connect
+// 		for (int i = 0; i <= _maxFd; i++)
+// 		{
+// 		//	std::cout << "i : " << i << std::endl;
+// 		//	std::cout << "server PORT : " << _servers[0].getPort() << std::endl;
+// 		//	std::cout << "server SOCKET : " << _servers[0].getServerSocket() << std::endl;
+
+// 			if (FD_ISSET(i, &copy) && i == _servers[0].getServerSocket())
+// 			{
+// 				std::cout << "i == serverSocket" << std::endl;
+
+// 				clients[i].fillInfo(_servers[0].getServerSocket());
+
+// 				if(clients[i].getSocketClient() == -1) //if (clientSocket == -1)
+// 				{
+// 					std::cerr << "Error in accepting client";
+// 				}
+// 				if(clients[i].getSocketClient() > _maxFd)//if (clientSocket > max_sd)
+// 				{
+//         			_maxFd = clients[i].getSocketClient();
+//     			}
+// 				//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
+// 				// if (clients[i].getSocketClient() > 0)
+// 				// {
+// 				// 	onClientConnected(clients[i].getSocketClient());
+// 				// 	close(i);
+
+// 				// }
+// 				break;
+// 			}
+// 			if (FD_ISSET(i, &copy) && i != _servers[0].getServerSocket())
+// 			{
+// 				_servers[0].getBuffer().assign(BUFFER_SIZE, 0);
+// 				//_buffer.assign(BUFFER_SIZE, 0);
+// 				//memset(_buffer, 0, sizeof(_buffer));
+// 				//reading = recv(i, buffer, sizeof(buffer), 0);
+// 				reading = recv(_servers[0].getServerSocket(), &(_servers[0].getBuffer())[0], sizeof(_servers[0].getBuffer()), 0);
+// 				std::cout << "reading: " << reading << std::endl;
+// 				//std::cout << "Received: " << _buffer << std::endl;
+// 				// if (_buffer == "/quit")
+// 				// {
+// 				// 	running = false;
+// 				 	//onClientDisconnected(i);
+// 				// 	break;
+// 				// }
+// 				if (reading <= 0)
+// 				{
+// 					perror("recv");
+// 					close(i);
+// 					FD_CLR(i, &_masterFdRead);
+// 					//onClientDisconnected(i);
+// 				}
+// 				// else
+// 				// {
+// 				// 	//std::ifstream file(_servers[i].getFile().c_str());
+// 				// 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+// 				// 	std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+
+// 				// 	std::stringstream buffer;
+// 				// 	buffer << file.rdbuf();
+
+// 				// 	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+// 				// 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+// 				// 	//std::string response = _servers[i].getResponse() + buffer.str();
+// 				// 	send(i, response.c_str(), response.size(), 0);
+
+// 				// 	close(i);
+
+// 				// }
+// 				else
+// 				{
+
+// 					clients[i].setBuffer(_servers[0].getBuffer());
+// 					//this->sendToClient(i, _servers[i].getBuffer(), reading);
+// 					_servers[0].sendToClient(i, _servers[0].getBuffer().c_str(), reading);
+// 					std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
+// 				}
+// 				break;
+// 			}
+// 		}
+// 	}
+// 	int i = 0;
+// 	while (FD_ISSET(_servers[i].getServerSocket(), &_masterFdRead))
+// 	{
+// 		FD_CLR(_servers[i].getServerSocket(), &_masterFdRead);
+// 	}
+// 	close(_servers[i].getServerSocket());
+// 	//return 0;
+// }

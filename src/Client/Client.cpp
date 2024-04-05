@@ -2,8 +2,7 @@
 #include <string>
 #include <iostream>
 
-Client::Client() : _socketClient(0), _clientRequete(""), _clientReponse(""){
-	memset(_buffer, 0, sizeof(_buffer));}
+Client::Client() : _socketClient(0), _clientRequete(""), _clientReponse(""), _buffer(""){}
 
 Client::~Client() {}
 
@@ -19,9 +18,10 @@ void Client::fillInfo(int serverSocket){
 
 	socklen_t clientSize = this->getAddrClientSize();
 	this->setAddrClientSize(clientSize);
-	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize);
+	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
 	this->setSocketClient(socketClient);
-	this->setAddrClientSize(clientSize);}
+	this->setAddrClientSize(clientSize);
+	this->setServerSocketAssociated(serverSocket);}
 
 std::string Client::getRequete() const{
 	return this->_clientRequete;}
@@ -43,13 +43,18 @@ int Client::getSocketClient() const{
 void Client::setSocketClient(int socketClient){
 	this->_socketClient = socketClient;}
 
+void Client::setServerSocketAssociated(int serverSocket){
+	this->_serverSocketAssociated = serverSocket;}
 
+int Client::getServerSocketAssociated() const{
+	return this->_serverSocketAssociated;
+}
 std::string Client::getBuffer() const{
-	std::string str(this->_buffer[BUFFER_SIZE - 1]);
-	return str;}
+	//std::string str(this->_buffer[BUFFER_SIZE - 1]);
+	return this->_buffer;}
 
 void Client::setBuffer(std::string message){
-	this->_buffer[BUFFER_SIZE - 1] = message;}
+	this->_buffer = message;}
 
 
 socklen_t Client::getAddrClientSize() const{
