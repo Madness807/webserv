@@ -24,12 +24,15 @@ class Server
 		int         			_newSocket;
 		int         			_port;
 		std::string 			_ipAdress;
-		size_t      			_reading;
+		ssize_t      			_reading;
 		struct sockaddr_in 		_addr;
 		std::string        		_buffer;
 		int 	   				_socketCount;
 		std::string 			_file;
 		std::string 			_response;
+
+
+
 
 	public:
 
@@ -60,8 +63,8 @@ class Server
 		// int getServerId() const;
 		// void setServerId(int serverId);
 
-		void setReading(size_t reading);
-		size_t getReading() const;
+		void setReading(int reading);
+		int getReading() const;
 
 		void sendToClient(int clientSocket, const char* message, int messageSize); // send message to client
 

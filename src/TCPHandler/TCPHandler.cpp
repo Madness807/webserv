@@ -85,7 +85,7 @@ void TCPHandler::initServer(int nbOfServer) {
 		if (serverSocket > _maxFd)
 			_maxFd = serverSocket;
 		getTabServers()[i].setServerSocket(serverSocket);
-		std::cout << "maxFd " << _maxFd << " serversocket: " << serverSocket << std::endl;
+		//std::cout << "maxFd " << _maxFd << " serversocket: " << serverSocket << std::endl;
 		//std::cout << "serverSocket: " << _servers[i].getServerSocket() << " serverId : " << _servers[i].getServerId() << std::endl;
 		//this->getTabServers()[i].Run();
 	}
@@ -97,15 +97,16 @@ void TCPHandler::runServer()
 {
 	bool running = true;
 	int socketCount = 0;
-	int reading = 0;
+	//int reading = 0;
 	std::vector<Client> clients(100);
 
 	while (running)
 	{
 		//std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
-		fd_set copy = _masterFdRead;
+		fd_set copyRead = _masterFdRead;
+		//fd_set copyWrite = _masterFdWrite;
 		// See who's talking to us
-		socketCount = select(_maxFd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
+		socketCount = select(_maxFd + 1, &copyRead, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
 		//std::cout << "socketCount: " << socketCount << std::endl;
 		// Loop through all the current connections / potential connect
 		for (int i = 0; i <= _maxFd; i++)
@@ -114,7 +115,7 @@ void TCPHandler::runServer()
 		//	std::cout << "server PORT : " << _servers[0].getPort() << std::endl;
 		//	std::cout << "server SOCKET : " << _servers[0].getServerSocket() << std::endl;
 
-			if (FD_ISSET(i, &copy))
+			if (FD_ISSET(i, &copyRead))
 			{
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
@@ -135,33 +136,32 @@ void TCPHandler::runServer()
 						{
 							_maxFd = clients[i].getSocketClient();
 						}
-						//FD_SET(clients[i].getSocketClient(), &_masterFdRead);
-						std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
-				//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
-				// if (clients[i].getSocketClient() > 0)
-				// {
-				// 	onClientConnected(clients[i].getSocketClient());
-				// 	close(i);
-
-				// }
+						FD_SET(clients[i].getSocketClient(), &_masterFdRead);
+					//	std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
 					break;
 					}
 				}
 			}
-			if (FD_ISSET(i, &copy))
+			if (FD_ISSET(i, &copyRead))
 			{
+				int reading = 0;
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
 					if (i != it->getServerSocket())
 					{
-						it->getBuffer().assign(BUFFER_SIZE, 0);
-						//reading = recv(i, buffer, sizeof(buffer), 0);
-						std::cout << ">>>> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << " client i : " << i << std::endl;
+						// it->getBuffer().assign(BUFFER_SIZE, 0);
+						//std::cout << ">>>> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << " client i : " << i << std::endl;
+						//std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
+						char tmp[BUFFER_SIZE];
+						memset(tmp, 0, sizeof(tmp));
+						reading = recv(clients[i].getSocketClient(), tmp, sizeof(tmp), 0);
 
-						//reading = recv(it->getServerSocket(), &(it->getBuffer())[0], sizeof(it->getBuffer()), 0);
+						it->setReading(reading);
 
-						it->setReading(recv(it->getServerSocket(), &(it->getBuffer())[0], sizeof(it->getBuffer()), 0));
-						std::cout << "reading: " << reading << std::endl;
+						//std::cout << "reading: " << it->getReading() << std::endl;
+						std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
+
+
 						if (it->getReading() <= 0)
 						{
 							perror("recv");
@@ -169,29 +169,19 @@ void TCPHandler::runServer()
 							FD_CLR(i, &_masterFdRead);
 							//onClientDisconnected(i);
 						}
-						// else
-						// {
-						// 	//std::ifstream file(_servers[i].getFile().c_str());
-						// 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-						// 	std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+						else
+						{
+							std::cout << ">> getBuffer: " << it->getBuffer() << std::endl;
+							clients[i].setBuffer(tmp);
+							it->sendToClient(clients[i].getSocketClient(), clients[i].getBuffer().c_str(), it->getReading());
+							//it->sendToClient(clients[i].getSocketClient(), it->getBuffer().c_str(), it->getReading());
 
-						// 	std::stringstream buffer;
-						// 	buffer << file.rdbuf();
+							//it->sendToClient(clients[i].getSocketClient(),"blabla", 7);
+							//it->sendToClient(i, it->getBuffer().c_str(), it->getReading());
+							std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
+							std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
 
-						// 	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-						// 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-						// 	//std::string response = _servers[i].getResponse() + buffer.str();
-						// 	send(i, response.c_str(), response.size(), 0);
-
-						// 	close(i);
-
-						// }
-						// else
-						// {
-						// 	clients[i].setBuffer(it->getBuffer());
-						// 	it->sendToClient(i, it->getBuffer().c_str(), it->getReading());
-						// 	std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
-						// }
+						}
 						break;
 					}
 				}

@@ -144,12 +144,6 @@ int Server::Run()
 //     			}
 // 				//std::cout << "socket client: " << clients[i].getSocketClient() << std::endl;
 // 				FD_SET(clients[i].getSocketClient(), &_masterFdRead);
-// 				// if (clients[i].getSocketClient() > 0)
-// 				// {
-// 				// 	onClientConnected(clients[i].getSocketClient());
-// 				// 	close(i);
-
-// 				// }
 // 				break;
 // 			}
 // 			if (FD_ISSET(i, &copy) && i != _serverSocket)
@@ -158,12 +152,7 @@ int Server::Run()
 // 				//memset(_buffer, 0, sizeof(_buffer));
 // 				_reading = recv(i, &_buffer[0], sizeof(_buffer), 0);
 // 				//std::cout << "Received: " << _buffer << std::endl;
-// 				// if (_buffer == "/quit")
-// 				// {
-// 				// 	running = false;
-// 				 	//onClientDisconnected(i);
-// 				// 	break;
-// 				// }
+
 // 				if (_reading <= 0)
 // 				{
 // 					close(i);
@@ -187,13 +176,13 @@ int Server::Run()
 // 					close(i);
 
 // 				}
-// 				else
-// 				{
+				// else
+				// {
 
-// 					clients[i].setBuffer(_buffer);
-// 					this->sendToClient(i, _buffer, _reading);
-// 					std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
-// 				}
+				// 	clients[i].setBuffer(_buffer);
+				// 	this->sendToClient(i, _buffer, _reading);
+				// 	std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
+				// }
 // 				break;
 // 			}
 // 		}
@@ -294,12 +283,12 @@ std::string Server::getBuffer() const
 // 	this->_serverId = serverId;
 // }
 
-void Server::setReading(size_t reading)
+void Server::setReading(int reading)
 {
 	this->_reading = reading;
 }
 
-size_t Server::getReading() const
+int Server::getReading() const
 {
 	return this->_reading;
 }
