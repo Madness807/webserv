@@ -45,7 +45,7 @@ class TCPHandler
 
 	private :
 		std::vector<Server> _servers;
-		std::vector<Client> _clients;
+		//std::vector<Client> _clients;
 
 		fd_set _masterFd;
 		std::vector<int> _fdServers;

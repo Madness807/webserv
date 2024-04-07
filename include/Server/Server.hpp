@@ -16,11 +16,8 @@ class Server
 {
 	private:
 
-		//int 	   				_serverId;
 		int         			_opt;
 		int        	 			_serverSocket; // listening socket
-		//fd_set	    			_masterFdRead;
-		//fd_set	    			_masterFdWrite;
 		int         			_newSocket;
 		int         			_port;
 		std::string 			_ipAdress;
