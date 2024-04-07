@@ -19,7 +19,7 @@ void Client::fillInfo(int serverSocket){
 	socklen_t clientSize = this->getAddrClientSize();
 	this->setAddrClientSize(clientSize);
 	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
-	std::cout << "client socket : " << socketClient << std::endl;
+	//std::cout << "clientClass > client socket : " << socketClient << std::endl;
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
 	this->setServerSocketAssociated(serverSocket);}

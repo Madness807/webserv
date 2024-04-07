@@ -33,24 +33,13 @@ int main(int argc, char **argv)
     TCPHandler tcpHandler;
 
     tcpHandler.setTabServers(2); // nombre de server a mettre en parametre
-   // std::cout << "serverSocket[0] : " << tcpHandler.getTabServers()[0].getPort() << std::endl;
-    //std::cout << "serverSocket[1] : " << tcpHandler.getTabServers()[1].getPort() << std::endl;
     tcpHandler.initServer(2); // nombre de server a mettre en parametre
+    // std::vector<int> fdServers = tcpHandler.getFdServers();
+    // for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
+    // {
+    //     std::cout << "serveurSocket : " << *it << std::endl;
+    // }
     tcpHandler.runServer();
-    //std::vector<Server> servers(2);
-    //Server servers[2](); // use getNbOfServer() to get the number of servers
-    // servers[0] = Server("127.0.0.1", 8888);
-    // servers[1] = Server("127.0.0.1", 8080);
-
-    // servers[1].setFile("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
-    // servers[0].setFile("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-
-    // std::cout << "file[0] :" << servers[0].getFile() << std::endl;
-    // std::cout << "file[1] :" << servers[1].getFile() << std::endl;
-
-    // servers[1].setResponse("HTTP/1.1 200 OK\nContent-Type: text/html\n\n");
-    // servers[0].setResponse("HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n");
-
 
     //Server test(serverconfig.getIp(), serverconfig.getPort());
     // for (int i = 0; i < 2; i++)
@@ -62,8 +51,6 @@ int main(int argc, char **argv)
     //  if (test.Init() < 0)
     //      return -1;
     // test.Run();
-    std::cout << "Server is running" << std::endl;
-
 
 //##################################################################
 //                          NROSSEL                                #

@@ -26,14 +26,18 @@ class TCPHandler
 		int getMaxFd() const;
 		void setMaxFd(int maxFd);
 
-		fd_set getMasterFdRead() const;
-		void setMasterFdRead(fd_set masterFdRead);
+		fd_set getMasterFd() const;
+		void setMasterFd(fd_set masterFd);
 
-		fd_set getMasterFdWrite() const;
-		void setMasterFdWrite(fd_set masterFdWrite);
+		// fd_set getMasterFdWrite() const;
+		// void setMasterFdWrite(fd_set masterFdWrite);
 
-		std::vector<Server> getTabServers();
+		std::vector<Server> getTabServers() const;
 		void setTabServers(int size);
+
+		std::vector<int> getFdServers() const;
+		std::vector<int> getFdClients() const;
+		//void setFdServers(int size);
 
 		//int getIdServer() const;
 
@@ -43,8 +47,10 @@ class TCPHandler
 		std::vector<Server> _servers;
 		std::vector<Client> _clients;
 
-		fd_set _masterFdRead;
-		fd_set _masterFdWrite;
+		fd_set _masterFd;
+		std::vector<int> _fdServers;
+		std::vector<int> _fdClients;
+
 		int _maxFd;
 		int _nbOfServer;
 };
