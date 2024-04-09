@@ -53,7 +53,7 @@ int Request::readVersion(std::string str, size_t index)
 	}
 	if (str[index] == 'H' && str[index + 1] == 'T' && str[index + 2] == 'T' && str[index + 3] == 'P' && str[index + 4] == '/' )
 		this->_version.assign(str, index + 5, 3);
-	if (!this->_version.compare("1.0") && !this->_version.compare("1.1"))
+	if (this->_version.compare("1.0") && this->_version.compare("1.1"))
 	{
 		setRet(400);
 		std::cerr << COLOR_RED << "3.2 BAD HTTP VERSION (" << this->_version << ")" << COLOR_RESET << std::endl;
@@ -103,7 +103,7 @@ int	Request::parse(const std::string &str)
 	{
 		j = line.find_first_of(':');
 		key = line.substr(0, j);
-		value = line.substr(j + 1, line.size());
+		value = line.substr(j + 2, line.size()); //--> possible erreur a voir dans le futur;
 		this->_headers[key] = value;
 		if (key == "Host")
 		{

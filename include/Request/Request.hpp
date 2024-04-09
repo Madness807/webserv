@@ -43,6 +43,7 @@ class Request
 		const std::string							&getMethod() const;
 		const std::string							&getVersion() const;
         const std::map<std::string, std::string>	&getHeaders() const;
+		const std::string							&getOneHeaders(const std::string &key);
 		const std::map<std::string, std::string>	&getEnv() const;
 		int											getRet() const;
 		const std::string							&getBody() const;

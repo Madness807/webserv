@@ -16,10 +16,13 @@ class Response
 
         void                                    setStatusCode(const int &code);
         std::map<int, std::string>              setStatusMessages();
+        void                                    setStatusLine();
+        void                                    setHeaders();
+        void                                    setHeaderLine();
 
     public:
        
-        Response(std::string &str);
+        Response(std::string &);
         ~Response();
 
     // Méthodes///////////////////
@@ -27,7 +30,11 @@ class Response
         int                                     getStatusCode() const;
         std::string                             getStatusMessage(const int &code);
         std::string                             getContent() const;
+
+        std::string                             intToString(int value);
         // SETTERS
 };
+
+std::ostream	&operator<<(std::ostream &out, const Response &response);
 
 #endif

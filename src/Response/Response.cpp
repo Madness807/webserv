@@ -6,7 +6,7 @@
 
 
 // Constructeur
-Response::Response(std::string &str): _request(str), _statusCode(200), _statusMessages(setStatusMessages()), _statusMessage("")
+Response::Response(std::string &str): _request(str), _statusCode(200), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders())
 {
     if (_request.getRet() != 200)
         this->setStatusCode(_request.getRet());
@@ -14,6 +14,11 @@ Response::Response(std::string &str): _request(str), _statusCode(200), _statusMe
     //     this->setStatusCode(_server.getRet());
     else
         this->setStatusCode(200);
+        std::cout << _request.getRaw() << std::endl;
+    std::cout << _request << std::endl;
+    setStatusLine();
+    setHeaderLine();
+
 }
 // Destructeur
 Response::~Response() {}
@@ -22,31 +27,6 @@ void    Response::setStatusCode(const int &code)
 {
     _statusCode = code;
     _statusMessage = this->getStatusMessage(code);
-    if (code != 200)
-    {
-        std::cout << COLOR_RED << "\n\n\n\n################################### CRITICAL ERROR ###################################\n\n" << COLOR_RESET;
-        std::cout << "This computer will" << COLOR_RED << " self-destruct " << COLOR_RESET << "in 10 seconds..." << std::endl;
-        sleep(3);
-        std::cout << "\n9..\n" << std::endl;
-        sleep(1);
-        std::cout << "8..\n" << std::endl;
-        sleep(1);
-        std::cout << "7..\n" << std::endl;
-        sleep(1);
-        std::cout << "6..\n" << std::endl;
-        sleep(1);
-        std::cout << "5..\n" << std::endl;
-        sleep(1);
-        std::cout << "4..\n" << std::endl;
-        sleep(1);
-        std::cout << "3..\n" << std::endl;
-        sleep(1);
-        std::cout << "2..\n" << std::endl;
-        sleep(1);
-        std::cout << "1..\n" << std::endl;
-        sleep(5);
-        std::cout << "\n\n\n\n\nJust Fucking Kidding !!! x)\n\n\n\n" << std::endl;
-    }
 }
 
 std::map<int, std::string>    Response::setStatusMessages()
@@ -68,6 +48,11 @@ int Response::getStatusCode() const
     return (_statusCode);
 }
 
+std::string   Response::getContent() const
+{
+    return(_content);
+}
+
 std::string Response::getStatusMessage(const int &code)
 {
     std::map<int, std::string>::iterator it = _statusMessages.find(code);
@@ -76,6 +61,37 @@ std::string Response::getStatusMessage(const int &code)
     else
         return ("Error");
 }
+
+void    Response::setStatusLine()
+{
+    _content.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
+}
+
+void Response::setHeaderLine()
+{
+    for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
+        if (it->second != "")
+            _content.append(it->first + ":" + it->second + "\r\n");
+    _content += "\r\n";
+}
+
+std::string Response::intToString(int value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
+std::ostream	&operator<<(std::ostream &out, const Response &response)
+{
+	out << "" << std::endl;
+    out << COLOR_GREEN << " # REPONSE DES REQUETES HTTP" << COLOR_RESET << std::endl;
+    out << "" << std::endl;
+	out << response.getContent() << std::endl;
+
+	return (out);
+}
+
 
 
 /*

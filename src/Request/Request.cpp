@@ -79,6 +79,11 @@ const std::string	&Request::getRaw() const
 	return (_raw);
 }
 
+const std::string	&Request::getOneHeaders(const std::string &key)
+{
+	return (_headers[key]);
+}
+
 /* -------------------- Setters --------------------*/
 void Request::setMethod(const std::string &method)
 {
