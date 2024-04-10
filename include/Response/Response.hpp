@@ -3,6 +3,7 @@
 
  #include "../Request/Request.hpp"
  #include "../define.hpp"
+ #include "../ConfigParser/ConfigParser.hpp"
 
 class Response 
 {
@@ -22,7 +23,7 @@ class Response
 
     public:
        
-        Response(std::string &);
+        Response(std::string &, ServerConfig &);
         ~Response();
 
     // Méthodes///////////////////
@@ -30,6 +31,7 @@ class Response
         int                                     getStatusCode() const;
         std::string                             getStatusMessage(const int &code);
         std::string                             getContent() const;
+        Request                                 getRequest() const;
 
         std::string                             intToString(int value);
         // SETTERS

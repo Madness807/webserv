@@ -139,8 +139,8 @@ std::ostream	&operator<<(std::ostream &out, const Request &request)
 		out << COLOR_RED << it->first << COLOR_RESET << " : " << it->second << std::endl;
 	
 	out << "" << std::endl;
-	out << COLOR_BLUE << "HEADER" << COLOR_RESET << std::endl;
-	out << COLOR_BLUE << "-------" << COLOR_RESET;
+	out << COLOR_BLUE << "BODY" << COLOR_RESET << std::endl;
+	out << COLOR_BLUE << "-----" << COLOR_RESET;
 
 
 	out << std::endl << "Request body :" << std::endl << request.getBody() << std::endl;

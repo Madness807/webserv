@@ -1,24 +1,18 @@
 #include "../../include/Response/Response.hpp"
 
-// Méthodes
-// GETTERS
-// SETTERS
-
-
 // Constructeur
-Response::Response(std::string &str): _request(str), _statusCode(200), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders())
+Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(200), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders())
 {
+    (void) serverconfig;
     if (_request.getRet() != 200)
         this->setStatusCode(_request.getRet());
     // else if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
     else
         this->setStatusCode(200);
-        std::cout << _request.getRaw() << std::endl;
     std::cout << _request << std::endl;
     setStatusLine();
     setHeaderLine();
-
 }
 // Destructeur
 Response::~Response() {}
@@ -60,6 +54,11 @@ std::string Response::getStatusMessage(const int &code)
         return (it->second);
     else
         return ("Error");
+}
+
+Request Response::getRequest() const
+{
+    return (_request);
 }
 
 void    Response::setStatusLine()

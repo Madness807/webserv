@@ -26,6 +26,10 @@ class Request
 	int									checkMethod();
 	void								findQuery();
     
+    // Setters
+	void								setMethod(const std::string &method);
+	void								setBody(const std::string &line);
+	void								setRet(int ret);
     public:
     // Constructeur et destructeur
         Request(std::string &str);
@@ -34,10 +38,6 @@ class Request
 	// Copie d'assignation
         Request										&operator=(const Request &other);
 
-    // Setters
-		void										setMethod(const std::string &method);
-		void										setBody(const std::string &line);
-		void										setRet(int ret);
 
     // Getters
 		const std::string							&getMethod() const;
