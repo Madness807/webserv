@@ -1,6 +1,7 @@
 #include "../include/ConfigParser/ConfigParser.hpp"
 #include "../include/ConfigParser/ServerConfig.hpp"
 #include "../include/ConfigParser/LocationConfig.hpp"
+#include "../include/ConfigParser/ServerManager.hpp"
 
 //##################################################################
 //                          GETTERS                                #
@@ -14,40 +15,34 @@ ServerConfig* parsingSrvConf::getServerConfig(const std::string& ip, int port) {
     return nullptr; // Retourne nullptr si aucune configuration correspondante n'est trouvée
 }
 
-
-
 //##################################################################
 //                          Methodes                               #
 //##################################################################
 
-
-void parsingSrvConf::parseServerConfig(std::string line)//
+void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverConfig)//
 {
     if (line.find("server_name") != std::string::npos) {
-        _serverConfig->setServerName(line.substr(line.find("server_name") + 12, line.find(":") - line.find("server_name") - 13));
+        serverConfig->setServerName(line.substr(line.find("server_name") + 12, line.find(":") - line.find("server_name") - 13));
     }
     else if (line.find("ip") != std::string::npos) {
-        _serverConfig->setIp(line.substr(line.find("ip") + 4, line.find(":") - line.find("ip") - 4));
+        serverConfig->setIp(line.substr(line.find("ip") + 4, line.find(":") - line.find("ip") - 4));
     }
     else if (line.find("port") != std::string::npos) {
-        _serverConfig->setPort(line.substr(line.find("port") + 5, line.find(":") - line.find("port") - 6));
+        serverConfig->setPort(line.substr(line.find("port") + 5, line.find(":") - line.find("port") - 6));
     }
     else if (line.find("max_body_size") != std::string::npos) {
-        _serverConfig->setMaxBodySize(line.substr(line.find("max_body_size") + 15, line.find(":") - line.find("max_body_size") - 15));
+        serverConfig->setMaxBodySize(line.substr(line.find("max_body_size") + 15, line.find(":") - line.find("max_body_size") - 15));
     }
     else if (line.find("default_file") != std::string::npos) {
-        _serverConfig->setDefaultFile(line.substr(line.find("default_file") + 12, line.find(":") - line.find("default_file") - 13));
+        serverConfig->setDefaultFile(line.substr(line.find("default_file") + 12, line.find(":") - line.find("default_file") - 13));
     }
     else if (line.find("error_page") != std::string::npos) {
-        _serverConfig->setErrorPage(line.substr(line.find("error_page") + 11, line.find(":") - line.find("error_page") - 12));
+        serverConfig->setErrorPage(line.substr(line.find("error_page") + 11, line.find(":") - line.find("error_page") - 12));
     }
     else if (line.find("root") != std::string::npos) {
-        _serverConfig->setRoot(line.substr(line.find("root") + 6, line.find(":") - line.find("root") - 7));
+        serverConfig->setRoot(line.substr(line.find("root") + 6, line.find(":") - line.find("root") - 7));
     }
 }
-
-// pour le parsingSRVConfig je dois rajouter le fait que chaque moi que je croise un server je dois creer un nouveau serverConfig
-// et le rajouter dans la liste de serverConfig dans la map de serverManager
 
 LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationConfig& location)
 {
@@ -92,14 +87,27 @@ void parsingSrvConf::readConfigFile(std::string filename)//lecture du fichier de
     }
     std::string line;//variable pour stocker les lignes du fichier
     LocationConfig location = LocationConfig();//variable pour stocker les locations
+    ServerManager Servers = ServerManager();//variable pour stocker les serveurs
+
     while (std::getline(configFile, line))//tant qu'il y a des lignes dans le fichier
     {
-        if (line.find("server") != std::string::npos)//si la ligne contient le mot "server"
+        if (line.find("server_start") != std::string::npos)//si la ligne contient le mot "server"
         {
+            if (line.find("ServerName:"))
+            {
+                _serverConfig->setServerName(line.substr(line.find("ServerName:") + 11, line.find(":") - line.find("ServerName:") - 12));
+
+                Servers.addServerConfig("server_1", ServerConfig());//on ajoute le nouvel objet à la liste des serveurs
+            }
+
             while (std::getline(configFile, line))//tant qu'il y a des lignes dans le fichier
             {
                 if (line.find("ServerConfig_start") != std::string::npos)//si la ligne contient le mot "ServerConfig_start"
                 {   
+                    
+
+
+
                     while (line.find("ServerConfig_end") == std::string::npos)//
                     {
                         std::getline(configFile, line);//on lit la ligne suivante

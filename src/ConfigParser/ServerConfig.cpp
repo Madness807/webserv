@@ -7,7 +7,7 @@ void ServerConfig::setServerName(std::string server_name) {
     _server_name = server_name;
 }
 void ServerConfig::setPort(std::string port) {
-    //convertir string en int
+    //conversion string en int
     _port = std::stoi(port);
 }
 void ServerConfig::setIp(std::string ip) {

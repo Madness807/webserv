@@ -9,9 +9,6 @@
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
-void ServerManager::addServerConfig(const std::string& serverName, const ServerConfig& config) {
-    server_configs[serverName] = config;
-}
 
 //##################################################################
 //                           Methodes                              #
