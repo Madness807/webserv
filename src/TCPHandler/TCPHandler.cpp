@@ -90,153 +90,12 @@ void TCPHandler::initServer(int nbOfServer) {
 }
 
 
-// void TCPHandler::runServer()
-// {
-// 	bool running = true;
-// 	int socketCount = 0;
-// 	//std::vector<Client> clients;
-// 	std::map<int, Client> clients;
-// 	while (running)
-// 	{
-// 		FD_ZERO(&_masterFd);
-
-// 		std::vector<int>fdServers = getFdServers();
-// 		for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
-// 		{
-// 			FD_SET(*it, &_masterFd);
-// 		}
-
-// 		std::vector<int>fdClients = getFdClients();
-// 		for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
-// 		{
-// 			FD_SET(*it, &_masterFd);
-// 		}
-
-
-// 		for (int i = 0; i < FD_SETSIZE; i++) {
-// 		if (FD_ISSET(i, &_masterFd)) {
-// 			std::cout << "File descriptor " << i << " is in the set" << std::endl;
-// 		}
-// 		}
-
-// 		fd_set copy = _masterFd;
-// 		socketCount = select(_maxFd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
-// 		std::cout << "socketCount: " << socketCount << std::endl;
-// 		for (int i = 0; i <= _maxFd; i++)
-// 		{
-// 			if (FD_ISSET(i, &copy))
-// 			{
-// 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-// 				{
-// 					//std::cout << ">> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << std::endl;
-// 					std::cout << "i : " << i << " serverSocket : " << it->getServerSocket() << std::endl;
-// 					if (i == it->getServerSocket())
-// 					{
-// 						std::cout << "i == serverSocket" << std::endl;
-// 						Client newClient;
-// 						newClient.fillInfo(it->getServerSocket());
-// 						clients[newClient.getSocketClient()] = newClient;
-// 						//std::cout << "-------- newClient.getSocketClient() : " << newClient.getSocketClient() << " sockerServer : " << newClient.getServerSocketAssociated() << std::endl;
-// 						_fdClients.push_back(newClient.getSocketClient());
-
-// 						std::vector<int> fdClients = getFdClients();
-// 						for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
-// 						{
-// 							std::cout << ">> ClientsSocket : " << *it << std::endl;
-// 						}
-
-// 						if(newClient.getSocketClient() == -1) //if (clientSocket == -1)
-// 						{
-// 							perror("accept");
-// 							std::cerr << "Error in accepting client";
-// 						}
-// 						if(newClient.getSocketClient() > _maxFd)//if (clientSocket > max_sd)
-// 						{
-// 							_maxFd = newClient.getSocketClient();
-// 						}
-// 						//FD_SET(newClient.getSocketClient(), &_masterFd);
-// 					break;
-// 					}
-// 				}
-// 			}
-// 			if (FD_ISSET(i, &copy))
-// 			{
-// 				int reading = 0;
-// 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-// 				{
-// 					for (int j = 0; j <= _maxFd; j++)
-// 					{
-// 								if (clients.count(j) > 0)
-// 								{
-// 									Client& client = clients[j];
-// 									if (i != it->getServerSocket())
-// 									{
-// 										//std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
-// 										char tmp[BUFFER_SIZE];
-// 										memset(tmp, 0, sizeof(tmp));
-// 										reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
-// 										//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
-
-// 										std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
-// 										std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
-// 										//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
-
-// 										it->setReading(reading);
-
-// 										//std::cout << "reading: " << it->getReading() << std::endl;
-// 										//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
-// 										if (it->getReading() <= 0)
-// 										{
-// 											perror("recv");
-// 											close(i);
-// 											for (std::vector<int>::iterator it = _fdClients.begin(); it != _fdClients.end();)
-// 											{
-// 												if (*it == client.getSocketClient())
-// 												{
-// 													std::cout << "ClientsSocket to erase: " << *it << std::endl;
-// 													it = _fdClients.erase(it); // erase renvoie un itérateur vers l'élément suivant
-// 												}
-// 												else
-// 													++it;
-// 											}
-// 										}
-// 										else
-// 										{
-// 											client.setBuffer(tmp);
-// 											it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
-// 											//it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
-// 											std::cout << "getBuffer: " << client.getBuffer() << "I : " << i << std::endl;
-// 											std::cout << "socket client: " << client.getSocketClient() << " socketServer associated with : " << client.getServerSocketAssociated() << std::endl;
-// 										}
-// 										break;
-// 								}
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	//int i = 0;
-// 	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-// 	{
-// 		// FD_CLR(it->getServerSocket(), &_masterFdRead);
-// 		close(it->getServerSocket());
-// 	}
-
-// 	// while (FD_ISSET(_servers[i].getServerSocket(), &_masterFdRead))
-// 	// {
-// 	// 	FD_CLR(_servers[i].getServerSocket(), &_masterFdRead);
-// 	// }
-// 	// close(_servers[i].getServerSocket());
-// }
-
 void TCPHandler::runServer()
 {
 	bool running = true;
 	int socketCount = 0;
-	std::vector<Client> clients(100);
-
+	//std::vector<Client> clients;
+	std::map<int, Client> clients;
 	while (running)
 	{
 		FD_ZERO(&_masterFd);
@@ -246,13 +105,13 @@ void TCPHandler::runServer()
 		{
 			FD_SET(*it, &_masterFd);
 		}
-		//std::cout << "check 1 " << std::endl;
+
 		std::vector<int>fdClients = getFdClients();
 		for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
 		{
 			FD_SET(*it, &_masterFd);
 		}
-		//std::cout << "check 2 " << std::endl;
+
 
 		for (int i = 0; i < FD_SETSIZE; i++) {
 		if (FD_ISSET(i, &_masterFd)) {
@@ -270,32 +129,33 @@ void TCPHandler::runServer()
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
 					//std::cout << ">> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << std::endl;
+					std::cout << "i : " << i << " serverSocket : " << it->getServerSocket() << std::endl;
 					if (i == it->getServerSocket())
 					{
 						std::cout << "i == serverSocket" << std::endl;
-						clients[i].fillInfo(it->getServerSocket());
-						// while(clients[i].getSocketClient())
-						// {
-						_fdClients.push_back(clients[i].getSocketClient());
-						// }
+						Client newClient;
+						newClient.fillInfo(it->getServerSocket());
+						clients[newClient.getSocketClient()] = newClient;
+						std::cout << "-------- newClient.getSocketClient() : " << newClient.getSocketClient() << " sockerServer : " << newClient.getServerSocketAssociated() << std::endl;
+						_fdClients.push_back(newClient.getSocketClient());
+
 						std::vector<int> fdClients = getFdClients();
 						for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
 						{
-						    std::cout << ">> ClientsSocket : " << *it << std::endl;
+							std::cout << ">> ClientsSocket : " << *it << std::endl;
 						}
 
-						if(clients[i].getSocketClient() == -1) //if (clientSocket == -1)
+						if(newClient.getSocketClient() == -1) //if (clientSocket == -1)
 						{
 							perror("accept");
 							std::cerr << "Error in accepting client";
 						}
-						if(clients[i].getSocketClient() > _maxFd)//if (clientSocket > max_sd)
+						if(newClient.getSocketClient() > _maxFd)//if (clientSocket > max_sd)
 						{
-							_maxFd = clients[i].getSocketClient();
+							_maxFd = newClient.getSocketClient();
 						}
-						//FD_SET(clients[i].getSocketClient(), &_masterFd);
-					//	std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
-					break;
+						//FD_SET(newClient.getSocketClient(), &_masterFd);
+						break;
 					}
 				}
 			}
@@ -304,49 +164,54 @@ void TCPHandler::runServer()
 				int reading = 0;
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
-					if (i != it->getServerSocket())
-					{
-						//std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
-						char tmp[BUFFER_SIZE];
-						memset(tmp, 0, sizeof(tmp));
-						//reading = recv(clients[i].getSocketClient(), tmp, sizeof(tmp), 0);
-						reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
-
-						std::cout << "fdclient : " << *_fdClients.begin() << std::endl;
-						std::cout << "fdclient clients[i].getSocketClient()" << clients[i].getSocketClient() << " i : " << i << std::endl;
-						//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
-
-						it->setReading(reading);
-
-						//std::cout << "reading: " << it->getReading() << std::endl;
-						//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
-
-
-						if (it->getReading() <= 0)
-						{
-							perror("recv");
-							close(i);
-							for (std::vector<int>::iterator it = _fdClients.begin(); it != _fdClients.end();)
-							{
-								if (*it == clients[i].getSocketClient())
+					// for (int j = 0; j <= _maxFd; j++)
+					// {
+								if (clients.count(i) > 0)
 								{
-									std::cout << "ClientsSocket to erase: " << *it << std::endl;
-									it = _fdClients.erase(it); // erase renvoie un itérateur vers l'élément suivant
+									Client& client = clients[i];
+									if (i != it->getServerSocket())
+									{
+										std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
+										char tmp[BUFFER_SIZE];
+										memset(tmp, 0, sizeof(tmp));
+										reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+										//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
+
+										std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
+										std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
+										//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
+
+										it->setReading(reading);
+
+										//std::cout << "reading: " << it->getReading() << std::endl;
+										//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
+										if (it->getReading() <= 0)
+										{
+											perror("recv");
+											close(i);
+											for (std::vector<int>::iterator it = _fdClients.begin(); it != _fdClients.end();)
+											{
+												if (*it == client.getSocketClient())
+												{
+													std::cout << "ClientsSocket to erase: " << *it << std::endl;
+													it = _fdClients.erase(it); // erase renvoie un itérateur vers l'élément suivant
+												}
+												else
+													++it;
+											}
+										}
+										else
+										{
+											client.setBuffer(tmp);
+											it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
+											//it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
+											std::cout << "getBuffer: " << client.getBuffer() << "I : " << i << std::endl;
+											std::cout << "socket client: " << client.getSocketClient() << " socketServer associated with : " << client.getServerSocketAssociated() << std::endl;
+										}
+										break;
 								}
-								else
-									++it;
-							}
-							//FD_CLR(i, &_masterFdRead);
 						}
-						else
-						{
-							clients[i].setBuffer(tmp);
-							it->sendToClient(clients[i].getSocketClient(), clients[i].getBuffer().c_str(), it->getReading());
-							std::cout << "getBuffer: " << clients[i].getBuffer() << "I : " << i << std::endl;
-							std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
-						}
-						break;
-					}
+					// }
 				}
 			}
 		}
@@ -365,117 +230,3 @@ void TCPHandler::runServer()
 	// }
 	// close(_servers[i].getServerSocket());
 }
-
-
-
-
-// void TCPHandler::runServer()
-// {
-// 	bool running = true;
-// 	int socketCount = 0;
-// 	//int reading = 0;
-// 	std::vector<Client> clients(100);
-
-// 	while (running)
-// 	{
-// 		//std::cout << "ip : " << _ipAdress << " port : " << _port << std::endl;
-// 		fd_set copyRead = _masterFdRead;
-// 		//fd_set copyWrite = _masterFdWrite;
-// 		// See who's talking to us
-// 		socketCount = select(_maxFd + 1, &copyRead, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
-// 		//std::cout << "socketCount: " << socketCount << std::endl;
-// 		// Loop through all the current connections / potential connect
-// 		for (int i = 0; i <= _maxFd; i++)
-// 		{
-// 		//	std::cout << "i : " << i << std::endl;
-// 		//	std::cout << "server PORT : " << _servers[0].getPort() << std::endl;
-// 		//	std::cout << "server SOCKET : " << _servers[0].getServerSocket() << std::endl;
-
-// 			if (FD_ISSET(i, &copyRead))
-// 			{
-// 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-// 				{
-
-// 					std::cout << ">> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << std::endl;
-
-// 					if (i == it->getServerSocket())
-// 					{
-// 						std::cout << "i == serverSocket" << std::endl;
-// 						clients[i].fillInfo(it->getServerSocket());
-
-// 						if(clients[i].getSocketClient() == -1) //if (clientSocket == -1)
-// 						{
-// 							perror("accept");
-// 							std::cerr << "Error in accepting client";
-// 						}
-// 						if(clients[i].getSocketClient() > _maxFd)//if (clientSocket > max_sd)
-// 						{
-// 							_maxFd = clients[i].getSocketClient();
-// 						}
-// 						FD_SET(clients[i].getSocketClient(), &_masterFdRead);
-// 					//	std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
-// 					break;
-// 					}
-// 				}
-// 			}
-// 			if (FD_ISSET(i, &copyRead))
-// 			{
-// 				int reading = 0;
-// 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-// 				{
-// 					if (i != it->getServerSocket())
-// 					{
-// 						// it->getBuffer().assign(BUFFER_SIZE, 0);
-// 						//std::cout << ">>>> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << " client i : " << i << std::endl;
-// 						//std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
-// 						char tmp[BUFFER_SIZE];
-// 						memset(tmp, 0, sizeof(tmp));
-// 						reading = recv(clients[i].getSocketClient(), tmp, sizeof(tmp), 0);
-
-// 						it->setReading(reading);
-
-// 						//std::cout << "reading: " << it->getReading() << std::endl;
-// 						std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
-
-
-// 						if (it->getReading() <= 0)
-// 						{
-// 							perror("recv");
-// 							close(i);
-// 							FD_CLR(i, &_masterFdRead);
-// 							//onClientDisconnected(i);
-// 						}
-// 						else
-// 						{
-// 							std::cout << ">> getBuffer: " << it->getBuffer() << std::endl;
-// 							clients[i].setBuffer(tmp);
-// 							it->sendToClient(clients[i].getSocketClient(), clients[i].getBuffer().c_str(), it->getReading());
-// 							//it->sendToClient(clients[i].getSocketClient(), it->getBuffer().c_str(), it->getReading());
-
-// 							//it->sendToClient(clients[i].getSocketClient(),"blabla", 7);
-// 							//it->sendToClient(i, it->getBuffer().c_str(), it->getReading());
-// 							std::cout << "getBuffer: " << clients[i].getBuffer() << "Ii : " << i << std::endl;
-// 							std::cout << "socket client: " << clients[i].getSocketClient() << " socketServer associated with : " << clients[i].getServerSocketAssociated() << std::endl;
-
-// 						}
-// 						break;
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	//int i = 0;
-// 	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-// 	{
-// 		FD_CLR(it->getServerSocket(), &_masterFdRead);
-// 		close(it->getServerSocket());
-// 	}
-
-// 	// while (FD_ISSET(_servers[i].getServerSocket(), &_masterFdRead))
-// 	// {
-// 	// 	FD_CLR(_servers[i].getServerSocket(), &_masterFdRead);
-// 	// }
-// 	// close(_servers[i].getServerSocket());
-// }
-

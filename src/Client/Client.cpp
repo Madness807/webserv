@@ -11,18 +11,27 @@ Client::Client(const Client &other) {
 
 Client &Client::operator=(const Client &other) {
 	if (this != &other) {
+		this->_socketClient = other._socketClient;
+		this->_serverSocketAssociated = other._serverSocketAssociated;
+		this->_clientRequete = other._clientRequete;
+		this->_clientReponse = other._clientReponse;
+		this->_buffer = other._buffer;
+		this->_addrClient = other._addrClient;
+		this->_addrClientSize = other._addrClientSize;
 	}
 	return *this;}
 
 void Client::fillInfo(int serverSocket){
 
 	socklen_t clientSize = this->getAddrClientSize();
-	this->setAddrClientSize(clientSize);
+	std::cout << "Client size accepting: " << clientSize << std::endl;
 	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
 	//std::cout << "clientClass > client socket : " << socketClient << std::endl;
+	std::cout << "Client size accepted: " << clientSize << std::endl;
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
-	this->setServerSocketAssociated(serverSocket);}
+	this->setServerSocketAssociated(serverSocket);
+}
 
 std::string Client::getRequete() const{
 	return this->_clientRequete;}
