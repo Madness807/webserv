@@ -9,33 +9,36 @@
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
-ServerConfig* ServerManager::getServerConfig(const std::string& ip, int port)
+void ServerManager::setServerConfig(std::string filename)
 {
-    // implémentation de la méthode getServerConfig en cpp98 sans auto
-    std::map<std::pair<std::string, int>, ServerConfig>::iterator it = server_configs.find(std::make_pair(ip, port));
-    if (it != server_configs.end()) {
-        return &it->second;
-    }
-    return 0;
+    parsingSrvConf parsing;
+    this->_configs = parsing.readConfigFile(filename);
 }
 
 //##################################################################
 //                           Methodes                              #
 //##################################################################
-void ServerManager::addServerConfig(const std::string& ip, int port, const ServerConfig& config) {
-    // Ajoute une configuration de serveur
-    server_configs[std::make_pair(ip, port)] = config;
-}
 
-void ServerManager::removeServerConfig(const std::string& ip, int port) {
-    server_configs.erase(std::make_pair(ip, port));
-}
+    ServerConfig* ServerManager::getServerConfig(const std::string& ip, int port)
+    {
+        std::vector<ServerConfig>::iterator it;
+        for (it = this->_configs.begin(); it != this->_configs.end(); it++)
+        {
+            if (it->getIp() == ip && it->getPort() == port)
+                return &(*it);
+        }
+        return NULL;
+    }
 
 //##################################################################
 //                   Constructor && Destructor                     #
 //##################################################################
 ServerManager::ServerManager() {
     // Constructeur
+}
+ServerManager::ServerManager(std::string filename) {
+    parsingSrvConf parsing;
+    this->_configs = parsing.readConfigFile(filename);
 }
 
 ServerManager::~ServerManager() {

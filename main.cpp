@@ -1,7 +1,7 @@
 #include <iostream>
 #include "fstream"
 #include "include/define.hpp"
-#include "include/ConfigParser/ConfigParser.hpp"
+#include "include/ConfigParser/ServerManager.hpp"
 #include "include/ConfigParser/ServerConfig.hpp"
 #include "include/verbose/verbose.hpp"
 #include "include/Server/Server.hpp"
@@ -22,23 +22,23 @@ int main(int argc, char **argv)
 //                          JOTERRET                               #
 //##################################################################
 
-    parsingSrvConf parse_config;
-    parse_config.readConfigFile(config_file);// read the config file
+    ServerManager server_manager(config_file);
 
-    ServerManager serverManager;
-    serverManager.setConfig(parse_config.getServerManager(127.0.0.1, 8888));
+    ServerConfig *serverconfig = server_manager.getServerConfig("127.0.0.1", 8888);
 
-    //printSRVConfig(serverconfig);
+    printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
+    printSRVConfig(server_manager.getServerConfig("127.0.0.2", 7777));
 
+ 
 //##################################################################
 //                          JDEFAYES                               #
 //##################################################################
 
-    // Server test(serverconfig.getIp(), serverconfig.getPort());
-    //  if (test.Init() < 0)
-    //      return -1;
-    // //test.Run();
-    // std::cout << "Server is running" << std::endl;
+    Server test(serverconfig->getIp(), serverconfig->getPort());
+     if (test.Init() < 0)
+         return -1;
+    test.Run();
+    std::cout << "Server is running" << std::endl;
 
 
 //##################################################################
@@ -52,3 +52,5 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+

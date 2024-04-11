@@ -8,6 +8,6 @@
 #include <vector>
 #include <sstream>
 
-void printSRVConfig(ServerConfig serverconfig);
+void printSRVConfig(ServerConfig *serverconfig);
 
 #endif

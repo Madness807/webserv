@@ -11,12 +11,11 @@ class ServerConfig{
     private:
         // Attributs Configuration de base du serveur✅
         std::string _server_name;
-        std::string _ip;
-        int _port;
         std::string _max_body_size;
         std::string _default_file;
         std::string _error_page;
         std::string _root;
+        std::pair<std::string, int> _pair_ip_port;
         std::map<std::string, LocationConfig > _locations_map;
 
     public:
@@ -43,6 +42,7 @@ class ServerConfig{
         std::string getDefaultFile();
         std::string getErrorPage();
         std::string getRoot();
+        std::pair<std::string, int> getPairIpPort();
         LocationConfig getLocationConfig(std::string path);
 
         // Méthodes

@@ -4,13 +4,6 @@
 #include "../include/ConfigParser/ServerManager.hpp"
 
 //##################################################################
-//                          GETTERS                                #
-//##################################################################
-ServerConfig* parsingSrvConf::getServerConfig(const std::string& ip, int port) {
-	return _serverManager.getServerConfig(ip, port);
-}
-
-//##################################################################
 //                          Methodes                               #
 //##################################################################
 
@@ -72,15 +65,16 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 	return (location);
 }
 
-void parsingSrvConf::readConfigFile(std::string filename)
+std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 {
 	std::ifstream configFile(filename);
 	if (!configFile.is_open())
 	{
 		std::cerr << "Error: could not open file " << filename << std::endl;
-		return;
+		return std::vector<ServerConfig>();
 	}
 	std::string line;
+	std::vector<ServerConfig> serverConfigs;
 	ServerConfig currentServerConfig;
 	LocationConfig location;
 	bool inServerConfig = false;
@@ -98,7 +92,8 @@ void parsingSrvConf::readConfigFile(std::string filename)
 		}
 		else if (line.find("server_end") != std::string::npos)
 		{
-			_serverManager.addServerConfig(currentServerConfig.getIp(), currentServerConfig.getPort(), currentServerConfig);
+			// _serverManager.addServerConfig(currentServerConfig.getIp(), currentServerConfig.getPort(), currentServerConfig);
+			serverConfigs.push_back(currentServerConfig);
 			inServerConfig = false;
 		}
 		else if (inServerConfig)
@@ -124,6 +119,7 @@ void parsingSrvConf::readConfigFile(std::string filename)
 		}
 	}
 	configFile.close();//fermeture du fichier
+	return serverConfigs;
 }
 
 //##################################################################
@@ -131,14 +127,11 @@ void parsingSrvConf::readConfigFile(std::string filename)
 //##################################################################
 parsingSrvConf::parsingSrvConf() {
 }
-parsingSrvConf::parsingSrvConf(const parsingSrvConf& other) {
-}
+// parsingSrvConf::parsingSrvConf(const parsingSrvConf& other) {
+// }
 parsingSrvConf::~parsingSrvConf() {
 }
 
-
-// todo
-// Ajustements Basés sur la Discussion :
 // Passer de std::list<ServerConfig> à une structure de données qui fournit un accès plus rapide et permet une recherche basée sur une clé unique. Cela pourrait être une std::map avec une paire IP-port comme clé.
 // Assurer que le ServerManager dispose de méthodes appropriées pour ajouter, récupérer et supprimer des configurations de serveur basées sur la paire IP-port.
 // Mettre à jour le parsingSrvConf pour utiliser ServerManager lors de l'ajout de nouvelles configurations de serveur après les avoir parsées.
