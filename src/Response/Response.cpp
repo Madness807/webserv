@@ -1,18 +1,19 @@
 #include "../../include/Response/Response.hpp"
 
 // Constructeur
-Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(200), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders())
+Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders())
 {
-    (void) serverconfig;
-    if (_request.getRet() != 200)
-        this->setStatusCode(_request.getRet());
-    // else if (_server.getRet() != 200)
+    this->setServer(serverconfig);
+    // if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
-    else
+    
         this->setStatusCode(200);
+    // if (server.getCgi() == "On") -->> si cgi actif
+        // go->cgi();
     std::cout << _request << std::endl;
-    setStatusLine();
-    setHeaderLine();
+    this->setStatusLine();
+    this->setHeaderLine();
+    this->setContent();
 }
 // Destructeur
 Response::~Response() {}
@@ -23,6 +24,7 @@ void    Response::setStatusCode(const int &code)
     _statusMessage = this->getStatusMessage(code);
 }
 
+// Setter
 std::map<int, std::string>    Response::setStatusMessages()
 {
     std::map<int, std::string>  messages;
@@ -37,6 +39,55 @@ std::map<int, std::string>    Response::setStatusMessages()
     return (messages);
 }
 
+void    Response::setStatusLine()
+{
+    _content.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
+}
+
+void Response::setHeaderLine()
+{
+    for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
+        if (it->second != "")
+            _content.append(it->first + ":" + it->second + "\r\n");
+    _content += "\r\n";
+}
+
+void    Response::setServer(ServerConfig &serverconfig)
+{
+    _server = serverconfig;
+}
+
+void    Response::setErrorBody()
+{
+    std::ifstream inFile("../../website/errors/" + intToString(this->getStatusCode()) + ".html");
+    if (!inFile.is_open())
+        std::cerr << COLOR_RED << "Open file fail" << COLOR_RESET << std::endl;
+    std::string line;
+    while (std::getline(inFile, line))
+    {
+        _body.append(line);
+        line.clear();
+    }
+    inFile.close();
+}
+
+void    Response::setContent()
+{
+    // if (_request.getMethod() == "GET")
+    //     this->getMethod();
+    // else if (_request.getMethod() == "POST")
+    //     this->postMethod();
+    // else if (_request.getMethod() == "DELETE")
+    //     this->deleteMethod();
+    // else
+    // {
+        this->setStatusCode(405);
+        this->setErrorBody();
+        
+    // }
+}
+
+// Getter
 int Response::getStatusCode() const
 {
     return (_statusCode);
@@ -61,20 +112,8 @@ Request Response::getRequest() const
     return (_request);
 }
 
-void    Response::setStatusLine()
-{
-    _content.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
-}
-
-void Response::setHeaderLine()
-{
-    for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
-        if (it->second != "")
-            _content.append(it->first + ":" + it->second + "\r\n");
-    _content += "\r\n";
-}
-
-std::string Response::intToString(int value)
+// Others
+std::string intToString(int value)
 {
     std::ostringstream oss;
     oss << value;

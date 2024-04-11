@@ -8,18 +8,23 @@
 class Response 
 {
         Request                                 _request;
-        // ServerConfig                            _server;
+        ServerConfig                            _server;
         int                                     _statusCode;
         std::map<int , std::string>             _statusMessages;
         std::string                             _statusMessage;
         std::string                             _content;
         std::map<std::string , std::string>     _headers;
+        std::string                             _body;
 
+    // SETTERS
         void                                    setStatusCode(const int &code);
         std::map<int, std::string>              setStatusMessages();
         void                                    setStatusLine();
         void                                    setHeaders();
         void                                    setHeaderLine();
+        void                                    setServer(ServerConfig &serverconfig);
+        void                                    setContent();
+        void                                    setErrorBody();
 
     public:
        
@@ -27,16 +32,18 @@ class Response
         ~Response();
 
     // Méthodes///////////////////
+        void                                    getMethod();
+        void                                    postMethod();
+        void                                    deleteMethod();
         // GETTERS
         int                                     getStatusCode() const;
         std::string                             getStatusMessage(const int &code);
         std::string                             getContent() const;
         Request                                 getRequest() const;
 
-        std::string                             intToString(int value);
-        // SETTERS
 };
 
+std::string     intToString(int value);
 std::ostream	&operator<<(std::ostream &out, const Response &response);
 
 #endif
