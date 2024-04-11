@@ -10,8 +10,7 @@
 class ServerManager{
     private:
         // Attributs
-        std::string server_name;
-        std::map<std::string, ServerConfig> server_configs;
+        std::map<std::pair<std::string, int>, ServerConfig> server_configs;
 
     public:
         // constructeur et destructeur
@@ -19,12 +18,11 @@ class ServerManager{
             ~ServerManager();
 
     // Méthodes pour gérer les configurations de serveur
-    void addServerConfig(const std::string& serverName, const ServerConfig& config);
-
-    ServerConfig* getServerConfig(const std::string& serverName);
-
-    void removeServerConfig(const std::string& serverName);
+    void addServerConfig(const std::string& ip, int port, const ServerConfig& config);
+    ServerConfig* getServerConfig(const std::string& ip, int port);
+    void removeServerConfig(const std::string& ip, int port);
 
 };
 
 #endif
+

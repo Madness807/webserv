@@ -13,16 +13,20 @@ int main(int argc, char **argv)
     std::string config_file;
     if (argc > 1)
         config_file = argv[1];
+    else {
+        std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
+        return 1;
+    }
 
 //##################################################################
 //                          JOTERRET                               #
 //##################################################################
 
-    ServerConfig serverconfig;
     parsingSrvConf parse_config;
-
     parse_config.readConfigFile(config_file);// read the config file
-    serverconfig = *parse_config.getServerConfig("127.0.0.1", 8888); // get the server config
+
+    ServerManager serverManager;
+    serverManager.setConfig(parse_config.getServerManager(127.0.0.1, 8888));
 
     //printSRVConfig(serverconfig);
 

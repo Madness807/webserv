@@ -5,12 +5,13 @@
 #include <map>
 #include <list>
 #include "ServerConfig.hpp"
+#include "ServerManager.hpp"
 #include <iostream>
 #include <fstream>
 
 class parsingSrvConf{
     private:
-        std::list<ServerConfig> _serverConfigs;
+        ServerManager _serverManager;
 
     public:
         // Constructeur
@@ -27,7 +28,9 @@ class parsingSrvConf{
 
         // GETTERS
         ServerConfig* getServerConfig(const std::string& ip, int port);
+        ServerConfig* getServerManager(ServerManager& serverManager);
         // SETTERS
+
 };
 
 #endif
@@ -37,3 +40,7 @@ class parsingSrvConf{
 //ajouter un getter pour recuperer un serverconfig en fonction de l'ip et du port
 //ajouter un getter pour recuperer un locationconfig en fonction du path
 //ajouter un getter pour recuperer un locationconfig en fonction du path et du serverconfig
+
+// todo faire la gestion d erreur pour les fichiers de config
+// verifier que j ai au moin l adresse ip et le port
+// verifier que j ai au moin un path
