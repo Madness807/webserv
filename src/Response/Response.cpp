@@ -1,7 +1,7 @@
 #include "../../include/Response/Response.hpp"
 
 // Constructeur
-Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders())
+Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
     // if (_server.getRet() != 200)
@@ -11,10 +11,10 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     // if(_request.getEnv() != "") --> If CGI exist
     // if (server.getCgi() == "On") -->> si cgi actif
         // go->cgi();
-    std::cout << _request << std::endl;
     this->setStatusLine();
     this->setHeaderLine();
     this->setContent();
+    std::cout << _request << std::endl;
 }
 
 // Destructeur
@@ -31,7 +31,7 @@ void Response::setHeaderLine()
     for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
         if (it->second != "")
             _response.append(it->first + ":" + it->second + "\r\n");
-    _response += "\r\n";
+    _response.append("\r\n");
 }
 
 void    Response::setContent()
@@ -46,20 +46,26 @@ void    Response::setContent()
     // {
         this->setStatusCode(405);
         this->setErrorBody();
-        
     // }
+    _response.append(_body);
 }
 
 void    Response::setErrorBody()
 {
-    std::ifstream inFile("../../website/errors/" + intToString(this->getStatusCode()) + ".html");
+    std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
+    std::cout << errPath << std::endl;
+    std::ifstream inFile(errPath, std::ifstream::in);
     if (!inFile.is_open())
-        std::cerr << COLOR_RED << "Open file fail" << COLOR_RESET << std::endl;
+        perror("open");
     std::string line;
     while (std::getline(inFile, line))
     {
-        _body.append(line);
-        line.clear();
+        if (this->_body != "")
+        {
+            this->_body.append(line);
+            continue;
+        }
+        this->_body = line;
     }
     inFile.close();
 }
