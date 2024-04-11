@@ -10,6 +10,7 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     //     this->setStatusCode(_server.getRet());
     else
         this->setStatusCode(200);
+    // if(_request.getEnv() != "") --> If CGI exist
     std::cout << _request << std::endl;
     setStatusLine();
     setHeaderLine();
@@ -42,9 +43,9 @@ int Response::getStatusCode() const
     return (_statusCode);
 }
 
-std::string   Response::getContent() const
+std::string   Response::getResponse() const
 {
-    return(_content);
+    return(_response);
 }
 
 std::string Response::getStatusMessage(const int &code)
@@ -63,15 +64,15 @@ Request Response::getRequest() const
 
 void    Response::setStatusLine()
 {
-    _content.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
+    _response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
 }
 
 void Response::setHeaderLine()
 {
     for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
         if (it->second != "")
-            _content.append(it->first + ":" + it->second + "\r\n");
-    _content += "\r\n";
+            _response.append(it->first + ":" + it->second + "\r\n");
+    _response += "\r\n";
 }
 
 std::string Response::intToString(int value)
@@ -86,7 +87,7 @@ std::ostream	&operator<<(std::ostream &out, const Response &response)
 	out << "" << std::endl;
     out << COLOR_GREEN << " # REPONSE DES REQUETES HTTP" << COLOR_RESET << std::endl;
     out << "" << std::endl;
-	out << response.getContent() << std::endl;
+	out << response.getResponse() << std::endl;
 
 	return (out);
 }

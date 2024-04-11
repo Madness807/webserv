@@ -5,7 +5,7 @@ Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body
 {
 	this->_methods = this->initMethods();
 	this->resetHeaders();
-	this->_env.clear();
+	this->_env_cgi.clear();
 	this->parse(str);
 	if (this->getRet() != 200)
 		std::cerr << COLOR_RED << "Parse error: " << this->getRet() << COLOR_RESET << std::endl;
@@ -46,7 +46,7 @@ const std::map<std::string, std::string>	&Request::getHeaders() const
 
 const std::map<std::string, std::string>	&Request::getEnv() const
 {
-	return (_env);
+	return (_env_cgi);
 }
 
 int	Request::getRet() const

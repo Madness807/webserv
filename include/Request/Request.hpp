@@ -9,7 +9,7 @@ class Request
 	std::vector<std::string>			_methods;
 	std::string							_version;
 	std::map<std::string, std::string>	_headers;
-	std::map<std::string, std::string>	_env;
+	std::map<std::string, std::string>	_env_cgi;
 	int									_ret;
 	std::string							_body;
 	std::string							_port;

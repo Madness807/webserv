@@ -12,8 +12,8 @@ class Response
         int                                     _statusCode;
         std::map<int , std::string>             _statusMessages;
         std::string                             _statusMessage;
-        std::string                             _content;
         std::map<std::string , std::string>     _headers;
+        std::string                             _response;
 
         void                                    setStatusCode(const int &code);
         std::map<int, std::string>              setStatusMessages();
@@ -30,8 +30,8 @@ class Response
         // GETTERS
         int                                     getStatusCode() const;
         std::string                             getStatusMessage(const int &code);
-        std::string                             getContent() const;
         Request                                 getRequest() const;
+        std::string                             getResponse() const;
 
         std::string                             intToString(int value);
         // SETTERS

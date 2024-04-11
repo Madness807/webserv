@@ -34,7 +34,7 @@ int main(int argc, char **argv)
      Server test_server(serverconfig.getIp(), serverconfig.getPort());
      if (test_server.Init() < 0)
          return -1;
-    // test_server.Run();
+    test_server.Run();
     std::cout << "Server is running" << std::endl;
 
 

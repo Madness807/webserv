@@ -180,6 +180,7 @@ gere la logique de selection/polling pour traiter les connexions de maniere non 
 
 void Server::sendToClient(int clientSocket, const char* message, int messageSize)// send message to client
 {
+	std::cout << message;
 	send(clientSocket, message, messageSize, 0);
 }
 
