@@ -20,56 +20,39 @@ int main(int argc, char **argv)
 //                          JOTERRET                               #
 //##################################################################
 
-    ServerConfig serverconfig;
-    parsingSrvConf parse_config;
+    // ServerConfig serverconfig;
+    // parsingSrvConf parse_config;
 
-    parse_config.readConfigFile(config_file);// read the config file
-    serverconfig = *parse_config.getServerConfig(); // get the server config
+    // parse_config.readConfigFile(config_file);// read the config file
+    // serverconfig = *parse_config.getServerConfig(); // get the server config
 
-    printSRVConfig(serverconfig);
+    // printSRVConfig(serverconfig);
 
 //##################################################################
 //                          JDEFAYES                               #
 //##################################################################
     TCPHandler tcpHandler;
-
-     Server test_server(serverconfig.getIp(), serverconfig.getPort());
-     if (test_server.Init() < 0)
-         return -1;
-    // test_server.Run();
-    std::cout << "Server is running" << std::endl;
+    //  Server test_server(serverconfig.getIp(), serverconfig.getPort());
+    //  if (test_server.Init() < 0)
+    //      return -1;
     tcpHandler.setTabServers(2); // nombre de server a mettre en parametre
     tcpHandler.initServer(2); // nombre de server a mettre en parametre
-    // std::vector<int> fdServers = tcpHandler.getFdServers();
-    // for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
-    // {
-    //     std::cout << "serveurSocket : " << *it << std::endl;
-    // }
     tcpHandler.runServer();
 
-    //Server test(serverconfig.getIp(), serverconfig.getPort());
-    // for (int i = 0; i < 2; i++)
-    // {
-    //     if (servers[i].initServer() < 0)
-    //         return -1;
-    //     //servers[i].Run();
-    // }
-    //  if (test.Init() < 0)
-    //      return -1;
-    // test.Run();
+    std::cout << "Server is running" << std::endl;
 
 //##################################################################
 //                          NROSSEL                                #
 //##################################################################
 
-    std::string buffer = "GET /index.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: example.com:8080\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
+    // std::string buffer = "GET /index.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: example.com:8080\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
 
-    std::cout << "\n\n\n\n";
-        Response response(buffer, serverconfig);
-        std::cout << response << std::endl;
+    // std::cout << "\n\n\n\n";
+    //     Response response(buffer, serverconfig);
+    //     std::cout << response << std::endl;
 
-    // std::cout << COLOR_RED << " -------------------- Test Leaks -------------------- \n\n" << COLOR_RESET;
-    return 0;
+    // // std::cout << COLOR_RED << " -------------------- Test Leaks -------------------- \n\n" << COLOR_RESET;
+    // return 0;
 }
 
 

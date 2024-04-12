@@ -1,4 +1,7 @@
 #include "../include/TCPHandler/TCPHandler.hpp"
+#include <fcntl.h>
+TCPHandler* g_tcpHandlerInstance = NULL;
+void globalSignalHandler(int signal);
 
 TCPHandler::TCPHandler()
 {
@@ -46,7 +49,7 @@ std::vector<int> TCPHandler::getFdClients() const {
 
 void TCPHandler::setTabServers(int size) { //utiliser une liste chaine et la parcourir pour init ip/port pour chaque server
 	(void)size;
-	std::vector<Server> servers(0);
+	std::vector<Server> servers;
 	// for (int i = 0; i < size; i++)
 	// {
     // 	servers.push_back(Server(ipAdress, port));
@@ -64,10 +67,6 @@ std::vector<Server> TCPHandler::getTabServers() const {
 	return this->_servers;
 }
 
-// int TCPHandler::getIdServer() const {
-// 	return this->_idServer;
-// }
-
 void TCPHandler::initServer(int nbOfServer) {
 	(void)nbOfServer;
 
@@ -75,9 +74,7 @@ void TCPHandler::initServer(int nbOfServer) {
 
 	for (int i = 0; i < nbOfServer; i++)
 	{
-
 		_servers[i].setServerSocket(getTabServers()[i].Init()); // init server
-		//_servers[i].setServerId(i);
 		serverSocket = _servers[i].getServerSocket();
 		if (serverSocket < 0)
 			exit(EXIT_FAILURE);
@@ -89,53 +86,69 @@ void TCPHandler::initServer(int nbOfServer) {
 	}
 }
 
+int TCPHandler::closeFd() {
+
+	std::cout << "Signal SIGINT received" << std::endl;
+
+	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+	{
+		std::cout << "CLOSING -> it->getServerSocket() : " << it->getServerSocket() << std::endl;
+		close(it->getServerSocket());
+	}
+	std::vector<int>fdClients = getFdClients();
+	for (size_t i = 0; i < fdClients.size(); i++)
+	{
+		std::cout << "CLOSING -> fdClients[i] : " << fdClients[i] << std::endl;
+		close(fdClients[i]);
+	}
+	exit(0);
+}
+
+void globalSignalHandler(int signal) {
+	if (signal == SIGINT)
+	{
+		if(g_tcpHandlerInstance != nullptr)
+			g_tcpHandlerInstance->closeFd();
+	}
+	exit(0);
+}
 
 void TCPHandler::runServer()
 {
 	bool running = true;
 	int socketCount = 0;
-	//std::vector<Client> clients;
-	std::map<int, Client> clients;
+	//std::map<int, Client> clients;
+
+	g_tcpHandlerInstance = this;
+	signal(SIGINT, globalSignalHandler);
+
 	while (running)
 	{
-		FD_ZERO(&_masterFd);
+		setupMasterFd();
+		// for (int i = 0; i < FD_SETSIZE; i++) {
+		// if (FD_ISSET(i, &_masterFd)) {
+		// 	std::cout << "File descriptor " << i << " is in the set" << std::endl;
+		// }
+		// }
 
-		std::vector<int>fdServers = getFdServers();
-		for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
-		{
-			FD_SET(*it, &_masterFd);
-		}
-
-		std::vector<int>fdClients = getFdClients();
-		for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
-		{
-			FD_SET(*it, &_masterFd);
-		}
-
-
-		for (int i = 0; i < FD_SETSIZE; i++) {
-		if (FD_ISSET(i, &_masterFd)) {
-			std::cout << "File descriptor " << i << " is in the set" << std::endl;
-		}
-		}
-
-		fd_set copy = _masterFd;
-		socketCount = select(_maxFd + 1, &copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
-		std::cout << "socketCount: " << socketCount << std::endl;
+		fd_set *copy = &_masterFd;
+		socketCount = select(_maxFd + 1, copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
+		std::cout << "socketCount: " << std::strerror(errno) << socketCount << std::endl;
 		for (int i = 0; i <= _maxFd; i++)
 		{
-			if (FD_ISSET(i, &copy))
+			if (FD_ISSET(i, copy))
 			{
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
-					//std::cout << ">> ip server : " << it->getIpAdress() << " port server : " << it->getPort() << " socketServer : " << it->getServerSocket() << std::endl;
+					//handlingNewClient(i, it);
+
 					std::cout << "i : " << i << " serverSocket : " << it->getServerSocket() << std::endl;
 					if (i == it->getServerSocket())
 					{
 						std::cout << "i == serverSocket" << std::endl;
 						Client newClient;
 						newClient.fillInfo(it->getServerSocket());
-						clients[newClient.getSocketClient()] = newClient;
+						_clients[newClient.getSocketClient()] = newClient;
 						std::cout << "-------- newClient.getSocketClient() : " << newClient.getSocketClient() << " sockerServer : " << newClient.getServerSocketAssociated() << std::endl;
 						_fdClients.push_back(newClient.getSocketClient());
 
@@ -145,48 +158,44 @@ void TCPHandler::runServer()
 							std::cout << ">> ClientsSocket : " << *it << std::endl;
 						}
 
-						if(newClient.getSocketClient() == -1) //if (clientSocket == -1)
+						if(newClient.getSocketClient() == -1)
 						{
 							perror("accept");
 							std::cerr << "Error in accepting client";
 						}
-						if(newClient.getSocketClient() > _maxFd)//if (clientSocket > max_sd)
+
+						if(newClient.getSocketClient() > _maxFd)
 						{
 							_maxFd = newClient.getSocketClient();
 						}
-						//FD_SET(newClient.getSocketClient(), &_masterFd);
 						break;
 					}
 				}
 			}
-			if (FD_ISSET(i, &copy))
+			if (FD_ISSET(i, copy))
 			{
 				int reading = 0;
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
-					if (clients.count(i) > 0)
+					if (_clients.count(i) > 0) // verif si cle i existe
 					{
-						Client& client = clients[i];
+						Client& client = _clients[i]; // recup valeur se trouvnt a la cle i
 						if (i != it->getServerSocket())
 						{
-							std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
+							//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
 							char tmp[BUFFER_SIZE];
 							memset(tmp, 0, sizeof(tmp));
 							reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
-							//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
 
-							std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
+							//std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
 							std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
-							//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
-
 							it->setReading(reading);
 
-							//std::cout << "reading: " << it->getReading() << std::endl;
 							//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
 							if (it->getReading() <= 0)
 							{
 								perror("recv");
-								close(i);
+								close(client.getSocketClient());
 								for (std::vector<int>::iterator it = _fdClients.begin(); it != _fdClients.end();)
 								{
 									if (*it == client.getSocketClient())
@@ -198,31 +207,33 @@ void TCPHandler::runServer()
 										++it;
 								}
 							}
-							// else
-							// {
-							// 	// std::ifstream file(getFile().c_str());
-							// 	std::ifstream file("/Users/nrossel/Desktop/Projet42/projet/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-							// 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
-
-							// 	std::stringstream buffer;
-							// 	buffer << file.rdbuf();
-
-							// 	std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-							// 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-							// 	//std::string response = getResponse() + buffer.str();
-							// 	send(client.getSocketClient(), response.c_str(), response.size(), 0);
-
-							// 	close(client.getSocketClient());
-
-							// }
 							else
 							{
-								client.setBuffer(tmp);
-								it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
-								//it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
-								std::cout << "getBuffer: " << client.getBuffer() << "I : " << i << std::endl;
-								std::cout << "socket client: " << client.getSocketClient() << " socketServer associated with : " << client.getServerSocketAssociated() << std::endl;
+								// std::ifstream file(getFile().c_str());
+								std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+								//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+
+								std::stringstream buffer;
+								buffer << file.rdbuf();
+
+								std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+								//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+								//std::string response = getResponse() + buffer.str();
+								send(client.getSocketClient(), response.c_str(), response.size(), 0);
+								std::cout << "Closing fd client" << std::endl;
+								close(client.getSocketClient());
+
+								client.setSocketClient(-1);
+
 							}
+							// else
+							// {
+							// 	client.setBuffer(tmp);
+							// 	it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
+							// 	//it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
+							// 	std::cout << "getBuffer: " << client.getBuffer() << "I : " << i << std::endl;
+							// 	std::cout << "socket client: " << client.getSocketClient() << " socketServer associated with : " << client.getServerSocketAssociated() << std::endl;
+							// }
 							break;
 						}
 					}
@@ -230,4 +241,65 @@ void TCPHandler::runServer()
 			}
 		}
 	}
+
+}
+
+
+int TCPHandler::setupMasterFd()
+{
+		FD_ZERO(&_masterFd);
+
+		std::vector<int>fdServers = getFdServers();
+		for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
+		{
+			FD_SET(*it, &_masterFd);
+		}
+
+		std::vector<int>fdClients = getFdClients();
+		for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
+		{
+			std::cout << "+++++ fdClients : " << *it << std::endl;
+			if(fcntl(*it, F_GETFL, 0) == -1)
+			{
+				perror("fcntl");
+				std::cerr << "Invalid fd : " << *it << std::endl;
+			}
+			else
+				FD_SET(*it, &_masterFd);
+		}
+		return (0);
+}
+
+
+int TCPHandler::handlingNewClient(int i, std::vector<Server>::iterator it)
+{
+	std::cout << "i : " << i << " serverSocket : " << it->getServerSocket() << std::endl;
+	if (i == it->getServerSocket())
+	{
+		std::cout << "i == serverSocket" << std::endl;
+		Client newClient;
+		newClient.fillInfo(it->getServerSocket());
+		_clients[newClient.getSocketClient()] = newClient;
+		std::cout << "-------- newClient.getSocketClient() : " << newClient.getSocketClient() << " sockerServer : " << newClient.getServerSocketAssociated() << std::endl;
+		_fdClients.push_back(newClient.getSocketClient());
+
+		std::vector<int> fdClients = getFdClients();
+		for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
+		{
+			std::cout << ">> ClientsSocket : " << *it << std::endl;
+		}
+
+		if(newClient.getSocketClient() == -1)
+		{
+			perror("accept");
+			std::cerr << "Error in accepting client";
+		}
+
+		if(newClient.getSocketClient() > _maxFd)
+		{
+			_maxFd = newClient.getSocketClient();
+		}
+
+	}
+	return (0);
 }

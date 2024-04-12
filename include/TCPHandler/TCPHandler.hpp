@@ -34,9 +34,13 @@ class TCPHandler
 
 		std::vector<Server> getTabServers() const;
 		void setTabServers(int size);
-
+		int closeFd();
+		void my_handler(int s);
 		std::vector<int> getFdServers() const;
 		std::vector<int> getFdClients() const;
+
+		int setupMasterFd();
+		int handlingNewClient(int i, std::vector<Server>::iterator it);
 		//void setFdServers(int size);
 
 		//int getIdServer() const;
@@ -45,6 +49,7 @@ class TCPHandler
 
 	private :
 		std::vector<Server> _servers;
+		std::map<int, Client> _clients;
 		//std::vector<Client> _clients;
 
 		fd_set _masterFd;
