@@ -124,8 +124,6 @@ int Server::Run()
 			if (FD_ISSET(i, &copy) && i != _serverSocket)
 			{
 				memset(_buffer, 0, sizeof(_buffer));
-				std::string strResp = _buffer;
-				Response response(strResp, serverConfig);
 				_reading = recv(i, _buffer,sizeof(_buffer), 0);
 				if (_reading <= 0)
 				{
