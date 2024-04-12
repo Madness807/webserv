@@ -45,8 +45,11 @@ class TCPHandler
 
 		int setupMasterFd();
 		int handlingNewClient(int i);
-		int handlingNewRequest(int i);
-		//int clientIsDisconnected(int i, );
+		int handlingCommunication(int i);
+		int createNewClient(int socketServer);
+		int handlingRequest(Client &client);
+		int handlingResponse(Client &client);
+		int clientIsDisconnected(Client &client);
 		//void setFdServers(int size);
 
 		//int getIdServer() const;
