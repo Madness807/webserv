@@ -10,7 +10,7 @@
 void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverConfig)//
 {
 	if (line.find("server_name") != std::string::npos) {
-		serverConfig.setServerName(line.substr(line.find("server_name") + 12, line.find(":") - line.find("server_name") - 13));
+		serverConfig.setServerName(line.substr(line.find("server_name") + 13, line.find(":") - line.find("server_name") - 13));
 	}
 	else if (line.find("ip") != std::string::npos) {
 		serverConfig.setIp(line.substr(line.find("ip") + 4, line.find(":") - line.find("ip") - 4));
@@ -22,7 +22,7 @@ void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverCon
 		serverConfig.setMaxBodySize(line.substr(line.find("max_body_size") + 15, line.find(":") - line.find("max_body_size") - 15));
 	}
 	else if (line.find("default_file") != std::string::npos) {
-		serverConfig.setDefaultFile(line.substr(line.find("default_file") + 12, line.find(":") - line.find("default_file") - 13));
+		serverConfig.setDefaultFile(line.substr(line.find("default_file") + 14, line.find(":") - line.find("default_file") - 14));
 	}
 	else if (line.find("error_page") != std::string::npos) {
 		serverConfig.setErrorPage(line.substr(line.find("error_page") + 11, line.find(":") - line.find("error_page") - 12));
@@ -49,7 +49,7 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 		std::stringstream ss(methodsSubstr);
 		std::string method;
 		std::vector<std::string> methods;
-		 
+
 		while (std::getline(ss, method, ','))
 		{
 			method.erase(0, method.find_first_not_of(" "));
@@ -92,7 +92,6 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 		}
 		else if (line.find("server_end") != std::string::npos)
 		{
-			// _serverManager.addServerConfig(currentServerConfig.getIp(), currentServerConfig.getPort(), currentServerConfig);
 			serverConfigs.push_back(currentServerConfig);
 			inServerConfig = false;
 		}
@@ -118,7 +117,7 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 			}
 		}
 	}
-	configFile.close();//fermeture du fichier
+	configFile.close();
 	return serverConfigs;
 }
 
@@ -127,13 +126,8 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 //##################################################################
 parsingSrvConf::parsingSrvConf() {
 }
-// parsingSrvConf::parsingSrvConf(const parsingSrvConf& other) {
-// }
 parsingSrvConf::~parsingSrvConf() {
 }
 
-// Passer de std::list<ServerConfig> à une structure de données qui fournit un accès plus rapide et permet une recherche basée sur une clé unique. Cela pourrait être une std::map avec une paire IP-port comme clé.
-// Assurer que le ServerManager dispose de méthodes appropriées pour ajouter, récupérer et supprimer des configurations de serveur basées sur la paire IP-port.
-// Mettre à jour le parsingSrvConf pour utiliser ServerManager lors de l'ajout de nouvelles configurations de serveur après les avoir parsées.
 // Veiller à une bonne validation des données du fichier de configuration et à la gestion des erreurs potentielles.
 // En suivant ces points basés sur notre discussion, votre conception et votre code seront alignés pour gérer efficacement les configurations de serveur de votre projet Webserv.

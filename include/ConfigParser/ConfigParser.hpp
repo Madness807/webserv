@@ -31,10 +31,6 @@ class parsingSrvConf{
 
 #endif
 
-//todo modidfier le parsing pour quil prenne en compte les multiples server
-//modifier la boucle du parsing pour qu'il prenne en compte les multiples server
-//ajouter un getter pour recuperer un serverconfig en fonction de l'ip et du port
-//ajouter un getter pour recuperer un locationconfig en fonction du path
 //ajouter un getter pour recuperer un locationconfig en fonction du path et du serverconfig
 
 // todo faire la gestion d erreur pour les fichiers de config
