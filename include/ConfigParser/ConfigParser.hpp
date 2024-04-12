@@ -5,11 +5,10 @@
 #include <map>
 #include <list>
 #include "ServerConfig.hpp"
+#include <iostream>
+#include <fstream>
 
 class parsingSrvConf{
-    private:
-    ServerConfig* _serverConfig;
-
     public:
         // Constructeur
             parsingSrvConf();
@@ -19,11 +18,18 @@ class parsingSrvConf{
             ~parsingSrvConf();
 
         // Méthodes///////////////////
-        void readConfigFile(std::string filename);
+        std::vector<ServerConfig> readConfigFile(std::string filename);
+        void parseServerConfig(std::string line, ServerConfig& serverConfig);
+        LocationConfig parseLocationConfig(std::string line, LocationConfig& location);
 
         // GETTERS
-        ServerConfig* getServerConfig();
+        ServerConfig* getServerConfig(const std::string& ip, int port);
         // SETTERS
+
 };
 
 #endif
+
+// todo faire la gestion d erreur pour les fichiers de config
+// verifier que j ai au moin l adresse ip et le port
+// verifier que j ai au moin un path

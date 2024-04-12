@@ -1,7 +1,7 @@
 #include <iostream>
 #include "fstream"
 #include "include/define.hpp"
-#include "include/ConfigParser/ConfigParser.hpp"
+#include "include/ConfigParser/ServerManager.hpp"
 #include "include/ConfigParser/ServerConfig.hpp"
 #include "include/verbose/verbose.hpp"
 #include "include/Server/Server.hpp"
@@ -15,18 +15,30 @@ int main(int argc, char **argv)
     std::string config_file;
     if (argc > 1)
         config_file = argv[1];
+    else {
+        std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
+        return 1;
+    }
 
 //##################################################################
 //                          JOTERRET                               #
 //##################################################################
 
-    // ServerConfig serverconfig;
-    // parsingSrvConf parse_config;
+    ServerManager server_manager(config_file);
 
-    // parse_config.readConfigFile(config_file);// read the config file
-    // serverconfig = *parse_config.getServerConfig(); // get the server config
+    printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
+    printSRVConfig(server_manager.getServerConfig("127.0.0.2", 7777));
 
-    // printSRVConfig(serverconfig);
+
+    // ServerConfig *ServerConfig1 = server_manager.getServerConfig("127.0.0.2", 7777);
+
+    // std::cout << ServerConfig1->getMaxBodySize() << std::endl;
+    // std::cout << ServerConfig1->getDefaultFile() << std::endl;
+    // std::cout << ServerConfig1->getErrorPage() << std::endl;
+    // std::cout << ServerConfig1->getRoot() << std::endl;
+    // std::cout << ServerConfig1->getServerName() << std::endl;
+    // std::cout << ServerConfig1->getPairIpPort().first << std::endl;
+    // std::cout << ServerConfig1->getPairIpPort().second << std::endl;
 
 //##################################################################
 //                          JDEFAYES                               #
@@ -41,6 +53,13 @@ int main(int argc, char **argv)
 
     std::cout << "Server is running" << std::endl;
 
+
+    // Server test(serverconfig->getIp(), serverconfig->getPort());
+    //  if (test.Init() < 0)
+    //      return -1;
+    // test.Run();
+    // std::cout << "Server is running" << std::endl;
+
 //##################################################################
 //                          NROSSEL                                #
 //##################################################################
@@ -50,6 +69,8 @@ int main(int argc, char **argv)
     // std::cout << "\n\n\n\n";
     //     Response response(buffer, serverconfig);
     //     std::cout << response << std::endl;
+    //     Request test_requette(buffer);
+    //     std::cout << test_requette << std::endl;
 
     // // std::cout << COLOR_RED << " -------------------- Test Leaks -------------------- \n\n" << COLOR_RESET;
     // return 0;
