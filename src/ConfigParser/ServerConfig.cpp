@@ -1,17 +1,28 @@
 #include "../include/ConfigParser/ServerConfig.hpp"
-
+#include <string>
+#include <cstdlib>
 //##################################################################
 //                          SETTERS                                #
 //##################################################################
 void ServerConfig::setServerName(std::string server_name) {
     _server_name = server_name;
 }
-void ServerConfig::setPort(std::string port) {
-    //convertir string en int
-    _port = std::stoi(port);
-}
 void ServerConfig::setIp(std::string ip) {
-    _ip = ip;
+    _pair_ip_port.first = ip;
+}
+// void ServerConfig::setPort(std::string port) {
+//     _pair_ip_port.second = std::stoi(port);
+// }
+void ServerConfig::setPort(std::string port) {
+    char* endptr; // Pointeur pour stocker la position après la conversion
+    unsigned long value = strtoul(port.c_str(), &endptr, 10); // Convertir la chaîne en unsigned long
+
+    if (*endptr != '\0') {
+        // Gérer le cas où la conversion a échoué (par exemple, la chaîne contenait des caractères non numériques)
+        // Vous pouvez afficher un message d'erreur ou prendre d'autres mesures appropriées ici.
+    }
+
+    _pair_ip_port.second = static_cast<int>(value); // Convertir unsigned long en int
 }
 void ServerConfig::setMaxBodySize(std::string max_body_size) {
     _max_body_size = max_body_size;
@@ -36,11 +47,16 @@ std::string ServerConfig::getServerName() {
     return _server_name;
 }
 int ServerConfig::getPort() {
-    return _port;
+    return _pair_ip_port.second;
 }
 std::string ServerConfig::getIp() {
-    return _ip;
+    return _pair_ip_port.first;
 }
+
+std::pair<std::string, int> ServerConfig::getPairIpPort() {
+    return _pair_ip_port;
+}
+
 std::string ServerConfig::getMaxBodySize() {
     return _max_body_size;
 }
@@ -69,8 +85,8 @@ void ServerConfig::addLocation(const std::string& path, const LocationConfig& _l
 //##################################################################
 ServerConfig::ServerConfig() {
     _server_name = "";
-    _port = 0;
-    _ip = "";
+    _pair_ip_port.first = "";
+    _pair_ip_port.second = 0;
     _max_body_size = "";
     _default_file = "";
     _error_page = "";
