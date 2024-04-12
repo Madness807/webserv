@@ -24,15 +24,6 @@ int main(int argc, char **argv)
 //                          JOTERRET                               #
 //##################################################################
 
-<<<<<<< HEAD
-    ServerConfig serverconfig;
-    parsingSrvConf parse_config;
-
-    parse_config.readConfigFile(config_file);// read the config file
-    serverconfig = *parse_config.getServerConfig(); // get the server config
-
-    printSRVConfig(serverconfig);
-=======
     ServerManager server_manager(config_file);
 
     printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
@@ -48,7 +39,6 @@ int main(int argc, char **argv)
     // std::cout << ServerConfig1->getServerName() << std::endl;
     // std::cout << ServerConfig1->getPairIpPort().first << std::endl;
     // std::cout << ServerConfig1->getPairIpPort().second << std::endl;
->>>>>>> origin/main
 
 //##################################################################
 //                          JDEFAYES                               #

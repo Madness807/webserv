@@ -142,9 +142,6 @@ void TCPHandler::runServer()
 			}
 			if (FD_ISSET(i, copy))
 			{
-<<<<<<< HEAD
-				handlingNewRequest(i);
-=======
 				int reading = 0;
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
@@ -209,7 +206,6 @@ void TCPHandler::runServer()
 						}
 					}
 				}
->>>>>>> origin/main
 			}
 		}
 	}
