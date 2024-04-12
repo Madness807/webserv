@@ -26,6 +26,7 @@ SRC				=		main.cpp\
 						src/Request/Parse.cpp\
 						src/Connection/Connection.cpp\
 						src/CGIHandler/CGIHandler.cpp\
+						src/TCPHandler/TCPHandler.cpp\
 						src/verbose/verbose.cpp\
 
 OBJ_DIR			=		build/

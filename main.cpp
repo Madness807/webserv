@@ -8,6 +8,7 @@
 #include "include/client/Client.hpp"
 #include "include/Request/Request.hpp"
 #include "include/Response/Response.hpp"
+#include "include/TCPHandler/TCPHandler.hpp"
 
 int main(int argc, char **argv)
 {
@@ -30,13 +31,32 @@ int main(int argc, char **argv)
 //##################################################################
 //                          JDEFAYES                               #
 //##################################################################
+    TCPHandler tcpHandler;
 
      Server test_server(serverconfig.getIp(), serverconfig.getPort());
      if (test_server.Init() < 0)
          return -1;
     // test_server.Run();
     std::cout << "Server is running" << std::endl;
+    tcpHandler.setTabServers(2); // nombre de server a mettre en parametre
+    tcpHandler.initServer(2); // nombre de server a mettre en parametre
+    // std::vector<int> fdServers = tcpHandler.getFdServers();
+    // for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
+    // {
+    //     std::cout << "serveurSocket : " << *it << std::endl;
+    // }
+    tcpHandler.runServer();
 
+    //Server test(serverconfig.getIp(), serverconfig.getPort());
+    // for (int i = 0; i < 2; i++)
+    // {
+    //     if (servers[i].initServer() < 0)
+    //         return -1;
+    //     //servers[i].Run();
+    // }
+    //  if (test.Init() < 0)
+    //      return -1;
+    // test.Run();
 
 //##################################################################
 //                          NROSSEL                                #
@@ -51,3 +71,6 @@ int main(int argc, char **argv)
     // std::cout << COLOR_RED << " -------------------- Test Leaks -------------------- \n\n" << COLOR_RESET;
     return 0;
 }
+
+
+// mettre buffer 1000 et boucler, strcat + pour former str finale.
