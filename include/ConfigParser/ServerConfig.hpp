@@ -47,6 +47,7 @@ class ServerConfig{
 
         // Méthodes
         void addLocation(const std::string& path, const LocationConfig& _locationConfig);
+        void checkServerConfig();
     
 };
 

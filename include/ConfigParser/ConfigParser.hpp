@@ -5,7 +5,6 @@
 #include <map>
 #include <list>
 #include "ServerConfig.hpp"
-// #include "ServerManager.hpp"
 #include <iostream>
 #include <fstream>
 
@@ -30,8 +29,6 @@ class parsingSrvConf{
 };
 
 #endif
-
-//ajouter un getter pour recuperer un locationconfig en fonction du path et du serverconfig
 
 // todo faire la gestion d erreur pour les fichiers de config
 // verifier que j ai au moin l adresse ip et le port

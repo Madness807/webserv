@@ -7,7 +7,7 @@
 //                          Methodes                               #
 //##################################################################
 
-void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverConfig)//
+void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverConfig)
 {
 	if (line.find("server_name") != std::string::npos) {
 		serverConfig.setServerName(line.substr(line.find("server_name") + 13, line.find(":") - line.find("server_name") - 13));
@@ -79,6 +79,8 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 	LocationConfig location;
 	bool inServerConfig = false;
 	bool inLocationConfig = false;
+	bool finish_SRV_parse = false;
+	bool finish_LOC_parse = false;
 
 	while (std::getline(configFile, line))
 	{
@@ -90,7 +92,15 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 			currentServerConfig = ServerConfig();
 			inServerConfig = true;
 		}
-		else if (line.find("server_end") != std::string::npos)
+		else
+		{
+			std::cerr << "" << std::endl;
+			std::cerr << "\033[31mError: Config_file: Line ServerStart missing\033[0m" << std::endl;
+			std::cerr << "" << std::endl;
+			exit(1);
+		}
+
+		if (line.find("server_end") != std::string::npos)
 		{
 			serverConfigs.push_back(currentServerConfig);
 			inServerConfig = false;
@@ -110,11 +120,15 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 			else if (inLocationConfig)
 			{
 				parseLocationConfig(line, location);
+				finish_LOC_parse = true;
 			}
 			else
 			{
 				parseServerConfig(line, currentServerConfig);
+				finish_SRV_parse = true;
 			}
+			if (finish_LOC_parse == true && finish_SRV_parse == true)
+				std::cout << "Parsing srvConfig && Parsing Locations finish" << std::endl;
 		}
 	}
 	configFile.close();
@@ -128,6 +142,3 @@ parsingSrvConf::parsingSrvConf() {
 }
 parsingSrvConf::~parsingSrvConf() {
 }
-
-// Veiller à une bonne validation des données du fichier de configuration et à la gestion des erreurs potentielles.
-// En suivant ces points basés sur notre discussion, votre conception et votre code seront alignés pour gérer efficacement les configurations de serveur de votre projet Webserv.

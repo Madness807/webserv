@@ -10,7 +10,6 @@
    #include <map>
    #include <list>
    
-
  void printSRVConfig(ServerConfig *serverconfig)
  {
     //Print the server config
@@ -72,9 +71,5 @@
     }  
     std::cout << "" << std::endl;
 
-    std::cout << "" << std::endl;
-    std::cout << COLOR_YELLOW <<"#RESULTAT INERANT A LA PARTIE SOCKET ET RESEAU" << COLOR_RESET << std::endl;
-    std::cout << "" << std::endl;
-   
  }
 

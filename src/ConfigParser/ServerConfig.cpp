@@ -6,12 +6,11 @@
 void ServerConfig::setServerName(std::string server_name) {
     _server_name = server_name;
 }
-void ServerConfig::setPort(std::string port) {
-    //conversion string en int
-    _pair_ip_port.second = std::stoi(port);
-}
 void ServerConfig::setIp(std::string ip) {
     _pair_ip_port.first = ip;
+}
+void ServerConfig::setPort(std::string port) {
+    _pair_ip_port.second = std::stoi(port);
 }
 void ServerConfig::setMaxBodySize(std::string max_body_size) {
     _max_body_size = max_body_size;
