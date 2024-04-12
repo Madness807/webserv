@@ -164,69 +164,70 @@ void TCPHandler::runServer()
 				int reading = 0;
 				for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 				{
-					// for (int j = 0; j <= _maxFd; j++)
-					// {
-								if (clients.count(i) > 0)
+					if (clients.count(i) > 0)
+					{
+						Client& client = clients[i];
+						if (i != it->getServerSocket())
+						{
+							std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
+							char tmp[BUFFER_SIZE];
+							memset(tmp, 0, sizeof(tmp));
+							reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+							//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
+
+							std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
+							std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
+							//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
+
+							it->setReading(reading);
+
+							//std::cout << "reading: " << it->getReading() << std::endl;
+							//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
+							if (it->getReading() <= 0)
+							{
+								perror("recv");
+								close(i);
+								for (std::vector<int>::iterator it = _fdClients.begin(); it != _fdClients.end();)
 								{
-									Client& client = clients[i];
-									if (i != it->getServerSocket())
+									if (*it == client.getSocketClient())
 									{
-										std::cout << ">> client socket : " << clients[i].getSocketClient() << std::endl;
-										char tmp[BUFFER_SIZE];
-										memset(tmp, 0, sizeof(tmp));
-										reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
-										//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
-
-										std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
-										std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
-										//reading = recv(*_fdClients.begin(), tmp, sizeof(tmp), 0);
-
-										it->setReading(reading);
-
-										//std::cout << "reading: " << it->getReading() << std::endl;
-										//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
-										if (it->getReading() <= 0)
-										{
-											perror("recv");
-											close(i);
-											for (std::vector<int>::iterator it = _fdClients.begin(); it != _fdClients.end();)
-											{
-												if (*it == client.getSocketClient())
-												{
-													std::cout << "ClientsSocket to erase: " << *it << std::endl;
-													it = _fdClients.erase(it); // erase renvoie un itérateur vers l'élément suivant
-												}
-												else
-													++it;
-											}
-										}
-										else
-										{
-											client.setBuffer(tmp);
-											it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
-											//it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
-											std::cout << "getBuffer: " << client.getBuffer() << "I : " << i << std::endl;
-											std::cout << "socket client: " << client.getSocketClient() << " socketServer associated with : " << client.getServerSocketAssociated() << std::endl;
-										}
-										break;
+										std::cout << "ClientsSocket to erase: " << *it << std::endl;
+										it = _fdClients.erase(it); // erase renvoie un itérateur vers l'élément suivant
+									}
+									else
+										++it;
 								}
+							}
+							else
+							{
+								// std::ifstream file(getFile().c_str());
+								std::ifstream file("/Users/nrossel/Desktop/Projet42/projet/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+								//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
+
+								std::stringstream buffer;
+								buffer << file.rdbuf();
+
+								std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+								//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+								//std::string response = getResponse() + buffer.str();
+								send(client.getSocketClient(), response.c_str(), response.size(), 0);
+
+								close(client.getSocketClient());
+
+							}
+							// else
+							// {
+							// 	client.setBuffer(tmp);
+							// 	it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
+							// 	//it->sendToClient(client.getSocketClient(), client.getBuffer().c_str(), it->getReading());
+							// 	std::cout << "getBuffer: " << client.getBuffer() << "I : " << i << std::endl;
+							// 	std::cout << "socket client: " << client.getSocketClient() << " socketServer associated with : " << client.getServerSocketAssociated() << std::endl;
+							// }
+							break;
 						}
-					// }
+					}
 				}
 			}
 		}
 	}
-
-	//int i = 0;
-	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
-	{
-		// FD_CLR(it->getServerSocket(), &_masterFdRead);
-		close(it->getServerSocket());
-	}
-
-	// while (FD_ISSET(_servers[i].getServerSocket(), &_masterFdRead))
-	// {
-	// 	FD_CLR(_servers[i].getServerSocket(), &_masterFdRead);
-	// }
-	// close(_servers[i].getServerSocket());
 }
