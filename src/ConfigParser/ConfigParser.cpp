@@ -92,15 +92,7 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 			currentServerConfig = ServerConfig();
 			inServerConfig = true;
 		}
-		else
-		{
-			std::cerr << "" << std::endl;
-			std::cerr << "\033[31mError: Config_file: Line ServerStart missing\033[0m" << std::endl;
-			std::cerr << "" << std::endl;
-			exit(1);
-		}
-
-		if (line.find("server_end") != std::string::npos)
+		else if (line.find("server_end") != std::string::npos)
 		{
 			serverConfigs.push_back(currentServerConfig);
 			inServerConfig = false;
