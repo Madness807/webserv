@@ -40,7 +40,9 @@ class TCPHandler
 		std::vector<int> getFdClients() const;
 
 		int setupMasterFd();
-		int handlingNewClient(int i, std::vector<Server>::iterator it);
+		int handlingNewClient(int i);
+		int handlingNewRequest(int i);
+		//int clientIsDisconnected(int i, );
 		//void setFdServers(int size);
 
 		//int getIdServer() const;

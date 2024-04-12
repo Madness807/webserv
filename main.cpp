@@ -20,13 +20,13 @@ int main(int argc, char **argv)
 //                          JOTERRET                               #
 //##################################################################
 
-    // ServerConfig serverconfig;
-    // parsingSrvConf parse_config;
+    ServerConfig serverconfig;
+    parsingSrvConf parse_config;
 
-    // parse_config.readConfigFile(config_file);// read the config file
-    // serverconfig = *parse_config.getServerConfig(); // get the server config
+    parse_config.readConfigFile(config_file);// read the config file
+    serverconfig = *parse_config.getServerConfig(); // get the server config
 
-    // printSRVConfig(serverconfig);
+    printSRVConfig(serverconfig);
 
 //##################################################################
 //                          JDEFAYES                               #
