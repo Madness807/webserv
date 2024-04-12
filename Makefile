@@ -17,7 +17,7 @@ SRC				=		main.cpp\
 						src/ConfigParser/ServerConfig.cpp\
 						src/ConfigParser/LocationConfig.cpp\
 						src/ConfigParser/ServerManager.cpp\
-						src/Server/Server.cpp\
+						src/server/Server.cpp\
 						src/Client/Client.cpp\
 						src/Response/Response.cpp\
 						src/Request/Request.cpp\

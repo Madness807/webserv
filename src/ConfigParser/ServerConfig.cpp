@@ -1,5 +1,6 @@
 #include "../include/ConfigParser/ServerConfig.hpp"
-
+#include <string>
+#include <cstdlib>
 //##################################################################
 //                          SETTERS                                #
 //##################################################################
@@ -9,8 +10,19 @@ void ServerConfig::setServerName(std::string server_name) {
 void ServerConfig::setIp(std::string ip) {
     _pair_ip_port.first = ip;
 }
+// void ServerConfig::setPort(std::string port) {
+//     _pair_ip_port.second = std::stoi(port);
+// }
 void ServerConfig::setPort(std::string port) {
-    _pair_ip_port.second = std::stoi(port);
+    char* endptr; // Pointeur pour stocker la position après la conversion
+    unsigned long value = strtoul(port.c_str(), &endptr, 10); // Convertir la chaîne en unsigned long
+
+    if (*endptr != '\0') {
+        // Gérer le cas où la conversion a échoué (par exemple, la chaîne contenait des caractères non numériques)
+        // Vous pouvez afficher un message d'erreur ou prendre d'autres mesures appropriées ici.
+    }
+
+    _pair_ip_port.second = static_cast<int>(value); // Convertir unsigned long en int
 }
 void ServerConfig::setMaxBodySize(std::string max_body_size) {
     _max_body_size = max_body_size;

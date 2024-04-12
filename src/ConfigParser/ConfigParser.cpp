@@ -67,7 +67,7 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 
 std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 {
-	std::ifstream configFile(filename);
+	std::ifstream configFile(filename.c_str());
 	if (!configFile.is_open())
 	{
 		std::cerr << "Error: could not open file " << filename << std::endl;

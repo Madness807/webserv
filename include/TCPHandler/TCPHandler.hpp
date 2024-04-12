@@ -12,6 +12,10 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <fstream>
+#include <cstdlib>
+#include <csignal>
+#include <cstring>
+
 
 class TCPHandler
 {

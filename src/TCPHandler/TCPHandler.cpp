@@ -77,7 +77,7 @@ void TCPHandler::initServer(int nbOfServer) {
 		_servers[i].setServerSocket(getTabServers()[i].Init()); // init server
 		serverSocket = _servers[i].getServerSocket();
 		if (serverSocket < 0)
-			exit(EXIT_FAILURE);
+			exit(0);
 		_fdServers.push_back(serverSocket);
 		if (serverSocket > _maxFd)
 			_maxFd = serverSocket;
@@ -107,7 +107,7 @@ int TCPHandler::closeFd() {
 void globalSignalHandler(int signal) {
 	if (signal == SIGINT)
 	{
-		if(g_tcpHandlerInstance != nullptr)
+		if(g_tcpHandlerInstance != NULL)
 			g_tcpHandlerInstance->closeFd();
 	}
 	exit(0);
@@ -210,7 +210,7 @@ void TCPHandler::runServer()
 							else
 							{
 								// std::ifstream file(getFile().c_str());
-								std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
+								std::ifstream file("/home/jo/42/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
 								//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/sitetest.html");
 
 								std::stringstream buffer;
