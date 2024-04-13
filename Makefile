@@ -28,6 +28,7 @@ SRC				=		main.cpp\
 						src/Connection/Connection.cpp\
 						src/CGIHandler/CGIHandler.cpp\
 						src/verbose/verbose.cpp\
+						src/utils/utils.cpp\
 
 OBJ_DIR			=		build/
 OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))
@@ -35,6 +36,7 @@ OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))
 # Compiler and flags
 CXX				=		g++
 CXXFLAGS		=		-Wall -Wextra -Werror -std=c++98 -g
+CXXFLAGS		+= -fsanitize=address
 
 # Recipes
 all: logo start $(NAME)

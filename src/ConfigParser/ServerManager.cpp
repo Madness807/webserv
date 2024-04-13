@@ -21,6 +21,8 @@ void ServerManager::setServerConfig(std::string filename)
             if (it->getIp() == ip && it->getPort() == port)
                 return &(*it);
         }
+        std::cerr << "\033[1;31mError: GetServerConfig: Server not found: Bad ip or Bad Port\033[0m" << std::endl;
+        exit (1);
         return NULL;
     }
 

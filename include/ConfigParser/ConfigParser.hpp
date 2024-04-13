@@ -1,10 +1,11 @@
 #ifndef PARSINGSRVCONF_HPP
 #define PARSINGSRVCONF_HPP
 
+#include "ServerConfig.hpp"
+#include "../utils/utils.hpp"
 #include <string>
 #include <map>
 #include <list>
-#include "ServerConfig.hpp"
 #include <iostream>
 #include <fstream>
 

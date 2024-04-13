@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     ServerManager server_manager(config_file);
 
     printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
-    printSRVConfig(server_manager.getServerConfig("127.0.0.2", 7777));
+    printSRVConfig(server_manager.getServerConfig("127.0.0.1", 7777));
 
 
     // ServerConfig *ServerConfig1 = server_manager.getServerConfig("127.0.0.2", 7777);
