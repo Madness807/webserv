@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include "../utils/utils.hpp"
 
 class LocationConfig{
 	private:

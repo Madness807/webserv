@@ -29,6 +29,7 @@ void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverCon
 	}
 	else if (line.find("root") != std::string::npos) {
 		serverConfig.setRoot((line.substr(line.find(":") + 1)));
+		
 	}
 }
 
@@ -36,11 +37,11 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 {
 	if (line.find("path") != std::string::npos)
 	{   
-		location.setPath(line.substr(line.find("path") + 6, line.find(":") - line.find("path") - 6));
+		location.setPath(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("redirect") != std::string::npos)
 	{
-		location.setRedirect(line.substr(line.find("redirect") + 10, line.find(":") - line.find("redirect") - 10));
+		location.setRedirect(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("methods") != std::string::npos)
 	{

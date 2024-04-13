@@ -4,6 +4,12 @@
 //                          SETTERS                                #
 //##################################################################
 void ServerConfig::setServerName(std::string server_name) {
+    server_name = trim(server_name);
+    if (server_name.empty())
+    {
+        std::cerr << "Error: ServerName: empty server name" << std::endl;
+        exit (1);
+    }
     _server_name = server_name;
 }
 void ServerConfig::setIp(std::string ip) {
