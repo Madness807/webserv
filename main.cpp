@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     ServerManager server_manager(config_file);
 
     printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
-    printSRVConfig(server_manager.getServerConfig("127.0.0.2", 7777));
+    printSRVConfig(server_manager.getServerConfig("127.0.0.1", 7777));
 
 
     // ServerConfig *ServerConfig1 = server_manager.getServerConfig("127.0.0.2", 7777);
@@ -47,8 +47,9 @@ int main(int argc, char **argv)
     //  Server test_server(serverconfig.getIp(), serverconfig.getPort());
     //  if (test_server.Init() < 0)
     //      return -1;
-    tcpHandler.setTabServers(2); // nombre de server a mettre en parametre
-    tcpHandler.initServer(2); // nombre de server a mettre en parametre
+    tcpHandler.setTabServers(server_manager);
+    //tcpHandler.setTabServers(2); // nombre de server a mettre en parametre
+    tcpHandler.initServer(tcpHandler.getNbOfServer()); // nombre de server a mettre en parametre
     tcpHandler.runServer();
 
     std::cout << "Server is running" << std::endl;

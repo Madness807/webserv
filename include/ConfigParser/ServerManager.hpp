@@ -23,8 +23,9 @@ class ServerManager{
             void setServerConfig(std::string filename);
             void removeServerConfig(const std::string& ip, int port);
             ServerConfig* getServerConfig(const std::string& ip, int port);
+            const std::vector<ServerConfig> getServerConfig() const;
 
-    
+
     };
 
 #endif

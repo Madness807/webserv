@@ -46,10 +46,10 @@ void ServerConfig::setLocations_map(std::map<std::string, LocationConfig> locati
 std::string ServerConfig::getServerName() {
     return _server_name;
 }
-int ServerConfig::getPort() {
+int ServerConfig::getPort() const {
     return _pair_ip_port.second;
 }
-std::string ServerConfig::getIp() {
+std::string ServerConfig::getIp() const {
     return _pair_ip_port.first;
 }
 

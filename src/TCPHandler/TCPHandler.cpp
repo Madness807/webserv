@@ -47,18 +47,39 @@ std::vector<int> TCPHandler::getFdClients() const {
 }
 
 
-void TCPHandler::setTabServers(int size) { //utiliser une liste chaine et la parcourir pour init ip/port pour chaque server
+void TCPHandler::setTabServers(int size) {
 	(void)size;
+
 	std::vector<Server> servers;
-	// for (int i = 0; i < size; i++)
-	// {
-    // 	servers.push_back(Server(ipAdress, port));
-	// }
 	servers.push_back(Server("127.0.0.1", 8080));
 	servers.push_back(Server("127.0.0.1", 8888));
 
-	std::cout << "ip server : " << servers[0].getIpAdress() << "port server " << servers[0].getPort() << std::endl;
-	std::cout << "ip server : " << servers[1].getIpAdress() << "port server " << servers[1].getPort() << std::endl;
+	std::cout << "ip server :" << servers[0].getIpAdress() << "port server" << servers[0].getPort() << ";" << std::endl;
+	std::cout << "ip server :" << servers[1].getIpAdress() << "port server" << servers[1].getPort() << ";" << std::endl;
+
+	this->_servers = servers;
+}
+
+int TCPHandler::getNbOfServer() const {
+	return this->_nbOfServer;
+}
+
+void TCPHandler::setTabServers(ServerManager &server_manager)
+{
+	int nbOfServer = 0;
+	std::vector<Server> servers;
+	const std::vector<ServerConfig> serverConfigs = server_manager.getServerConfig();
+	std::vector<ServerConfig>::const_iterator it;
+
+	for(it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
+	{
+		nbOfServer++;
+	}
+	_nbOfServer = nbOfServer;
+	//std::cout << "nbOfServer: " << _nbOfServer << std::endl;
+
+	servers.push_back(Server(serverConfigs[0].getIp(), serverConfigs[0].getPort()));
+	servers.push_back(Server(serverConfigs[1].getIp(), serverConfigs[1].getPort()));
 
 	this->_servers = servers;
 }
@@ -236,7 +257,7 @@ int TCPHandler::handlingCommunication(int i)
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
-	
+
 	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
 	char tmp[BUFFER_SIZE];
 	memset(tmp, 0, sizeof(tmp));
@@ -253,14 +274,14 @@ int TCPHandler::handlingRequest(Client &client)
 int TCPHandler::handlingResponse(Client &client)
 {
 	// std::ifstream file(getFile().c_str());
-	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/MITSUBISHI-Galant-2.5-V6-24V-Edition-Kombi-215000km-Benziner-Automat-2498ccm-161PS-6Zylinder-1580kg-104L-930x620.jpg");
-	std::ifstream file("//home/jo/42/webserv/website/sitetest.html");
+	std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
+	//std::ifstream file("//home/jo/42/webserv/website/sitetest.html");
 
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 
-	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+	std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+	//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
 	//std::string response = getResponse() + buffer.str();
 	send(client.getSocketClient(), response.c_str(), response.size(), 0);
 	std::cout << "Closing fd client" << std::endl;

@@ -24,6 +24,11 @@ void ServerManager::setServerConfig(std::string filename)
         return NULL;
     }
 
+const std::vector<ServerConfig> ServerManager::getServerConfig() const
+{
+    return  this->_configs;
+}
+
 //##################################################################
 //                   Constructor && Destructor                     #
 //##################################################################

@@ -3,8 +3,9 @@
 
 #include "../Server/Server.hpp"
 #include "../client/Client.hpp"
-#include "../../include/ConfigParser/ConfigParser.hpp"
 #include "../../include/Connection/Connection.hpp"
+#include "../ConfigParser/ServerManager.hpp"
+#include "../ConfigParser/ConfigParser.hpp"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -27,21 +28,23 @@ class TCPHandler
 
 		void initServer(int nbOfServer);
 		void runServer();
+
 		int getMaxFd() const;
 		void setMaxFd(int maxFd);
 
 		fd_set getMasterFd() const;
 		void setMasterFd(fd_set masterFd);
 
-		// fd_set getMasterFdWrite() const;
-		// void setMasterFdWrite(fd_set masterFdWrite);
-
 		std::vector<Server> getTabServers() const;
 		void setTabServers(int size);
+
+		void setTabServers(ServerManager &server_manager);
 		int closeFd();
-		void my_handler(int s);
+
 		std::vector<int> getFdServers() const;
 		std::vector<int> getFdClients() const;
+		
+		int getNbOfServer() const;
 
 		int setupMasterFd();
 		int handlingNewClient(int i);
@@ -50,16 +53,10 @@ class TCPHandler
 		int handlingRequest(Client &client);
 		int handlingResponse(Client &client);
 		int clientIsDisconnected(Client &client);
-		//void setFdServers(int size);
-
-		//int getIdServer() const;
-
-
 
 	private :
 		std::vector<Server> _servers;
 		std::map<int, Client> _clients;
-		//std::vector<Client> _clients;
 
 		fd_set _masterFd;
 		std::vector<int> _fdServers;

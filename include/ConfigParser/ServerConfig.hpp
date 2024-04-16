@@ -36,8 +36,8 @@ class ServerConfig{
 
         // GETTERS
         std::string getServerName();
-        int getPort();
-        std::string getIp();
+        int getPort() const;
+        std::string getIp() const;
         std::string getMaxBodySize();
         std::string getDefaultFile();
         std::string getErrorPage();
@@ -48,7 +48,7 @@ class ServerConfig{
         // Méthodes
         void addLocation(const std::string& path, const LocationConfig& _locationConfig);
         void checkServerConfig();
-    
+
 };
 
 #endif
