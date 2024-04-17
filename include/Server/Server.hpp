@@ -4,6 +4,7 @@
 #include "../../include/ConfigParser/ConfigParser.hpp"
 #include "../../include/Connection/Connection.hpp"
 #include "../ConfigParser/ServerConfig.hpp"
+#include "../Response/Response.hpp"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -26,8 +27,8 @@ class Server
 		std::string        		_buffer;
 		int 	   				_socketCount;
 		std::string 			_file;
-		std::string 			_response;
-		std::string				_request;
+		//Response				_response;
+		//std::string				_request;
 		ServerConfig			_serverConfig;
 
 	protected:
@@ -59,6 +60,7 @@ class Server
 		std::string getIpAdress() const;
 		std::string getBuffer() const;
 		int getReading() const;
+		ServerConfig getServerConfig() const;
 
 		// Méthodes
 		int Init();

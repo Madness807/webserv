@@ -2,6 +2,7 @@
 #define CLIENT_HPP
 
 #include "../Connection/Connection.hpp"
+#include "../Response/Response.hpp"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -32,8 +33,8 @@ class Client
 		Client &operator=(const Client &other);
 
 		// SETTERS
-		void setRequete(std::string requete);
-		void setReponse(std::string reponse);
+		//void setRequete(std::string requete);
+		//void setReponse(std::string reponse);
 		void setSocketClient(int socketClient);
 		void setBuffer(std::string message);
 		void setAddrClient(struct sockaddr_in addrClient);
@@ -42,8 +43,8 @@ class Client
 		//void setSocketClient(int socketClient, socklen_t addrSize);
 
 		// GETTERS
-		std::string getRequete() const;
-		std::string getReponse() const;
+		//std::string getRequete() const;
+		//std::string getReponse() const;
 		std::string getBuffer() const;
 		socklen_t getAddrClientSize() const;
 		int getSocketClient() const;

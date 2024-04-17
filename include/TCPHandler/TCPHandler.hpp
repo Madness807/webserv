@@ -6,6 +6,7 @@
 #include "../../include/Connection/Connection.hpp"
 #include "../ConfigParser/ServerManager.hpp"
 #include "../ConfigParser/ConfigParser.hpp"
+#include "../Response/Response.hpp"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>

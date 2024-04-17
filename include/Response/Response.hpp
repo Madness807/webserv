@@ -5,7 +5,7 @@
  #include "../define.hpp"
  #include "../ConfigParser/ConfigParser.hpp"
 
-class Response 
+class Response
 {
         Request                                 _request;
         ServerConfig                            _server;
@@ -27,7 +27,7 @@ class Response
         void                                    setErrorBody();
 
     public:
-       
+
         Response(std::string &, ServerConfig &);
         ~Response();
 

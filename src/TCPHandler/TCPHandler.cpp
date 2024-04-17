@@ -134,6 +134,31 @@ void globalSignalHandler(int signal) {
 	exit(0);
 }
 
+int TCPHandler::setupMasterFd()
+{
+	FD_ZERO(&_masterFd);
+
+	std::vector<int>fdServers = getFdServers();
+	for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
+	{
+		FD_SET(*it, &_masterFd);
+	}
+
+	std::vector<int>fdClients = getFdClients();
+	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
+	{
+		std::cout << "+++++ fdClients : " << *it << std::endl;
+		if(fcntl(*it, F_GETFL, 0) == -1)
+		{
+			perror("fcntl");
+			std::cerr << "Invalid fd : " << *it << std::endl;
+		}
+		else
+			FD_SET(*it, &_masterFd);
+	}
+	return (0);
+}
+
 void TCPHandler::runServer()
 {
 	bool running = true;
@@ -170,32 +195,6 @@ void TCPHandler::runServer()
 		}
 	}
 }
-
-int TCPHandler::setupMasterFd()
-{
-	FD_ZERO(&_masterFd);
-
-	std::vector<int>fdServers = getFdServers();
-	for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
-	{
-		FD_SET(*it, &_masterFd);
-	}
-
-	std::vector<int>fdClients = getFdClients();
-	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
-	{
-		std::cout << "+++++ fdClients : " << *it << std::endl;
-		if(fcntl(*it, F_GETFL, 0) == -1)
-		{
-			perror("fcntl");
-			std::cerr << "Invalid fd : " << *it << std::endl;
-		}
-		else
-			FD_SET(*it, &_masterFd);
-	}
-	return (0);
-}
-
 
 int TCPHandler::handlingNewClient(int i)
 {
@@ -256,13 +255,18 @@ int TCPHandler::handlingCommunication(int i)
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
-
+	//std::string buffer;
 	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
 	char tmp[BUFFER_SIZE];
 	memset(tmp, 0, sizeof(tmp));
+	//std::cout << "SERVER SOCKET : " << client.getServerSocketAssociated() << std::endl;
 	//Response response(tmp, serverConfig);
+	//buffer = &tmp[0];
+	//Response response(buffer, &this->_servers[client.getServerSocketAssociated()].getServerConfig());
+	//_response = response;
 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
 
+	//std::cout << "SERVER CONFIG : " << this->_servers[client.getServerSocketAssociated()].getServerConfig().getDefaultFile() << std::endl;
 
 	//std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
 	std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
@@ -284,7 +288,7 @@ int TCPHandler::handlingResponse(Client &client)
 
 	std::stringstream buffer;
 	buffer << file.rdbuf();
-	std::cout << "buffer: " << buffer.str() << std::endl;
+	//std::cout << "buffer: " << buffer.str() << std::endl;
 
 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
 	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg

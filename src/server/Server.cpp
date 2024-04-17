@@ -53,7 +53,7 @@ Server &Server::operator=(const Server &other)
 		_buffer = other._buffer;
 		_socketCount = other._socketCount;
 		_file = other._file;
-		_response = other._response;
+		//_response = other._response;
 	}
 	return *this;
 }
@@ -65,9 +65,9 @@ void Server::setFile(std::string file){
 	this->_file = file;
 }
 
-void Server::setResponse(std::string response){
-	this->_response = response;
-}
+// void Server::setResponse(std::string response){
+// 	this->_response = response;
+// }
 
 void Server::setServerSocket(int serverSocket){
 	this->_serverSocket = serverSocket;
@@ -84,9 +84,9 @@ std::string Server::getFile() const{
 	return this->_file;
 }
 
-std::string Server::getResponse() const{
-	return this->_response;
-}
+// std::string Server::getResponse() const{
+// 	return this->_response;
+// }
 
 int Server::getServerSocket() const{
 	return this->_serverSocket;
@@ -106,6 +106,10 @@ std::string Server::getBuffer() const{
 
 int Server::getReading() const{
 	return this->_reading;
+}
+
+ServerConfig Server::getServerConfig() const{
+	return this->_serverConfig;
 }
 
 //##################################################################

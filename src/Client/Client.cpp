@@ -30,13 +30,13 @@ Client &Client::operator=(const Client &other) {
 //##################################################################
 //                          SETTERS                                #
 //##################################################################
-void Client::setRequete(std::string requete){
-	this->_clientRequete = requete;
-}
+// void Client::setRequete(std::string requete){
+// 	this->_clientRequete = requete;
+// }
 
-void Client::setReponse(std::string reponse){
-	this->_clientReponse = reponse;
-}
+// void Client::setReponse(std::string reponse){
+// 	this->_clientReponse = reponse;
+// }
 
 void Client::setSocketClient(int socketClient){
 	this->_socketClient = socketClient;
@@ -61,12 +61,12 @@ void Client::setAddrClient(struct sockaddr_in addrClient){
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
-std::string Client::getRequete() const{
-	return this->_clientRequete;
-}
-std::string Client::getReponse() const{
-	return this->_clientReponse;
-}
+// std::string Client::getRequete() const{
+// 	return this->_clientRequete;
+// }
+// std::string Client::getReponse() const{
+// 	return this->_clientReponse;
+// }
 int Client::getSocketClient() const{
 	return this->_socketClient;
 }

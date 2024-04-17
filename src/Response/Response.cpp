@@ -6,7 +6,7 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     this->setServer(serverconfig);
     // if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
-    
+
         this->setStatusCode(200);
     // if(_request.getEnv() != "") --> If CGI exist
     // if (server.getCgi() == "On") -->> si cgi actif
@@ -54,7 +54,7 @@ void    Response::setErrorBody()
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
     std::cout << errPath << std::endl;
-    const char* filename = errPath.c_str(); 
+    const char* filename = errPath.c_str();
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
         perror("open");
