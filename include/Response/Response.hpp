@@ -12,6 +12,8 @@ class Response
         int                                     _statusCode;
         std::map<int , std::string>             _statusMessages;
         std::string                             _statusMessage;
+        typedef void                            (Response::*ptrFt)(const std::string &);
+        std::map<std::string, ptrFt>           _methods;
         std::map<std::string , std::string>     _headers;
         std::string                             _response;
         std::string                             _body;
@@ -25,6 +27,10 @@ class Response
         void                                    setServer(ServerConfig &serverconfig);
         void                                    setContent();
         void                                    setErrorBody();
+        void                                    setMethod();
+        void                                    getMethod(const std::string &);
+        void                                    postMethod(const std::string &);
+        void                                    deleteMethod(const std::string &);
 
     public:
        
@@ -32,14 +38,11 @@ class Response
         ~Response();
 
     // Méthodes///////////////////
-        void                                    getMethod();
-        void                                    postMethod();
-        void                                    deleteMethod();
         // GETTERS
-        int                                     getStatusCode() const;
-        std::string                             getStatusMessage(const int &code);
-        Request                                 getRequest() const;
-        std::string                             getResponse() const;
+        const int                               getStatusCode() const;
+        const std::string                       getStatusMessage(const int &code);
+        const Request                           getRequest() const;
+        const std::string                       getResponse() const;
 
 };
 

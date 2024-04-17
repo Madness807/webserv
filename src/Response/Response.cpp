@@ -1,7 +1,7 @@
 #include "../../include/Response/Response.hpp"
 
 // Constructeur
-Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
+Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _methods(setMethod()), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
     // if (_server.getRet() != 200)
@@ -76,7 +76,13 @@ void    Response::setStatusCode(const int &code)
     _statusMessage = this->getStatusMessage(code);
 }
 
-// Setter
+void   Response::setMethod()
+{
+    _methods["GET"] = &Response::getMethod;
+    _methods["POST"] = &Response::postMethod;
+    _methods["DELETE"] = &Response::deleteMethod;
+}
+
 std::map<int, std::string>    Response::setStatusMessages()
 {
     std::map<int, std::string>  messages;
@@ -98,17 +104,17 @@ void    Response::setServer(ServerConfig &serverconfig)
 
 
 // Getter
-int Response::getStatusCode() const
+const int Response::getStatusCode() const
 {
     return (_statusCode);
 }
 
-std::string   Response::getResponse() const
+const std::string   Response::getResponse() const
 {
     return(_response);
 }
 
-std::string Response::getStatusMessage(const int &code)
+const std::string Response::getStatusMessage(const int &code)
 {
     std::map<int, std::string>::iterator it = _statusMessages.find(code);
     if (it != _statusMessages.end())
@@ -117,7 +123,7 @@ std::string Response::getStatusMessage(const int &code)
         return ("Error");
 }
 
-Request Response::getRequest() const
+const Request Response::getRequest() const
 {
     return (_request);
 }
