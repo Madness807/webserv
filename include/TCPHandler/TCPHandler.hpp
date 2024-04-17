@@ -43,7 +43,7 @@ class TCPHandler
 
 		std::vector<int> getFdServers() const;
 		std::vector<int> getFdClients() const;
-		
+
 		int getNbOfServer() const;
 
 		int setupMasterFd();
@@ -64,6 +64,8 @@ class TCPHandler
 
 		int _maxFd;
 		int _nbOfServer;
+
+		ServerManager _serverManager;
 };
 
 #endif

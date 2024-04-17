@@ -66,6 +66,8 @@ int TCPHandler::getNbOfServer() const {
 
 void TCPHandler::setTabServers(ServerManager &server_manager)
 {
+	_serverManager = server_manager;
+
 	int nbOfServer = 0;
 	std::vector<Server> servers;
 	const std::vector<ServerConfig> serverConfigs = server_manager.getServerConfig();
@@ -76,10 +78,11 @@ void TCPHandler::setTabServers(ServerManager &server_manager)
 		nbOfServer++;
 	}
 	_nbOfServer = nbOfServer;
-	//std::cout << "nbOfServer: " << _nbOfServer << std::endl;
 
-	servers.push_back(Server(serverConfigs[0].getIp(), serverConfigs[0].getPort()));
-	servers.push_back(Server(serverConfigs[1].getIp(), serverConfigs[1].getPort()));
+	for(int i = 0; i < nbOfServer; i++)
+	{
+		servers.push_back(Server(serverConfigs[i].getIp(), serverConfigs[i].getPort()));
+	}
 
 	this->_servers = servers;
 }
@@ -273,15 +276,20 @@ int TCPHandler::handlingRequest(Client &client)
 
 int TCPHandler::handlingResponse(Client &client)
 {
+	std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
+	std::string toto = "website" + test;
+
 	// std::ifstream file(getFile().c_str());
-	std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
-	//std::ifstream file("//home/jo/42/webserv/website/sitetest.html");
+	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
+	std::ifstream file(toto);
+	//std::ifstream file(*ServerConfig.getPath());
 
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 
-	std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-	//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+
 	//std::string response = getResponse() + buffer.str();
 	send(client.getSocketClient(), response.c_str(), response.size(), 0);
 	std::cout << "Closing fd client" << std::endl;

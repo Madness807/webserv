@@ -35,7 +35,7 @@ void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverCon
 LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationConfig& location)
 {
 	if (line.find("path") != std::string::npos)
-	{   
+	{
 		location.setPath(line.substr(line.find("path") + 6, line.find(":") - line.find("path") - 6));
 	}
 	else if (line.find("redirect") != std::string::npos)
@@ -119,8 +119,6 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 				parseServerConfig(line, currentServerConfig);
 				finish_SRV_parse = true;
 			}
-			if (finish_LOC_parse == true && finish_SRV_parse == true)
-				std::cout << "Parsing srvConfig && Parsing Locations finish" << std::endl;
 		}
 	}
 	configFile.close();
