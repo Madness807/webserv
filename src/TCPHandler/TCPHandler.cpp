@@ -1,8 +1,12 @@
 #include "../include/TCPHandler/TCPHandler.hpp"
 #include <fcntl.h>
+
 TCPHandler* g_tcpHandlerInstance = NULL;
 void globalSignalHandler(int signal);
 
+//##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
 TCPHandler::TCPHandler()
 {
 		FD_ZERO(&_masterFd);
@@ -12,6 +16,9 @@ TCPHandler::TCPHandler()
 
 TCPHandler::~TCPHandler() {}
 
+//##################################################################
+//		constructeur par copie et operateur d'affectation		   #
+//##################################################################
 TCPHandler::TCPHandler(const TCPHandler &other) {
 	*this = other;
 }
@@ -22,20 +29,45 @@ TCPHandler &TCPHandler::operator=(const TCPHandler &other) {
 	return *this;
 }
 
-int TCPHandler::getMaxFd() const {
-	return _maxFd;
-}
-
+//##################################################################
+//                          SETTERS                                #
+//##################################################################
 void TCPHandler::setMaxFd(int maxFd) {
 	this->_maxFd = maxFd;
 }
 
-fd_set TCPHandler::getMasterFd() const {
-	return this->_masterFd;
-}
-
 void TCPHandler::setMasterFd(fd_set masterFd) {
 	this->_masterFd = masterFd;
+}
+
+void TCPHandler::setServerManager(ServerManager &serverManager) {
+	this->_serverManager = serverManager;
+}
+
+void TCPHandler::setTabServers(ServerManager &server_manager)
+{
+	this->_serverManager = server_manager;
+	std::vector<Server> servers;
+	const std::vector<ServerConfig> serverConfigs = this->_serverManager.getServerConfig();
+
+	this->_nbOfServer = serverConfigs.size();
+
+	for(int i = 0; i < this->_nbOfServer; i++)
+	{
+		servers.push_back(Server(serverConfigs[i].getIp(), serverConfigs[i].getPort(), this->_serverManager.getServerConfig()[i]));
+	}
+	this->_servers = servers;
+}
+
+//##################################################################
+//                          GETTERS                                #
+//##################################################################
+int TCPHandler::getMaxFd() const {
+	return _maxFd;
+}
+
+fd_set TCPHandler::getMasterFd() const {
+	return this->_masterFd;
 }
 
 std::vector<int> TCPHandler::getFdServers() const {
@@ -46,65 +78,30 @@ std::vector<int> TCPHandler::getFdClients() const {
 	return this->_fdClients;
 }
 
-
-void TCPHandler::setTabServers(int size) {
-	(void)size;
-
-	std::vector<Server> servers;
-	servers.push_back(Server("127.0.0.1", 8080));
-	servers.push_back(Server("127.0.0.1", 8888));
-
-	std::cout << "ip server :" << servers[0].getIpAdress() << "port server" << servers[0].getPort() << ";" << std::endl;
-	std::cout << "ip server :" << servers[1].getIpAdress() << "port server" << servers[1].getPort() << ";" << std::endl;
-
-	this->_servers = servers;
-}
-
 int TCPHandler::getNbOfServer() const {
 	return this->_nbOfServer;
-}
-
-void TCPHandler::setTabServers(ServerManager &server_manager)
-{
-	_serverManager = server_manager;
-
-	int nbOfServer = 0;
-	std::vector<Server> servers;
-	const std::vector<ServerConfig> serverConfigs = server_manager.getServerConfig();
-	std::vector<ServerConfig>::const_iterator it;
-
-	for(it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
-	{
-		nbOfServer++;
-	}
-	_nbOfServer = nbOfServer;
-
-	for(int i = 0; i < nbOfServer; i++)
-	{
-		servers.push_back(Server(serverConfigs[i].getIp(), serverConfigs[i].getPort()));
-	}
-
-	this->_servers = servers;
 }
 
 std::vector<Server> TCPHandler::getTabServers() const {
 	return this->_servers;
 }
 
-void TCPHandler::initServer(int nbOfServer) {
-	(void)nbOfServer;
+//##################################################################
+//                           Methodes                              #
+//##################################################################
+void TCPHandler::initServer() {
 
 	int serverSocket = 0;
 
-	for (int i = 0; i < nbOfServer; i++)
+	for (int i = 0; i < this->_nbOfServer; i++)
 	{
-		_servers[i].setServerSocket(getTabServers()[i].Init()); // init server
-		serverSocket = _servers[i].getServerSocket();
+		this->_servers[i].setServerSocket(getTabServers()[i].Init()); // init server
+		serverSocket = this->_servers[i].getServerSocket();
 		if (serverSocket < 0)
 			exit(0);
-		_fdServers.push_back(serverSocket);
-		if (serverSocket > _maxFd)
-			_maxFd = serverSocket;
+		this->_fdServers.push_back(serverSocket);
+		if (serverSocket > this->_maxFd)
+			this->_maxFd = serverSocket;
 		getTabServers()[i].setServerSocket(serverSocket);
 		//std::cout << "maxFd " << _maxFd << " serversocket: " << serverSocket << std::endl;
 	}
@@ -141,7 +138,6 @@ void TCPHandler::runServer()
 {
 	bool running = true;
 	int socketCount = 0;
-	//std::map<int, Client> clients;
 
 	g_tcpHandlerInstance = this;
 	signal(SIGINT, globalSignalHandler);
@@ -264,7 +260,9 @@ int TCPHandler::handlingRequest(Client &client)
 	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
 	char tmp[BUFFER_SIZE];
 	memset(tmp, 0, sizeof(tmp));
+	//Response response(tmp, serverConfig);
 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+
 
 	//std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
 	std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
@@ -286,6 +284,7 @@ int TCPHandler::handlingResponse(Client &client)
 
 	std::stringstream buffer;
 	buffer << file.rdbuf();
+	std::cout << "buffer: " << buffer.str() << std::endl;
 
 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
 	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg

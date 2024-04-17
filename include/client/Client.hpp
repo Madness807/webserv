@@ -22,35 +22,36 @@ class Client
 		socklen_t			_addrClientSize;
 
 	public:
+		// constructeur et destructeur
 		Client();
 		//Client(const char* ipAdress, int port);
 		~Client();
+
+		// constructeur par copie et operateur d'affectation
 		Client(const Client &other);
 		Client &operator=(const Client &other);
 
-		void fillInfo(int serverSocket);
-
-		std::string getRequete() const;
+		// SETTERS
 		void setRequete(std::string requete);
-
-		std::string getReponse() const;
 		void setReponse(std::string reponse);
-
-		int getSocketClient() const;
-		//void setSocketClient(int socketClient, socklen_t addrSize);
 		void setSocketClient(int socketClient);
-
-		std::string getBuffer() const;
 		void setBuffer(std::string message);
-
-		socklen_t getAddrClientSize() const;
-		void setAddrClientSize(socklen_t size);
-
-		const struct sockaddr_in& getAddrClient() const;
 		void setAddrClient(struct sockaddr_in addrClient);
-
-		int getServerSocketAssociated() const;
+		void setAddrClientSize(socklen_t size);
 		void setServerSocketAssociated(int serverSocket);
+		//void setSocketClient(int socketClient, socklen_t addrSize);
+
+		// GETTERS
+		std::string getRequete() const;
+		std::string getReponse() const;
+		std::string getBuffer() const;
+		socklen_t getAddrClientSize() const;
+		int getSocketClient() const;
+		int getServerSocketAssociated() const;
+		const struct sockaddr_in& getAddrClient() const;
+
+		// METHODES
+		void fillInfo(int serverSocket);
 };
 
 #endif
