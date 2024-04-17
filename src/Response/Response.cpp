@@ -1,9 +1,10 @@
 #include "../../include/Response/Response.hpp"
 
-// Constructeur
-Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _methods(setMethod()), _headers(_request.getHeaders()), _body("")
+/* ------------------- Constructeur -------------------*/
+Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
+    this->setMethod();
     // if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
     
@@ -17,10 +18,10 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     std::cout << _request << std::endl;
 }
 
-// Destructeur
+/* ------------------- Destructeur -------------------*/
 Response::~Response() {}
 
-//Setter
+/* ------------------- Setter -------------------*/
 void    Response::setStatusLine()
 {
     _response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
@@ -36,24 +37,23 @@ void Response::setHeaderLine()
 
 void    Response::setContent()
 {
-    // if (_request.getMethod() == "GET")
-    //     this->getMethod();
-    // else if (_request.getMethod() == "POST")
-    //     this->postMethod();
-    // else if (_request.getMethod() == "DELETE")
-    //     this->deleteMethod();
-    // else
-    // {
+    std::map<std::string, ptrFt>::iterator it = this->_methods.find(_request.getMethod());
+    if (it != this->_methods.end())
+    {
+        ptrFt method = it->second;
+        (this->*method)();
+    }
+    else
+    {
         this->setStatusCode(405);
         this->setErrorBody();
-    // }
+    }
     _response.append(_body);
 }
 
 void    Response::setErrorBody()
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
-    std::cout << errPath << std::endl;
     const char* filename = errPath.c_str(); 
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
@@ -70,23 +70,6 @@ void    Response::setErrorBody()
     }
     inFile.close();
 }
-
-// int main() {
-//     std::string errPath = "your_error_file.txt"; // Replace with your actual error file path
-//     // Convert std::string to const char*
-
-//     std::ifstream inFile(filename); // Open the file
-
-//     if (!inFile.is_open()) {
-//         std::cerr << "Error opening file: " << errPath << std::endl;
-//         return 1;
-//     }
-
-//     // Rest of your code here
-
-//     inFile.close();
-//     return 0;
-// }
 
 void    Response::setStatusCode(const int &code)
 {
@@ -121,8 +104,8 @@ void    Response::setServer(ServerConfig &serverconfig)
 }
 
 
-// Getter
-const int Response::getStatusCode() const
+/* ------------------- Getter -------------------*/
+int Response::getStatusCode() const
 {
     return (_statusCode);
 }
@@ -145,9 +128,24 @@ const Request Response::getRequest() const
 {
     return (_request);
 }
+/* ------------------- Methods -------------------*/
+void    Response::getMethod()
+{
+    LocationConfig local = this->_server.getLocationConfig(this->_request.getPath());
+    std::vector<std::string>::iterator it = local.getMethods().find(this->_request.getMethod());
+}
 
+void    Response::postMethod()
+{
 
-//Other
+}
+
+void    Response::deleteMethod()
+{
+
+}
+
+/* ------------------- Other -------------------*/
 std::string intToString(int value)
 {
     std::ostringstream oss;
@@ -164,14 +162,3 @@ std::ostream	&operator<<(std::ostream &out, const Response &response)
 
 	return (out);
 }
-
-
-
-/*
-Response.cpp
-Rôle: Construit la réponse HTTP à envoyer au client.
-Fonctions:
-    Permet de construire une réponse HTTP, incluant le statut, les en-têtes, et le corps de la réponse.
-    Offre des méthodes pour ajouter des en-têtes, définir le corps de la réponse, et éventuellement gérer les types de contenu MIME.
-    Génère la réponse finale sous forme de chaîne ou de bytes à envoyer sur le réseau.
-*/

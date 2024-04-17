@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     //printSRVConfig(server_manager.getServerConfig("127.0.0.1", 7777));
 
 
-    // ServerConfig *ServerConfig1 = server_manager.getServerConfig("127.0.0.1", 7777);
+    ServerConfig *ServerConfig1 = server_manager.getServerConfig("127.0.0.1", 8888);
 
     // std::cout << ServerConfig1->getMaxBodySize() << std::endl;
     // std::cout << ServerConfig1->getDefaultFile() << std::endl;
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     tcpHandler.setTabServers(server_manager);
     //tcpHandler.setTabServers(2); // nombre de server a mettre en parametre
     tcpHandler.initServer(tcpHandler.getNbOfServer()); // nombre de server a mettre en parametre
-    tcpHandler.runServer();
+    // tcpHandler.runServer();
 
     std::cout << "Server is running" << std::endl;
 
@@ -66,11 +66,11 @@ int main(int argc, char **argv)
 //                          NROSSEL                                #
 //##################################################################
 
-    // std::string buffer = "GET /index.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: example.com:8080\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
+    std::string buffer = "GET /index.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: 120.0.0.1:8888\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
 
-    // std::cout << "\n\n\n\n";
-    //     Response response(buffer, serverconfig);
-    //     std::cout << response << std::endl;
+    std::cout << "\n\n\n\n";
+        Response response(buffer, *ServerConfig1);
+        std::cout << response << std::endl;
     //     Request test_requette(buffer);
     //     std::cout << test_requette << std::endl;
 

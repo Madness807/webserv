@@ -263,8 +263,12 @@ int TCPHandler::handlingRequest(Client &client)
 
 	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
 	char tmp[BUFFER_SIZE];
+	// std::string buffer;
 	memset(tmp, 0, sizeof(tmp));
 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+	buffer = &tmp[0];
+	Response response(buffer, serverConfig);
+	_response = response;
 
 	//std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
 	std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
