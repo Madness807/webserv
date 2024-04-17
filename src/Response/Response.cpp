@@ -54,7 +54,8 @@ void    Response::setErrorBody()
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
     std::cout << errPath << std::endl;
-    std::ifstream inFile(errPath, std::ifstream::in);
+    const char* filename = errPath.c_str(); 
+    std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
         perror("open");
     std::string line;
@@ -69,6 +70,23 @@ void    Response::setErrorBody()
     }
     inFile.close();
 }
+
+// int main() {
+//     std::string errPath = "your_error_file.txt"; // Replace with your actual error file path
+//     // Convert std::string to const char*
+
+//     std::ifstream inFile(filename); // Open the file
+
+//     if (!inFile.is_open()) {
+//         std::cerr << "Error opening file: " << errPath << std::endl;
+//         return 1;
+//     }
+
+//     // Rest of your code here
+
+//     inFile.close();
+//     return 0;
+// }
 
 void    Response::setStatusCode(const int &code)
 {
