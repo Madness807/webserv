@@ -18,7 +18,7 @@ class Response
         std::string                             _response;
         std::string                             _body;
 
-    // SETTERS
+    // SETTERS PRIVÉ
         void                                    setStatusCode(const int &code);
         std::map<int, std::string>              setStatusMessages();
         void                                    setStatusLine();
@@ -28,18 +28,21 @@ class Response
         void                                    setContent();
         void                                    setErrorBody();
         void                                    setMethod();
-        void                                    getMethod();
-        void                                    postMethod();
-        void                                    deleteMethod();
+    
+    // GETTERS PRIVÉ
+        void                                    getContentFile(std::string filename);
+
+    // METHODS PRIVÉE
+        void                                    requestGet();
+        void                                    requestPost();
+        void                                    requestDelete();
 
     public:
-       
-        Response();
+
         Response(std::string &, ServerConfig &);
         ~Response();
 
-    // Méthodes///////////////////
-        // GETTERS
+        // GETTERS PUBLIC
         int                               getStatusCode() const;
         const std::string                 getStatusMessage(const int &code);
         const Request                     getRequest() const;

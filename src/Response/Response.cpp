@@ -7,9 +7,7 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     this->setMethod();
     // if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
-    
-        this->setStatusCode(200);
-    // if(_request.getEnv() != "") --> If CGI exist
+    // this->setStatusCode(200);
     // if (server.getCgi() == "On") -->> si cgi actif
         // go->cgi();
     this->setStatusLine();
@@ -79,9 +77,9 @@ void    Response::setStatusCode(const int &code)
 
 void   Response::setMethod()
 {
-    _methods["GET"] = &Response::getMethod;
-    _methods["POST"] = &Response::postMethod;
-    _methods["DELETE"] = &Response::deleteMethod;
+    _methods["GET"] = &Response::requestGet;
+    _methods["POST"] = &Response::requestPost;
+    _methods["DELETE"] = &Response::requestDelete;
 }
 
 std::map<int, std::string>    Response::setStatusMessages()
@@ -129,20 +127,48 @@ const Request Response::getRequest() const
     return (_request);
 }
 /* ------------------- Methods -------------------*/
-void    Response::getMethod()
+void    Response::requestGet()
 {
-    LocationConfig local = this->_server.getLocationConfig(this->_request.getPath());
-    std::vector<std::string>::iterator it = local.getMethods().find(this->_request.getMethod());
+    std::map<std::string, LocationConfig>::iterator it = _server.getMapLocation().find(_request.getPath());
+    if (it != _server.getMapLocation().end())
+    {
+        std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod());
+        if (it2 != it->second.getMethods().end())
+        {
+            getContentFile(it->second.getPath());
+        }
+    }
 }
 
-void    Response::postMethod()
+void    Response::requestPost()
 {
 
 }
 
-void    Response::deleteMethod()
+void    Response::requestDelete()
 {
 
+}
+
+void    Response::getContentFile(std::string filename)
+{
+    (void) filename;
+    std::string filePath = "website/default.html";
+    const char *file = filePath.c_str();
+    std::ifstream inFile(file, std::ifstream::in);
+    if (!inFile.is_open())
+        perror("open");
+    std::string line;
+    while (std::getline(inFile, line))
+    {
+        if (this->_body != "")
+        {
+            this->_body.append(line);
+            continue;
+        }
+        this->_body = line;
+    }
+    inFile.close();
 }
 
 /* ------------------- Other -------------------*/

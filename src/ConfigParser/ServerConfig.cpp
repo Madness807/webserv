@@ -72,6 +72,9 @@ std::string ServerConfig::getRoot() {
 LocationConfig ServerConfig::getLocationConfig(std::string path) {
     return _locations_map.at(path);
 }
+std::map<std::string, LocationConfig> &ServerConfig::getMapLocation(){
+    return _locations_map;
+}
 
 //##################################################################
 //                           Methodes                              #

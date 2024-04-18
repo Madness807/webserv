@@ -67,7 +67,7 @@ class TCPHandler
 		int _nbOfServer;
 
 		ServerManager	_serverManager;
-		Response _response;
+		// Response _response;
 };
 
 #endif

@@ -266,9 +266,9 @@ int TCPHandler::handlingRequest(Client &client)
 	// std::string buffer;
 	memset(tmp, 0, sizeof(tmp));
 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
-	buffer = &tmp[0];
-	Response response(buffer, serverConfig);
-	_response = response;
+	// buffer = &tmp[0];
+	// Response response(buffer, serverConfig);
+	// _response = response;
 
 	//std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
 	std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
@@ -295,7 +295,7 @@ int TCPHandler::handlingResponse(Client &client)
 	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
 
 	//std::string response = getResponse() + buffer.str();
-	send(client.getSocketClient(), response.c_str(), response.size(), 0);
+	send(client.getSocketClient(), response.c_str(), response.length(), 0);
 	std::cout << "Closing fd client" << std::endl;
 	close(client.getSocketClient());
 
