@@ -53,6 +53,7 @@ Server &Server::operator=(const Server &other)
 		_buffer = other._buffer;
 		_socketCount = other._socketCount;
 		_file = other._file;
+		_serverConfig = other._serverConfig;
 		//_response = other._response;
 	}
 	return *this;

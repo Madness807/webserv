@@ -25,6 +25,14 @@ TCPHandler::TCPHandler(const TCPHandler &other) {
 
 TCPHandler &TCPHandler::operator=(const TCPHandler &other) {
 	if (this != &other) {
+		_servers = other._servers;
+		_clients = other._clients;
+		_masterFd = other._masterFd;
+		_fdServers = other._fdServers;
+		_fdClients = other._fdClients;
+		_maxFd = other._maxFd;
+		_nbOfServer = other._nbOfServer;
+		_serverManager = other._serverManager;
 	}
 	return *this;
 }
@@ -50,12 +58,13 @@ void TCPHandler::setTabServers(ServerManager &server_manager)
 	std::vector<Server> servers;
 	const std::vector<ServerConfig> serverConfigs = this->_serverManager.getServerConfig();
 
-	this->_nbOfServer = serverConfigs.size();
-
-	for(int i = 0; i < this->_nbOfServer; i++)
+	for(std::vector<ServerConfig>::const_iterator it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
 	{
-		servers.push_back(Server(serverConfigs[i].getIp(), serverConfigs[i].getPort(), this->_serverManager.getServerConfig()[i]));
+		Server newserver(it->getIp(), it->getPort(), *it);
+		//std::cout << "CHECK " << newserver.getServerConfig().getIp() << " PORT: " << newserver.getServerConfig().getPort() << std::endl;
+		servers.push_back(newserver);
 	}
+
 	this->_servers = servers;
 }
 
@@ -93,17 +102,16 @@ void TCPHandler::initServer() {
 
 	int serverSocket = 0;
 
-	for (int i = 0; i < this->_nbOfServer; i++)
+	for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
-		this->_servers[i].setServerSocket(getTabServers()[i].Init()); // init server
-		serverSocket = this->_servers[i].getServerSocket();
+		it->setServerSocket(it->Init()); // init server
+		serverSocket = it->getServerSocket();
 		if (serverSocket < 0)
 			exit(0);
 		this->_fdServers.push_back(serverSocket);
 		if (serverSocket > this->_maxFd)
 			this->_maxFd = serverSocket;
-		getTabServers()[i].setServerSocket(serverSocket);
-		//std::cout << "maxFd " << _maxFd << " serversocket: " << serverSocket << std::endl;
+		it->setServerSocket(serverSocket);
 	}
 }
 
@@ -122,7 +130,7 @@ int TCPHandler::closeFd() {
 		std::cout << "CLOSING -> fdClients[i] : " << fdClients[i] << std::endl;
 		close(fdClients[i]);
 	}
-	exit(0);
+	return(0);
 }
 
 void globalSignalHandler(int signal) {
@@ -147,11 +155,11 @@ int TCPHandler::setupMasterFd()
 	std::vector<int>fdClients = getFdClients();
 	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
 	{
-		std::cout << "+++++ fdClients : " << *it << std::endl;
+		//std::cout << "+++++ fdClients : " << *it << std::endl;
 		if(fcntl(*it, F_GETFL, 0) == -1)
 		{
-			perror("fcntl");
 			std::cerr << "Invalid fd : " << *it << std::endl;
+			return (-1);
 		}
 		else
 			FD_SET(*it, &_masterFd);
@@ -186,11 +194,11 @@ void TCPHandler::runServer()
 		{
 			if (FD_ISSET(i, copy))
 			{
-				handlingNewClient(i);
+				handlingNewClient(i); // accept new client
 			}
 			if (FD_ISSET(i, copy))
 			{
-				handlingCommunication(i);
+				handlingCommunication(i); // recv n send data
 			}
 		}
 	}

@@ -79,8 +79,6 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 	LocationConfig location;
 	bool inServerConfig = false;
 	bool inLocationConfig = false;
-	bool finish_SRV_parse = false;
-	bool finish_LOC_parse = false;
 
 	while (std::getline(configFile, line))
 	{
@@ -112,12 +110,10 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 			else if (inLocationConfig)
 			{
 				parseLocationConfig(line, location);
-				finish_LOC_parse = true;
 			}
 			else
 			{
 				parseServerConfig(line, currentServerConfig);
-				finish_SRV_parse = true;
 			}
 		}
 	}
