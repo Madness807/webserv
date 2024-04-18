@@ -26,15 +26,15 @@ int main(int argc, char **argv)
 
     ServerManager server_manager(config_file);
 
-    //printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
-    //printSRVConfig(server_manager.getServerConfig("127.0.0.1", 7777));
+    printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
+    printSRVConfig(server_manager.getServerConfig("127.0.0.1", 7777));
 
 
-    ServerConfig *ServerConfig1 = server_manager.getServerConfig("127.0.0.1", 8888);
+    ServerConfig *ServerConfig1 = server_manager.getServerConfig("127.0.0.1", 7777);
 
     // std::cout << ServerConfig1->getMaxBodySize() << std::endl;
     // std::cout << ServerConfig1->getDefaultFile() << std::endl;
-    // std::cout << ServerConfig1->getErrorPage() << std::endl;
+    //std::cout << ServerConfig1->getErrorPage() << std::endl;
     // std::cout << ServerConfig1->getRoot() << std::endl;
     // std::cout << ServerConfig1->getServerName() << std::endl;
     // std::cout << ServerConfig1->getPairIpPort().first << std::endl;

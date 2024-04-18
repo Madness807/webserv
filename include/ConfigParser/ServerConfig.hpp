@@ -6,6 +6,7 @@
 #include <list>
 #include <iostream>
 #include "LocationConfig.hpp"
+#include "../utils/utils.hpp"
 
 class ServerConfig{
     private:
