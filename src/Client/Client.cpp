@@ -90,11 +90,10 @@ socklen_t Client::getAddrClientSize() const{
 void Client::fillInfo(int serverSocket){
 
 	socklen_t clientSize = this->getAddrClientSize();
-	std::cout << "Client size accepting: " << clientSize << std::endl;
 	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
 	//std::cout << "clientClass > client socket : " << socketClient << std::endl;
-	std::cout << "Client size accepted: " << clientSize << std::endl;
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
 	this->setServerSocketAssociated(serverSocket);
+	std::cout << "Client is accepted: " << clientSize << std::endl;
 }
