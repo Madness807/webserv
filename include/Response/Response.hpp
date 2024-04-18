@@ -29,6 +29,7 @@ class Response
     public:
 
         Response(std::string &, ServerConfig &);
+        //Response();
         ~Response();
 
     // Méthodes///////////////////

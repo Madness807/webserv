@@ -22,14 +22,15 @@
 class TCPHandler
 {
 	private :
-		std::vector<Server> _servers;
-		std::map<int, Client> _clients;
-		fd_set _masterFd;
-		std::vector<int> _fdServers;
-		std::vector<int> _fdClients;
-		int _maxFd;
-		int _nbOfServer;
-		ServerManager _serverManager;
+		std::vector<Server> 	_servers;
+		std::map<int, Client> 	_clients;
+		fd_set 					_masterFd;
+		std::vector<int> 		_fdServers;
+		std::vector<int> 		_fdClients;
+		int 					_maxFd;
+		int 					_nbOfServer;
+		ServerManager 			_serverManager;
+		Response*				_response;
 
 	public :
 		// constructeur et destructeur

@@ -109,8 +109,10 @@ int Server::getReading() const{
 	return this->_reading;
 }
 
-ServerConfig Server::getServerConfig() const{
-	return this->_serverConfig;
+ServerConfig& Server::getServerConfigRef() const{
+	ServerConfig& ref = const_cast<ServerConfig&>(this->_serverConfig);
+	ref = this->_serverConfig;
+	return ref;
 }
 
 //##################################################################

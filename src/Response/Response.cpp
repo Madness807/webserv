@@ -1,6 +1,8 @@
 #include "../../include/Response/Response.hpp"
 
 // Constructeur
+//Response::Response() : _request() {}
+
 Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);

@@ -3,7 +3,7 @@
 
  #include "../define.hpp"
 
-class Request 
+class Request
 {
     std::string							_method;
 	std::vector<std::string>			_methods;
@@ -25,7 +25,7 @@ class Request
 	std::string							nextLine(const std::string &str, size_t &index);
 	int									checkMethod();
 	void								findQuery();
-    
+
     // Setters
 	void								setMethod(const std::string &method);
 	void								setBody(const std::string &line);
@@ -33,6 +33,7 @@ class Request
     public:
     // Constructeur et destructeur
         Request(std::string &str);
+		//Request();
         ~Request();
 
 	// Copie d'assignation

@@ -18,7 +18,7 @@ class Server
 {
 	private:
 		int         			_opt;
-		int        	 			_serverSocket; // listening socket
+		int        	 			_serverSocket;
 		int         			_newSocket;
 		int         			_port;
 		std::string 			_ipAdress;
@@ -27,8 +27,6 @@ class Server
 		std::string        		_buffer;
 		int 	   				_socketCount;
 		std::string 			_file;
-		//Response				_response;
-		//std::string				_request;
 		ServerConfig			_serverConfig;
 
 	protected:
@@ -60,7 +58,7 @@ class Server
 		std::string getIpAdress() const;
 		std::string getBuffer() const;
 		int getReading() const;
-		ServerConfig getServerConfig() const;
+		ServerConfig& getServerConfigRef() const;
 
 		// Méthodes
 		int Init();
