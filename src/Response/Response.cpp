@@ -1,17 +1,13 @@
 #include "../../include/Response/Response.hpp"
 
-// Constructeur
-//Response::Response() : _request() {}
-// Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _methods(setMethod()), _headers(_request.getHeaders()), _body("")
-
+/* ------------------- Constructeur -------------------*/
 Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
+    this->setMethod();
     // if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
-
-        this->setStatusCode(200);
-    // if(_request.getEnv() != "") --> If CGI exist
+    // this->setStatusCode(200);
     // if (server.getCgi() == "On") -->> si cgi actif
         // go->cgi();
     this->setStatusLine();
@@ -20,10 +16,10 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     std::cout << _request << std::endl;
 }
 
-// Destructeur
+/* ------------------- Destructeur -------------------*/
 Response::~Response() {}
 
-//Setter
+/* ------------------- Setter -------------------*/
 void    Response::setStatusLine()
 {
     _response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
@@ -39,25 +35,24 @@ void Response::setHeaderLine()
 
 void    Response::setContent()
 {
-    // if (_request.getMethod() == "GET")
-    //     this->getMethod();
-    // else if (_request.getMethod() == "POST")
-    //     this->postMethod();
-    // else if (_request.getMethod() == "DELETE")
-    //     this->deleteMethod();
-    // else
-    // {
+    std::map<std::string, ptrFt>::iterator it = this->_methods.find(_request.getMethod());
+    if (it != this->_methods.end())
+    {
+        ptrFt method = it->second;
+        (this->*method)();
+    }
+    else
+    {
         this->setStatusCode(405);
         this->setErrorBody();
-    // }
+    }
     _response.append(_body);
 }
 
 void    Response::setErrorBody()
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
-    std::cout << errPath << std::endl;
-    const char* filename = errPath.c_str();
+    const char* filename = errPath.c_str(); 
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
         perror("open");
@@ -74,23 +69,6 @@ void    Response::setErrorBody()
     inFile.close();
 }
 
-// int main() {
-//     std::string errPath = "your_error_file.txt"; // Replace with your actual error file path
-//     // Convert std::string to const char*
-
-//     std::ifstream inFile(filename); // Open the file
-
-//     if (!inFile.is_open()) {
-//         std::cerr << "Error opening file: " << errPath << std::endl;
-//         return 1;
-//     }
-
-//     // Rest of your code here
-
-//     inFile.close();
-//     return 0;
-// }
-
 void    Response::setStatusCode(const int &code)
 {
     _statusCode = code;
@@ -99,9 +77,9 @@ void    Response::setStatusCode(const int &code)
 
 void   Response::setMethod()
 {
-    _methods["GET"] = &Response::getMethod;
-    _methods["POST"] = &Response::postMethod;
-    _methods["DELETE"] = &Response::deleteMethod;
+    _methods["GET"] = &Response::requestGet;
+    _methods["POST"] = &Response::requestPost;
+    _methods["DELETE"] = &Response::requestDelete;
 }
 
 std::map<int, std::string>    Response::setStatusMessages()
@@ -124,8 +102,8 @@ void    Response::setServer(ServerConfig &serverconfig)
 }
 
 
-// Getter
-const int Response::getStatusCode() const
+/* ------------------- Getter -------------------*/
+int Response::getStatusCode() const
 {
     return (_statusCode);
 }
@@ -148,9 +126,52 @@ const Request Response::getRequest() const
 {
     return (_request);
 }
+/* ------------------- Methods -------------------*/
+void    Response::requestGet()
+{
+    std::map<std::string, LocationConfig>::iterator it = _server.getMapLocation().find(_request.getPath());
+    if (it != _server.getMapLocation().end())
+    {
+        std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod());
+        if (it2 != it->second.getMethods().end())
+        {
+            getContentFile(it->second.getPath());
+        }
+    }
+}
 
+void    Response::requestPost()
+{
 
-//Other
+}
+
+void    Response::requestDelete()
+{
+
+}
+
+void    Response::getContentFile(std::string filename)
+{
+    (void) filename;
+    std::string filePath = "website/default.html";
+    const char *file = filePath.c_str();
+    std::ifstream inFile(file, std::ifstream::in);
+    if (!inFile.is_open())
+        perror("open");
+    std::string line;
+    while (std::getline(inFile, line))
+    {
+        if (this->_body != "")
+        {
+            this->_body.append(line);
+            continue;
+        }
+        this->_body = line;
+    }
+    inFile.close();
+}
+
+/* ------------------- Other -------------------*/
 std::string intToString(int value)
 {
     std::ostringstream oss;

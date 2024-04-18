@@ -275,6 +275,14 @@ int TCPHandler::handlingCommunication(int i)
 // 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
 
 // 	//std::cout << "SERVER CONFIG : " << this->_servers[client.getServerSocketAssociated()].getServerConfig().getDefaultFile() << std::endl;
+	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
+	// char tmp[BUFFER_SIZE];
+	// // std::string buffer;
+	// memset(tmp, 0, sizeof(tmp));
+	// reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+	// buffer = &tmp[0];
+	// Response response(buffer, serverConfig);
+	// _response = response;
 
 // 	//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
 // 	return(reading);
@@ -301,9 +309,13 @@ int TCPHandler::handlingCommunication(int i)
 // 	send(client.getSocketClient(), response.c_str(), response.size(), 0);
 
 // 	clientIsDisconnected(client);
-// 	client.setSocketClient(-1);
+// // 	client.setSocketClient(-1);
+// 	//std::string response = getResponse() + buffer.str();
+// 	send(client.getSocketClient(), response.c_str(), response.length(), 0);
+// 	std::cout << "Closing fd client" << std::endl;
+// 	close(client.getSocketClient());
 
-// 	return(0);
+// // 	return(0);
 // }
 
 int TCPHandler::handlingRequest(Client &client)

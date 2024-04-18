@@ -44,6 +44,7 @@ class ServerConfig{
         std::string getRoot();
         std::pair<std::string, int> getPairIpPort();
         LocationConfig getLocationConfig(std::string path);
+        std::map<std::string, LocationConfig> &getMapLocation();
 
         // Méthodes
         void addLocation(const std::string& path, const LocationConfig& _locationConfig);

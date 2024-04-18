@@ -6,7 +6,11 @@
     {
       "type": "text",
       "version": 514,
+<<<<<<< HEAD
       "versionNonce": 1623686841,
+=======
+      "versionNonce": 561575755,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Sr1xEi_5jlOhVr42hvxKK",
       "fillStyle": "solid",
@@ -26,7 +30,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666470,
+=======
+      "updated": 1713457872454,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36,
@@ -100,7 +108,11 @@
     {
       "type": "text",
       "version": 960,
+<<<<<<< HEAD
       "versionNonce": 1043260023,
+=======
+      "versionNonce": 137180901,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "8kfEgCikTD_pPyxCOMeUU",
       "fillStyle": "solid",
@@ -120,7 +132,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666470,
+=======
+      "updated": 1713457872455,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -131,7 +147,7 @@
       "containerId": null,
       "originalText": "Gestion des requettes et methodes",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -212,7 +228,11 @@
     {
       "type": "text",
       "version": 1164,
+<<<<<<< HEAD
       "versionNonce": 1038019929,
+=======
+      "versionNonce": 1167185387,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "jK49C2lpau1CecsYt1VPu",
       "fillStyle": "solid",
@@ -235,7 +255,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666470,
+=======
+      "updated": 1713457872456,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -246,7 +270,7 @@
       "containerId": null,
       "originalText": "Objet: Request",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -292,7 +316,11 @@
     {
       "type": "text",
       "version": 1042,
+<<<<<<< HEAD
       "versionNonce": 640277049,
+=======
+      "versionNonce": 1972310597,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "-1mfrNlEyJ7nuoILl5dg-",
       "fillStyle": "solid",
@@ -315,7 +343,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666470,
+=======
+      "updated": 1713457872456,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -326,7 +358,7 @@
       "containerId": null,
       "originalText": "Objet: GET",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -372,7 +404,11 @@
     {
       "type": "text",
       "version": 1093,
+<<<<<<< HEAD
       "versionNonce": 608447257,
+=======
+      "versionNonce": 1012261003,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "s_-SnI8Yx8u5PIdvl4AR4",
       "fillStyle": "solid",
@@ -395,7 +431,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666470,
+=======
+      "updated": 1713457872456,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -406,7 +446,7 @@
       "containerId": null,
       "originalText": "Objet: POST",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -448,7 +488,11 @@
     {
       "type": "text",
       "version": 1076,
+<<<<<<< HEAD
       "versionNonce": 279011321,
+=======
+      "versionNonce": 1155432869,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "CLdTG1i6_tOGiwnQNelvQ",
       "fillStyle": "solid",
@@ -471,7 +515,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666470,
+=======
+      "updated": 1713457872457,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -482,7 +530,7 @@
       "containerId": null,
       "originalText": "Objet: Delete",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -568,7 +616,11 @@
     {
       "type": "text",
       "version": 1345,
+<<<<<<< HEAD
       "versionNonce": 1950768439,
+=======
+      "versionNonce": 1602197291,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Yap_hye2hRtfBu4D3x3iY",
       "fillStyle": "solid",
@@ -591,7 +643,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666470,
+=======
+      "updated": 1713457872457,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -602,7 +658,7 @@
       "containerId": null,
       "originalText": "Objet: Response",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
@@ -926,7 +982,7 @@
       "containerId": null,
       "originalText": "Index.html",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "arrow",
@@ -1066,7 +1122,7 @@
       "containerId": null,
       "originalText": "Status code + Datapage",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -1102,7 +1158,7 @@
       "containerId": null,
       "originalText": "Analyse requete",
       "lineHeight": 1.15,
-      "baseline": 14
+      "baseline": 15
     },
     {
       "type": "text",
@@ -1215,7 +1271,7 @@
       "containerId": null,
       "originalText": "OK",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -1258,7 +1314,7 @@
       "containerId": null,
       "originalText": "Not OK",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "arrow",
@@ -1431,7 +1487,7 @@
       "containerId": null,
       "originalText": "CGI",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -1482,7 +1538,7 @@
       "containerId": null,
       "originalText": "Sert la page",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "arrow",
@@ -2143,7 +2199,7 @@
       "containerId": null,
       "originalText": "header",
       "lineHeight": 1.15,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
@@ -2181,12 +2237,16 @@
       "containerId": null,
       "originalText": "body",
       "lineHeight": 1.15,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 405,
+<<<<<<< HEAD
       "versionNonce": 1825108569,
+=======
+      "versionNonce": 189334789,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "MjzbeRHTFa2MCWChNNN4J",
       "fillStyle": "solid",
@@ -2209,7 +2269,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872466,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2220,7 +2284,7 @@
       "containerId": null,
       "originalText": "config_server_start:\n\n    # Server configuration\n    ServerConfig_start:\n    server_name: localhost\n    port: 8888\n    ip: 127.0.0.1\n    max_body_size: 300000\n\n    # Default file\n    default_file: /default.html\n\n    # Default error pages\n    error_page:\n        404: /error_pages/404.html\n\n    # Root directory for the server\n    root: web/website0\n    ServerConfig_end:\n\n    location_start:\n        path: /\n        methods: GET, POST\n        redirect: /index.html\n    location_end:\n\n    location_start:\n        path: /uploads\n        methods: POST, DELETE, GET\n        directory_listing: on\n    location_end:\n\n    location_start:\n        path: /home.html\n        methods: POST, GET\n        redirect: /index.html\n    location_end:\n\n    location_start:\n        path: /img\n        methods: POST, GET\n        directory_listing: off\n        redirect: /index.html\n    location_end:\n\n    location_start:\n        path: /test\n        methods: POST, GET\n        directory_listing: off\n    location_end:\n\nconfig_server_end:\n",
       "lineHeight": 1.25,
-      "baseline": 1317
+      "baseline": 1318
     },
     {
       "type": "rectangle",
@@ -2411,7 +2475,11 @@
     {
       "type": "text",
       "version": 425,
+<<<<<<< HEAD
       "versionNonce": 1185776889,
+=======
+      "versionNonce": 1836677579,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "a9p-EJZ9GP4N1K6WrHVoy",
       "fillStyle": "solid",
@@ -2434,7 +2502,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872467,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2445,12 +2517,16 @@
       "containerId": null,
       "originalText": "Key",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 444,
+<<<<<<< HEAD
       "versionNonce": 1754538775,
+=======
+      "versionNonce": 1548491877,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "8YP6rFce80IfrVefqSPH2",
       "fillStyle": "solid",
@@ -2473,7 +2549,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872467,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2484,7 +2564,7 @@
       "containerId": null,
       "originalText": "Value",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -2709,7 +2789,11 @@
     {
       "type": "text",
       "version": 411,
+<<<<<<< HEAD
       "versionNonce": 1656406137,
+=======
+      "versionNonce": 1935542379,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "6_vDDPdqOH8jVccHap4IG",
       "fillStyle": "solid",
@@ -2732,7 +2816,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872467,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2743,7 +2831,7 @@
       "containerId": null,
       "originalText": "path: /",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -2793,7 +2881,11 @@
     {
       "type": "text",
       "version": 513,
+<<<<<<< HEAD
       "versionNonce": 1650346329,
+=======
+      "versionNonce": 2142586821,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Uov4jM6yTZUG8fwCSttms",
       "fillStyle": "solid",
@@ -2821,7 +2913,11 @@
           "type": "arrow"
         }
       ],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872467,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2832,7 +2928,7 @@
       "containerId": null,
       "originalText": "path: /uploads",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -2988,7 +3084,11 @@
     {
       "type": "text",
       "version": 496,
+<<<<<<< HEAD
       "versionNonce": 1033668377,
+=======
+      "versionNonce": 1995948811,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Ip6_vQIAyR4MGWVHsPG2I",
       "fillStyle": "solid",
@@ -3016,7 +3116,11 @@
           "type": "arrow"
         }
       ],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872468,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3027,7 +3131,7 @@
       "containerId": null,
       "originalText": "path: /home.html",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -3085,7 +3189,11 @@
     {
       "type": "text",
       "version": 709,
+<<<<<<< HEAD
       "versionNonce": 378420217,
+=======
+      "versionNonce": 1738671909,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "v2_XEND1v4MUMdRCPhbJ8",
       "fillStyle": "solid",
@@ -3108,7 +3216,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872468,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3119,7 +3231,7 @@
       "containerId": null,
       "originalText": "path: /img",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -3222,7 +3334,11 @@
     {
       "type": "text",
       "version": 514,
+<<<<<<< HEAD
       "versionNonce": 2141765943,
+=======
+      "versionNonce": 1623271851,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "tDsFiFUMFcd4ixqigO6AK",
       "fillStyle": "solid",
@@ -3245,7 +3361,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872468,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3256,7 +3376,7 @@
       "containerId": null,
       "originalText": "path: /test",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -3438,7 +3558,7 @@
       "containerId": null,
       "originalText": "MAP 1",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "rectangle",
@@ -3478,7 +3598,11 @@
     {
       "type": "text",
       "version": 323,
+<<<<<<< HEAD
       "versionNonce": 19929239,
+=======
+      "versionNonce": 1719655045,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "WKcOvliXo6jtVKx0QUuZ_",
       "fillStyle": "solid",
@@ -3500,7 +3624,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872469,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -3516,7 +3644,11 @@
     {
       "type": "text",
       "version": 377,
+<<<<<<< HEAD
       "versionNonce": 2079105113,
+=======
+      "versionNonce": 635747403,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "oJmxlRVvQvTzhQ2GCKk0f",
       "fillStyle": "solid",
@@ -3539,7 +3671,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872469,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3550,12 +3686,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 422,
+<<<<<<< HEAD
       "versionNonce": 2129587639,
+=======
+      "versionNonce": 621560293,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "bFBV_pB8RxgYS4ieV-UJw",
       "fillStyle": "solid",
@@ -3578,7 +3718,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872469,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3589,12 +3733,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 439,
+<<<<<<< HEAD
       "versionNonce": 1577659705,
+=======
+      "versionNonce": 842857195,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "J3cN5yMjPNRawypRWgvgZ",
       "fillStyle": "solid",
@@ -3617,7 +3765,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872470,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3628,12 +3780,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 408,
+<<<<<<< HEAD
       "versionNonce": 1146494679,
+=======
+      "versionNonce": 1481948485,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "1fxaXpELaTg5N1e9-ygz6",
       "fillStyle": "solid",
@@ -3656,7 +3812,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872470,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3667,12 +3827,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 445,
+<<<<<<< HEAD
       "versionNonce": 1791041049,
+=======
+      "versionNonce": 307520907,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "NZ1uzDDJGhu-lie4TkWFp",
       "fillStyle": "solid",
@@ -3695,7 +3859,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872470,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3706,12 +3874,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 359,
+<<<<<<< HEAD
       "versionNonce": 1945775095,
+=======
+      "versionNonce": 934726821,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "ubVtjpZsIiqAE9PXTQmum",
       "fillStyle": "solid",
@@ -3733,7 +3905,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872471,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -3749,7 +3925,11 @@
     {
       "type": "text",
       "version": 359,
+<<<<<<< HEAD
       "versionNonce": 17298169,
+=======
+      "versionNonce": 1566932011,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Q7kbzQEkw97wmEKMFwkvo",
       "fillStyle": "solid",
@@ -3771,7 +3951,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872471,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -3787,7 +3971,11 @@
     {
       "type": "text",
       "version": 360,
+<<<<<<< HEAD
       "versionNonce": 1776260375,
+=======
+      "versionNonce": 853536773,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "BoGLHoco62nP5gsLqy-BO",
       "fillStyle": "solid",
@@ -3809,7 +3997,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666471,
+=======
+      "updated": 1713457872471,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -3825,7 +4017,11 @@
     {
       "type": "text",
       "version": 361,
+<<<<<<< HEAD
       "versionNonce": 1432431577,
+=======
+      "versionNonce": 1599782603,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "UeAUUNh-EncFuWX3NFfOz",
       "fillStyle": "solid",
@@ -3847,7 +4043,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666472,
+=======
+      "updated": 1713457872472,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -3942,7 +4142,11 @@
     {
       "type": "text",
       "version": 616,
+<<<<<<< HEAD
       "versionNonce": 1672510295,
+=======
+      "versionNonce": 1741530981,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "qgYv2FZ9i3GTZ9omYgueQ",
       "fillStyle": "solid",
@@ -3965,7 +4169,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666472,
+=======
+      "updated": 1713457872472,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 30.615335549015093,
@@ -3976,7 +4184,7 @@
       "containerId": null,
       "originalText": "LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 26
+      "baseline": 27
     },
     {
       "type": "line",
@@ -4061,7 +4269,7 @@
       "containerId": null,
       "originalText": "std::string _path;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4099,7 +4307,7 @@
       "containerId": null,
       "originalText": "std::string _redirect;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4137,7 +4345,7 @@
       "containerId": null,
       "originalText": "std::vector<std::string> _methods;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4175,7 +4383,7 @@
       "containerId": null,
       "originalText": "bool _directory_listing;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4213,7 +4421,7 @@
       "containerId": null,
       "originalText": "// SETTERS",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4251,7 +4459,7 @@
       "containerId": null,
       "originalText": "void setPath(std::string path);",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4289,7 +4497,7 @@
       "containerId": null,
       "originalText": "void setMethods(const std::vector<std::string> methods);",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4327,7 +4535,7 @@
       "containerId": null,
       "originalText": "void setRedirect(std::string redirect);",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4365,7 +4573,7 @@
       "containerId": null,
       "originalText": "void setDirectoryListing(bool directory_listing);",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4403,7 +4611,7 @@
       "containerId": null,
       "originalText": "// GETTERS",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4441,7 +4649,7 @@
       "containerId": null,
       "originalText": "std::string getPath();",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4479,7 +4687,7 @@
       "containerId": null,
       "originalText": "std::vector<std::string> getMethods();",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4517,7 +4725,7 @@
       "containerId": null,
       "originalText": "std::string getRedirect();",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4555,7 +4763,7 @@
       "containerId": null,
       "originalText": "bool getDirectoryListing();",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4593,7 +4801,7 @@
       "containerId": null,
       "originalText": "// Méthodes",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -4631,7 +4839,7 @@
       "containerId": null,
       "originalText": "void addLocation(const std::string& path, const std::map<std::string, std::string>& locationConfig);",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "rectangle",
@@ -4665,7 +4873,11 @@
     {
       "type": "text",
       "version": 95,
+<<<<<<< HEAD
       "versionNonce": 1793942905,
+=======
+      "versionNonce": 47099243,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "3yWflihDzQYOpMpIIl3u9",
       "fillStyle": "solid",
@@ -4685,7 +4897,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666472,
+=======
+      "updated": 1713457872477,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -4696,7 +4912,7 @@
       "containerId": null,
       "originalText": "Gestion des sockets",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -4863,7 +5079,11 @@
     {
       "type": "text",
       "version": 744,
+<<<<<<< HEAD
       "versionNonce": 1683099863,
+=======
+      "versionNonce": 1489859269,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "6pJsUvM3-HwsZ3mj0Ii_y",
       "fillStyle": "solid",
@@ -4888,7 +5108,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666472,
+=======
+      "updated": 1713457872478,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 30.615335549015093,
@@ -4899,7 +5123,7 @@
       "containerId": null,
       "originalText": "SERVER",
       "lineHeight": 1.25,
-      "baseline": 26
+      "baseline": 27
     },
     {
       "type": "line",
@@ -5713,7 +5937,11 @@
     {
       "type": "text",
       "version": 922,
+<<<<<<< HEAD
       "versionNonce": 951562457,
+=======
+      "versionNonce": 2064369675,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Kir64FrHwV15T5adhXaVb",
       "fillStyle": "solid",
@@ -5739,7 +5967,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666472,
+=======
+      "updated": 1713457872482,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 30.615335549015093,
@@ -5750,7 +5982,7 @@
       "containerId": null,
       "originalText": "CLIENT",
       "lineHeight": 1.25,
-      "baseline": 26
+      "baseline": 27
     },
     {
       "type": "line",
@@ -5839,7 +6071,7 @@
       "containerId": null,
       "originalText": "int _socketClient;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -5878,7 +6110,7 @@
       "containerId": null,
       "originalText": "std::string _clientRequete;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -5917,7 +6149,7 @@
       "containerId": null,
       "originalText": "std::string _clientReponse;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -5956,7 +6188,7 @@
       "containerId": null,
       "originalText": "std::string _buffer[1024];",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -5995,7 +6227,7 @@
       "containerId": null,
       "originalText": "void setRequete(std::string requete);",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -6034,7 +6266,7 @@
       "containerId": null,
       "originalText": "std::string getRequete() const;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -6073,7 +6305,7 @@
       "containerId": null,
       "originalText": "void setReponse(std::string reponse);",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -6112,7 +6344,7 @@
       "containerId": null,
       "originalText": "std::string getReponse() const;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "text",
@@ -6151,7 +6383,7 @@
       "containerId": null,
       "originalText": "int getSocketClient() const;",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "arrow",
@@ -6206,7 +6438,11 @@
     {
       "type": "text",
       "version": 254,
+<<<<<<< HEAD
       "versionNonce": 747469337,
+=======
+      "versionNonce": 1652347429,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "QZq2R2VVTfHJfBk2lPJAl",
       "fillStyle": "solid",
@@ -6228,7 +6464,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666473,
+=======
+      "updated": 1713457872486,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -6244,7 +6484,11 @@
     {
       "type": "text",
       "version": 241,
+<<<<<<< HEAD
       "versionNonce": 1219596279,
+=======
+      "versionNonce": 772574891,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "v0P2Gk3CT3VZw10IB45B0",
       "fillStyle": "solid",
@@ -6266,7 +6510,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666473,
+=======
+      "updated": 1713457872487,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -6282,7 +6530,11 @@
     {
       "type": "text",
       "version": 237,
+<<<<<<< HEAD
       "versionNonce": 15257337,
+=======
+      "versionNonce": 1909015941,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "c5vCMfY8VzuheISS2kYgg",
       "fillStyle": "solid",
@@ -6304,7 +6556,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666473,
+=======
+      "updated": 1713457872487,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -6649,7 +6905,7 @@
       "containerId": null,
       "originalText": "Parsing Request",
       "lineHeight": 1.15,
-      "baseline": 52
+      "baseline": 53
     },
     {
       "type": "rectangle",
@@ -7399,7 +7655,11 @@
     {
       "type": "text",
       "version": 308,
+<<<<<<< HEAD
       "versionNonce": 1396278199,
+=======
+      "versionNonce": 1585152331,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Wf8eJDZDJtNtA-svXNXaF",
       "fillStyle": "solid",
@@ -7421,7 +7681,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666473,
+=======
+      "updated": 1713457872491,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -7686,7 +7950,11 @@
     {
       "type": "text",
       "version": 391,
+<<<<<<< HEAD
       "versionNonce": 860829145,
+=======
+      "versionNonce": 2045791461,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "WGyz8jPNScnsnAOB-xIgr",
       "fillStyle": "solid",
@@ -7708,7 +7976,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666473,
+=======
+      "updated": 1713457872492,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -8054,7 +8326,11 @@
     {
       "type": "text",
       "version": 489,
+<<<<<<< HEAD
       "versionNonce": 596274647,
+=======
+      "versionNonce": 364060651,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "4b0wARQV7swm8CtrNdU50",
       "fillStyle": "solid",
@@ -8077,7 +8353,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666473,
+=======
+      "updated": 1713457872494,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -8088,7 +8368,7 @@
       "containerId": null,
       "originalText": "config_server_start:\n\n    # Server configuration\n    ServerConfig_start:\n    server_name: localhost\n    port: 8888\n    ip: 127.0.0.1\n    max_body_size: 300000\n\n    # Default file\n    default_file: /default.html\n\n    # Default error pages\n    error_page:\n        404: /error_pages/404.html\n\n    # Root directory for the server\n    root: web/website0\n    ServerConfig_end:\n\n    location_start:\n        path: /\n        methods: GET, POST\n        redirect: /index.html\n    location_end:\n\n    location_start:\n        path: /uploads\n        methods: POST, DELETE, GET\n        directory_listing: on\n    location_end:\n\n    location_start:\n        path: /home.html\n        methods: POST, GET\n        redirect: /index.html\n    location_end:\n\n    location_start:\n        path: /img\n        methods: POST, GET\n        directory_listing: off\n        redirect: /index.html\n    location_end:\n\n    location_start:\n        path: /test\n        methods: POST, GET\n        directory_listing: off\n    location_end:\n\nconfig_server_end:\n",
       "lineHeight": 1.25,
-      "baseline": 1317
+      "baseline": 1318
     },
     {
       "type": "rectangle",
@@ -8279,7 +8559,11 @@
     {
       "type": "text",
       "version": 509,
+<<<<<<< HEAD
       "versionNonce": 1925024055,
+=======
+      "versionNonce": 712992837,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "UfYHV_82xz6sJwfF9Hr7-",
       "fillStyle": "solid",
@@ -8302,7 +8586,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872494,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -8313,12 +8601,16 @@
       "containerId": null,
       "originalText": "Key",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 528,
+<<<<<<< HEAD
       "versionNonce": 1218709945,
+=======
+      "versionNonce": 1304291979,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "nFLhhmd0agsWEMGh3ANEL",
       "fillStyle": "solid",
@@ -8341,7 +8633,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872494,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -8352,7 +8648,7 @@
       "containerId": null,
       "originalText": "Value",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -8577,7 +8873,11 @@
     {
       "type": "text",
       "version": 495,
+<<<<<<< HEAD
       "versionNonce": 2103424439,
+=======
+      "versionNonce": 1700009893,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "w0YiiFiZGGMPqQY4R3PKh",
       "fillStyle": "solid",
@@ -8600,7 +8900,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872494,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -8611,7 +8915,7 @@
       "containerId": null,
       "originalText": "path: /",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -8661,7 +8965,11 @@
     {
       "type": "text",
       "version": 597,
+<<<<<<< HEAD
       "versionNonce": 1231939287,
+=======
+      "versionNonce": 1532387627,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "dvPtd1DlnIMw25SAtS5HC",
       "fillStyle": "solid",
@@ -8689,7 +8997,11 @@
           "type": "arrow"
         }
       ],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872495,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -8700,7 +9012,7 @@
       "containerId": null,
       "originalText": "path: /uploads",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -8856,7 +9168,11 @@
     {
       "type": "text",
       "version": 580,
+<<<<<<< HEAD
       "versionNonce": 1369791767,
+=======
+      "versionNonce": 1956371205,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "PLu5Dpqh5x6ygQzA-wg-q",
       "fillStyle": "solid",
@@ -8884,7 +9200,11 @@
           "type": "arrow"
         }
       ],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872495,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -8895,7 +9215,7 @@
       "containerId": null,
       "originalText": "path: /home.html",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -8953,7 +9273,11 @@
     {
       "type": "text",
       "version": 793,
+<<<<<<< HEAD
       "versionNonce": 155689527,
+=======
+      "versionNonce": 401015755,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "sOtGESASiLeCYMEaWPPjC",
       "fillStyle": "solid",
@@ -8976,7 +9300,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872495,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -8987,7 +9315,7 @@
       "containerId": null,
       "originalText": "path: /img",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -9090,7 +9418,11 @@
     {
       "type": "text",
       "version": 598,
+<<<<<<< HEAD
       "versionNonce": 1127580057,
+=======
+      "versionNonce": 13906533,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Zq0Z3xfGhAiI8gLPJ87s7",
       "fillStyle": "solid",
@@ -9113,7 +9445,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872495,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -9124,7 +9460,7 @@
       "containerId": null,
       "originalText": "path: /test",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
@@ -9306,7 +9642,7 @@
       "containerId": null,
       "originalText": "MAP 1",
       "lineHeight": 1.15,
-      "baseline": 25
+      "baseline": 26
     },
     {
       "type": "rectangle",
@@ -9346,7 +9682,11 @@
     {
       "type": "text",
       "version": 407,
+<<<<<<< HEAD
       "versionNonce": 1681218617,
+=======
+      "versionNonce": 1267356267,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Fu_bhVw3kZA8T36fh9C0F",
       "fillStyle": "solid",
@@ -9368,7 +9708,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872496,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -9384,7 +9728,11 @@
     {
       "type": "text",
       "version": 461,
+<<<<<<< HEAD
       "versionNonce": 696803287,
+=======
+      "versionNonce": 1187683781,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "I6BrNfu3WB1lcYcQL3qf4",
       "fillStyle": "solid",
@@ -9407,7 +9755,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872496,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -9418,12 +9770,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 506,
+<<<<<<< HEAD
       "versionNonce": 1502571801,
+=======
+      "versionNonce": 1460325643,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "Ea3BtmqumzOfZubMlfai9",
       "fillStyle": "solid",
@@ -9446,7 +9802,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872496,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -9457,12 +9817,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 523,
+<<<<<<< HEAD
       "versionNonce": 1530678519,
+=======
+      "versionNonce": 228367653,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "I3SRgNdMGz_WZxOlxV5MS",
       "fillStyle": "solid",
@@ -9485,7 +9849,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872496,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -9496,12 +9864,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 492,
+<<<<<<< HEAD
       "versionNonce": 1060397561,
+=======
+      "versionNonce": 501412779,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "lrvB7vb7c84oDxS-rBy8b",
       "fillStyle": "solid",
@@ -9524,7 +9896,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872497,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -9535,12 +9911,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 530,
+<<<<<<< HEAD
       "versionNonce": 1177916951,
+=======
+      "versionNonce": 1555542149,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "vGpjLtbDPGSCKWXPml7B6",
       "fillStyle": "solid",
@@ -9568,7 +9948,11 @@
           "type": "arrow"
         }
       ],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872497,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -9579,12 +9963,16 @@
       "containerId": null,
       "originalText": "Objet: LocationConfig",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
       "version": 443,
+<<<<<<< HEAD
       "versionNonce": 304593625,
+=======
+      "versionNonce": 809322059,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "xxI3LVTn7WR2NwMQxTrvX",
       "fillStyle": "solid",
@@ -9606,7 +9994,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872497,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -9622,7 +10014,11 @@
     {
       "type": "text",
       "version": 443,
+<<<<<<< HEAD
       "versionNonce": 1365818167,
+=======
+      "versionNonce": 1910069221,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "NMCBUOVoezDPbS580oJZN",
       "fillStyle": "solid",
@@ -9644,7 +10040,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872497,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -9660,7 +10060,11 @@
     {
       "type": "text",
       "version": 444,
+<<<<<<< HEAD
       "versionNonce": 1660745657,
+=======
+      "versionNonce": 888423659,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "_QK_kAc4cFrW_kucuv7li",
       "fillStyle": "solid",
@@ -9682,7 +10086,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872498,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
@@ -9698,7 +10106,11 @@
     {
       "type": "text",
       "version": 445,
+<<<<<<< HEAD
       "versionNonce": 289029207,
+=======
+      "versionNonce": 1997476677,
+>>>>>>> nrossel
       "isDeleted": false,
       "id": "ig_iDjgptuRKcW65aivZu",
       "fillStyle": "solid",
@@ -9720,7 +10132,11 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
+<<<<<<< HEAD
       "updated": 1713374666474,
+=======
+      "updated": 1713457872498,
+>>>>>>> nrossel
       "link": null,
       "locked": false,
       "fontSize": 36.73255295517771,
