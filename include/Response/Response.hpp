@@ -5,7 +5,7 @@
  #include "../define.hpp"
  #include "../ConfigParser/ConfigParser.hpp"
 
-class Response 
+class Response
 {
         Request                                 _request;
         ServerConfig                            _server;
@@ -13,7 +13,7 @@ class Response
         std::map<int , std::string>             _statusMessages;
         std::string                             _statusMessage;
         typedef void                            (Response::*ptrFt)(const std::string &);
-        std::map<std::string, ptrFt>           _methods;
+        std::map<std::string, ptrFt>            _methods;
         std::map<std::string , std::string>     _headers;
         std::string                             _response;
         std::string                             _body;
@@ -33,8 +33,9 @@ class Response
         void                                    deleteMethod(const std::string &);
 
     public:
-       
+
         Response(std::string &, ServerConfig &);
+        Response();
         ~Response();
 
     // Méthodes///////////////////

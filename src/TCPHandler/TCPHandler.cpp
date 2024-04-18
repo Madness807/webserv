@@ -1,9 +1,13 @@
 #include "../include/TCPHandler/TCPHandler.hpp"
 #include <fcntl.h>
+
 TCPHandler* g_tcpHandlerInstance = NULL;
 void globalSignalHandler(int signal);
 
-TCPHandler::TCPHandler()
+//##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
+TCPHandler::TCPHandler() : _response()
 {
 		FD_ZERO(&_masterFd);
 		_maxFd = 0;
@@ -12,30 +16,68 @@ TCPHandler::TCPHandler()
 
 TCPHandler::~TCPHandler() {}
 
+//##################################################################
+//		constructeur par copie et operateur d'affectation		   #
+//##################################################################
 TCPHandler::TCPHandler(const TCPHandler &other) {
 	*this = other;
 }
 
 TCPHandler &TCPHandler::operator=(const TCPHandler &other) {
 	if (this != &other) {
+		_servers = other._servers;
+		_clients = other._clients;
+		_masterFd = other._masterFd;
+		_fdServers = other._fdServers;
+		_fdClients = other._fdClients;
+		_maxFd = other._maxFd;
+		_nbOfServer = other._nbOfServer;
+		_serverManager = other._serverManager;
+		_response = other._response;
 	}
 	return *this;
 }
 
-int TCPHandler::getMaxFd() const {
-	return _maxFd;
-}
-
+//##################################################################
+//                          SETTERS                                #
+//##################################################################
 void TCPHandler::setMaxFd(int maxFd) {
 	this->_maxFd = maxFd;
 }
 
-fd_set TCPHandler::getMasterFd() const {
-	return this->_masterFd;
-}
-
 void TCPHandler::setMasterFd(fd_set masterFd) {
 	this->_masterFd = masterFd;
+}
+
+void TCPHandler::setServerManager(ServerManager &serverManager) {
+	this->_serverManager = serverManager;
+}
+
+void TCPHandler::setTabServers(ServerManager &server_manager)
+{
+	this->_serverManager = server_manager;
+	std::vector<Server> servers;
+	const std::vector<ServerConfig> serverConfigs = this->_serverManager.getServerConfig();
+
+	for(std::vector<ServerConfig>::const_iterator it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
+	{
+		Server newserver(it->getIp(), it->getPort(), *it);
+		//std::cout << "CHECK " << newserver.getServerConfig().getIp() << " PORT: " << newserver.getServerConfig().getPort() << std::endl;
+		servers.push_back(newserver);
+	}
+
+	this->_servers = servers;
+}
+
+//##################################################################
+//                          GETTERS                                #
+//##################################################################
+int TCPHandler::getMaxFd() const {
+	return _maxFd;
+}
+
+fd_set TCPHandler::getMasterFd() const {
+	return this->_masterFd;
 }
 
 std::vector<int> TCPHandler::getFdServers() const {
@@ -46,73 +88,35 @@ std::vector<int> TCPHandler::getFdClients() const {
 	return this->_fdClients;
 }
 
-
-void TCPHandler::setTabServers(int size) {
-	(void)size;
-
-	std::vector<Server> servers;
-	servers.push_back(Server("127.0.0.1", 8080));
-	servers.push_back(Server("127.0.0.1", 8888));
-
-	std::cout << "ip server :" << servers[0].getIpAdress() << "port server" << servers[0].getPort() << ";" << std::endl;
-	std::cout << "ip server :" << servers[1].getIpAdress() << "port server" << servers[1].getPort() << ";" << std::endl;
-
-	this->_servers = servers;
-}
-
 int TCPHandler::getNbOfServer() const {
 	return this->_nbOfServer;
-}
-
-void TCPHandler::setTabServers(ServerManager &server_manager)
-{
-	_serverManager = server_manager;
-
-	int nbOfServer = 0;
-	std::vector<Server> servers;
-	const std::vector<ServerConfig> serverConfigs = server_manager.getServerConfig();
-	std::vector<ServerConfig>::const_iterator it;
-
-	for(it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
-	{
-		nbOfServer++;
-	}
-	_nbOfServer = nbOfServer;
-
-	for(int i = 0; i < nbOfServer; i++)
-	{
-		servers.push_back(Server(serverConfigs[i].getIp(), serverConfigs[i].getPort()));
-	}
-
-	this->_servers = servers;
 }
 
 std::vector<Server> TCPHandler::getTabServers() const {
 	return this->_servers;
 }
 
-void TCPHandler::initServer(int nbOfServer) {
-	(void)nbOfServer;
+//##################################################################
+//                           Methodes                              #
+//##################################################################
+void TCPHandler::initServer() {
 
 	int serverSocket = 0;
 
-	for (int i = 0; i < nbOfServer; i++)
+	for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
-		_servers[i].setServerSocket(getTabServers()[i].Init()); // init server
-		serverSocket = _servers[i].getServerSocket();
+		it->setServerSocket(it->Init()); // init server
+		serverSocket = it->getServerSocket();
 		if (serverSocket < 0)
 			exit(0);
-		_fdServers.push_back(serverSocket);
-		if (serverSocket > _maxFd)
-			_maxFd = serverSocket;
-		getTabServers()[i].setServerSocket(serverSocket);
-		//std::cout << "maxFd " << _maxFd << " serversocket: " << serverSocket << std::endl;
+		this->_fdServers.push_back(serverSocket);
+		if (serverSocket > this->_maxFd)
+			this->_maxFd = serverSocket;
+		it->setServerSocket(serverSocket);
 	}
 }
 
 int TCPHandler::closeFd() {
-
-	std::cout << "Signal SIGINT received" << std::endl;
 
 	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
@@ -125,7 +129,7 @@ int TCPHandler::closeFd() {
 		std::cout << "CLOSING -> fdClients[i] : " << fdClients[i] << std::endl;
 		close(fdClients[i]);
 	}
-	exit(0);
+	return(0);
 }
 
 void globalSignalHandler(int signal) {
@@ -137,11 +141,37 @@ void globalSignalHandler(int signal) {
 	exit(0);
 }
 
+int TCPHandler::setupMasterFd()
+{
+	FD_ZERO(&_masterFd);
+
+	std::vector<int>fdServers = getFdServers();
+	for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
+	{
+		FD_SET(*it, &_masterFd);
+	}
+
+	std::vector<int>fdClients = getFdClients();
+	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
+	{
+		struct sockaddr_in addr;
+		socklen_t len = sizeof(addr);
+		if (getsockname(*it, (struct sockaddr *)&addr, &len) == -1)
+		{
+			close(*it);
+		}
+		else
+		{
+			FD_SET(*it, &_masterFd);
+		}
+	}
+	return (0);
+}
+
 void TCPHandler::runServer()
 {
 	bool running = true;
 	int socketCount = 0;
-	//std::map<int, Client> clients;
 
 	g_tcpHandlerInstance = this;
 	signal(SIGINT, globalSignalHandler);
@@ -159,53 +189,27 @@ void TCPHandler::runServer()
 
 		fd_set *copy = &_masterFd;
 		socketCount = select(_maxFd + 1, copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
-		std::cout << "socketCount: " << std::strerror(errno) << socketCount << std::endl;
-
+		if (socketCount == -1)
+			std::cerr << "Error : SocketCount " << std::endl;
 		for (int i = 0; i <= _maxFd; i++)
 		{
 			if (FD_ISSET(i, copy))
 			{
-				handlingNewClient(i);
+				handlingNewClient(i); // accept new client
 			}
 			if (FD_ISSET(i, copy))
 			{
-				handlingCommunication(i);
+				handlingCommunication(i); // recv n send data
 			}
 		}
 	}
 }
-
-int TCPHandler::setupMasterFd()
-{
-	FD_ZERO(&_masterFd);
-
-	std::vector<int>fdServers = getFdServers();
-	for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
-	{
-		FD_SET(*it, &_masterFd);
-	}
-
-	std::vector<int>fdClients = getFdClients();
-	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
-	{
-		std::cout << "+++++ fdClients : " << *it << std::endl;
-		if(fcntl(*it, F_GETFL, 0) == -1)
-		{
-			perror("fcntl");
-			std::cerr << "Invalid fd : " << *it << std::endl;
-		}
-		else
-			FD_SET(*it, &_masterFd);
-	}
-	return (0);
-}
-
 
 int TCPHandler::handlingNewClient(int i)
 {
 	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
-		std::cout << "i : " << i << " serverSocket : " << it->getServerSocket() << std::endl;
+		std::cout << "handling new client (i == serversocket)i : " << i << " serverSocket : " << it->getServerSocket() << std::endl;
 		if (i == it->getServerSocket())
 		{
 			std::cout << "i == serverSocket" << std::endl;
@@ -225,7 +229,6 @@ int TCPHandler::createNewClient(int socketServer)
 	_fdClients.push_back(newClient.getSocketClient());
 	if(newClient.getSocketClient() == -1)
 	{
-		perror("accept");
 		std::cerr << "Error in accepting client";
 	}
 
@@ -257,59 +260,106 @@ int TCPHandler::handlingCommunication(int i)
 	return (0);
 }
 
+// int TCPHandler::handlingRequest(Client &client)
+// {
+// 	int reading = 0;
+// 	//std::string buffer;
+// 	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
+// 	char tmp[BUFFER_SIZE];
+// 	memset(tmp, 0, sizeof(tmp));
+// 	//std::cout << "SERVER SOCKET : " << client.getServerSocketAssociated() << std::endl;
+// 	//Response response(tmp, serverConfig);
+// 	//buffer = &tmp[0];
+// 	//Response response(buffer, &this->_servers[client.getServerSocketAssociated()].getServerConfig());
+// 	//_response = response;
+// 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+
+// 	//std::cout << "SERVER CONFIG : " << this->_servers[client.getServerSocketAssociated()].getServerConfig().getDefaultFile() << std::endl;
+
+// 	//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
+// 	return(reading);
+// }
+
+// int TCPHandler::handlingResponse(Client &client)
+// {
+// 	std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
+// 	std::string toto = "website" + test;
+
+// 	// std::ifstream file(getFile().c_str());
+// 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
+// 	std::ifstream file(toto);
+// 	//std::ifstream file(*ServerConfig.getPath());
+
+// 	std::stringstream buffer;
+// 	buffer << file.rdbuf();
+// 	//std::cout << "buffer: " << buffer.str() << std::endl;
+
+// 	std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+// 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+
+// 	//std::string response = getResponse() + buffer.str();
+// 	send(client.getSocketClient(), response.c_str(), response.size(), 0);
+
+// 	clientIsDisconnected(client);
+// 	client.setSocketClient(-1);
+
+// 	return(0);
+// }
+
 int TCPHandler::handlingRequest(Client &client)
 {
-	int reading = 0;
+    int reading = 0;
 
-	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
-	char tmp[BUFFER_SIZE];
-	memset(tmp, 0, sizeof(tmp));
-	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+    //std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
+    char tmp[BUFFER_SIZE];
+    std::string buffer;
+    memset(tmp, 0, sizeof(tmp));
+    reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+    buffer = &tmp[0];
+    Response response(buffer, _servers[client.getServerSocketAssociated()].getServerConfigRef());
+    _response = &response;
 
-	//std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
-	std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
-	//it->setReading(reading);
+    //std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
+    std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
+    //it->setReading(reading);
 
-	//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
-	return(reading);
+    //std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
+    return(reading);
 }
 
 int TCPHandler::handlingResponse(Client &client)
 {
-	std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
-	std::string toto = "website" + test;
+    std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
+    std::string toto = "website" + test;
 
-	// std::ifstream file(getFile().c_str());
-	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
-	std::ifstream file(toto);
-	//std::ifstream file(*ServerConfig.getPath());
+    // std::ifstream file(getFile().c_str());
+    //std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
+    std::ifstream file(toto);
+    //std::ifstream file(*ServerConfig.getPath());
+    std::stringstream buffer;
+    buffer << file.rdbuf();
 
-	std::stringstream buffer;
-	buffer << file.rdbuf();
+    //std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+    // std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
 
-	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+    //std::string response = getResponse() + buffer.str();
+    send(client.getSocketClient(), _response->getResponse().c_str(), _response->getResponse().length(), 0);
+    std::cout << "Closing fd client" << std::endl;
+    close(client.getSocketClient());
 
-	//std::string response = getResponse() + buffer.str();
-	send(client.getSocketClient(), response.c_str(), response.size(), 0);
-	std::cout << "Closing fd client" << std::endl;
-	close(client.getSocketClient());
-
-	client.setSocketClient(-1);
-	return(0);
+    client.setSocketClient(-1);
+    return(0);
 }
 
 int TCPHandler::clientIsDisconnected(Client &client)
 {
-	perror("recv");
 	close(client.getSocketClient());
 	std::vector<int> fdClients = getFdClients();
 	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end();)
 	{
 		if (*it == client.getSocketClient())
 		{
-			std::cout << "ClientsSocket to erase: " << *it << " Client is disconnected" << std::endl;
-			it = fdClients.erase(it); // erase renvoie un itérateur vers l'élément suivant
+			it = fdClients.erase(it);
 		}
 		else
 			++it;

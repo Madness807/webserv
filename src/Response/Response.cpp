@@ -1,12 +1,15 @@
 #include "../../include/Response/Response.hpp"
 
 // Constructeur
-Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _methods(setMethod()), _headers(_request.getHeaders()), _body("")
+//Response::Response() : _request() {}
+// Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _methods(setMethod()), _headers(_request.getHeaders()), _body("")
+
+Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
     // if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
-    
+
         this->setStatusCode(200);
     // if(_request.getEnv() != "") --> If CGI exist
     // if (server.getCgi() == "On") -->> si cgi actif
@@ -54,7 +57,7 @@ void    Response::setErrorBody()
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
     std::cout << errPath << std::endl;
-    const char* filename = errPath.c_str(); 
+    const char* filename = errPath.c_str();
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
         perror("open");

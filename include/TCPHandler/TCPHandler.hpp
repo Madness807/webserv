@@ -6,6 +6,7 @@
 #include "../../include/Connection/Connection.hpp"
 #include "../ConfigParser/ServerManager.hpp"
 #include "../ConfigParser/ConfigParser.hpp"
+#include "../Response/Response.hpp"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -20,32 +21,44 @@
 
 class TCPHandler
 {
+	private :
+		std::vector<Server> 	_servers;
+		std::map<int, Client> 	_clients;
+		fd_set 					_masterFd;
+		std::vector<int> 		_fdServers;
+		std::vector<int> 		_fdClients;
+		int 					_maxFd;
+		int 					_nbOfServer;
+		ServerManager 			_serverManager;
+		Response*				_response;
+
 	public :
+		// constructeur et destructeur
 		TCPHandler();
 		~TCPHandler();
+
+		// constructeur par copie et operateur d'affectation
 		TCPHandler(const TCPHandler &other);
 		TCPHandler &operator=(const TCPHandler &other);
 
-		void initServer(int nbOfServer);
-		void runServer();
-
-		int getMaxFd() const;
+		// SETTERS
 		void setMaxFd(int maxFd);
-
-		fd_set getMasterFd() const;
 		void setMasterFd(fd_set masterFd);
-
-		std::vector<Server> getTabServers() const;
-		void setTabServers(int size);
-
 		void setTabServers(ServerManager &server_manager);
-		int closeFd();
+		void setServerManager(ServerManager &serverManager);
 
+		// GETTERS
+		int getMaxFd() const;
+		fd_set getMasterFd() const;
+		int getNbOfServer() const;
 		std::vector<int> getFdServers() const;
 		std::vector<int> getFdClients() const;
+		std::vector<Server> getTabServers() const;
 
-		int getNbOfServer() const;
-
+		// Méthodes
+		void initServer();
+		void runServer();
+		int closeFd();
 		int setupMasterFd();
 		int handlingNewClient(int i);
 		int handlingCommunication(int i);
@@ -53,19 +66,6 @@ class TCPHandler
 		int handlingRequest(Client &client);
 		int handlingResponse(Client &client);
 		int clientIsDisconnected(Client &client);
-
-	private :
-		std::vector<Server> _servers;
-		std::map<int, Client> _clients;
-
-		fd_set _masterFd;
-		std::vector<int> _fdServers;
-		std::vector<int> _fdClients;
-
-		int _maxFd;
-		int _nbOfServer;
-
-		ServerManager _serverManager;
 };
 
 #endif

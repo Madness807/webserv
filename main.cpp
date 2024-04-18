@@ -44,13 +44,13 @@ int main(int argc, char **argv)
 //                          JDEFAYES                               #
 //##################################################################
     TCPHandler tcpHandler;
-    //_serverManager = &server_manager;
+    //_serverManager = server_manager;
     //  Server test_server(serverconfig.getIp(), serverconfig.getPort());
     //  if (test_server.Init() < 0)
     //      return -1;
     tcpHandler.setTabServers(server_manager);
     //tcpHandler.setTabServers(2); // nombre de server a mettre en parametre
-    tcpHandler.initServer(tcpHandler.getNbOfServer()); // nombre de server a mettre en parametre
+    tcpHandler.initServer(); // nombre de server a mettre en parametre
     tcpHandler.runServer();
 
     std::cout << "Server is running" << std::endl;

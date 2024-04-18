@@ -1,6 +1,11 @@
 #include "../include/Request/Request.hpp"
 
 /* -------------------- Constructeur & Destructeur --------------------*/
+
+// Request::Request(): _raw(str) {
+// 	(void)str;
+// }
+
 Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port("80"), _path(""), _query(""), _raw(str)
 {
 	this->_methods = this->initMethods();

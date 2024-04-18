@@ -2,10 +2,16 @@
 #include <string>
 #include <iostream>
 
+//##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
 Client::Client() : _socketClient(0), _clientRequete(""), _clientReponse(""), _buffer(""){}
 
 Client::~Client() {}
 
+//##################################################################
+//		constructeur par copie et operateur d'affectation		   #
+//##################################################################
 Client::Client(const Client &other) {
 	*this = other;}
 
@@ -21,61 +27,73 @@ Client &Client::operator=(const Client &other) {
 	}
 	return *this;}
 
-void Client::fillInfo(int serverSocket){
+//##################################################################
+//                          SETTERS                                #
+//##################################################################
+// void Client::setRequete(std::string requete){
+// 	this->_clientRequete = requete;
+// }
 
-	socklen_t clientSize = this->getAddrClientSize();
-	std::cout << "Client size accepting: " << clientSize << std::endl;
-	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
-	//std::cout << "clientClass > client socket : " << socketClient << std::endl;
-	std::cout << "Client size accepted: " << clientSize << std::endl;
-	this->setSocketClient(socketClient);
-	this->setAddrClientSize(clientSize);
-	this->setServerSocketAssociated(serverSocket);
-}
-
-std::string Client::getRequete() const{
-	return this->_clientRequete;}
-
-void Client::setRequete(std::string requete){
-	this->_clientRequete = requete;}
-
-
-std::string Client::getReponse() const{
-	return this->_clientReponse;}
-
-void Client::setReponse(std::string reponse){
-	this->_clientReponse = reponse;}
-
-
-int Client::getSocketClient() const{
-	return this->_socketClient;}
+// void Client::setReponse(std::string reponse){
+// 	this->_clientReponse = reponse;
+// }
 
 void Client::setSocketClient(int socketClient){
-	this->_socketClient = socketClient;}
+	this->_socketClient = socketClient;
+}
 
 void Client::setServerSocketAssociated(int serverSocket){
-	this->_serverSocketAssociated = serverSocket;}
+	this->_serverSocketAssociated = serverSocket;
+}
 
+void Client::setBuffer(std::string message){
+	this->_buffer = message;
+}
+
+void Client::setAddrClientSize(socklen_t size){
+	this->_addrClientSize = size;
+}
+
+void Client::setAddrClient(struct sockaddr_in addrClient){
+	this->_addrClient = addrClient;
+}
+
+//##################################################################
+//                          GETTERS                                #
+//##################################################################
+// std::string Client::getRequete() const{
+// 	return this->_clientRequete;
+// }
+// std::string Client::getReponse() const{
+// 	return this->_clientReponse;
+// }
+int Client::getSocketClient() const{
+	return this->_socketClient;
+}
 int Client::getServerSocketAssociated() const{
 	return this->_serverSocketAssociated;
 }
 std::string Client::getBuffer() const{
 	//std::string str(this->_buffer[BUFFER_SIZE - 1]);
-	return this->_buffer;}
-
-void Client::setBuffer(std::string message){
-	this->_buffer = message;}
-
-
-socklen_t Client::getAddrClientSize() const{
-	return sizeof(this->_addrClient);}
-
-void Client::setAddrClientSize(socklen_t size){
-	this->_addrClientSize = size;}
-
-
+	return this->_buffer;
+}
 const struct sockaddr_in& Client::getAddrClient() const{
-	return this->_addrClient;}
+	return this->_addrClient;
+}
+socklen_t Client::getAddrClientSize() const{
+	return sizeof(this->_addrClient);
+}
 
-void Client::setAddrClient(struct sockaddr_in addrClient){
-	this->_addrClient = addrClient;}
+//##################################################################
+//                           Methodes                              #
+//##################################################################
+void Client::fillInfo(int serverSocket){
+
+	socklen_t clientSize = this->getAddrClientSize();
+	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
+	//std::cout << "clientClass > client socket : " << socketClient << std::endl;
+	this->setSocketClient(socketClient);
+	this->setAddrClientSize(clientSize);
+	this->setServerSocketAssociated(serverSocket);
+	std::cout << "Client is accepted: " << clientSize << std::endl;
+}
