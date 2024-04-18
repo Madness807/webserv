@@ -10,37 +10,38 @@
 void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverConfig)
 {
 	if (line.find("server_name") != std::string::npos) {
-		serverConfig.setServerName(line.substr(line.find("server_name") + 13, line.find(":") - line.find("server_name") - 13));
+		serverConfig.setServerName(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("ip") != std::string::npos) {
-		serverConfig.setIp(line.substr(line.find("ip") + 4, line.find(":") - line.find("ip") - 4));
+		serverConfig.setIp(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("port") != std::string::npos) {
-		serverConfig.setPort(line.substr(line.find("port") + 5, line.find(":") - line.find("port") - 6));
+		serverConfig.setPort(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("max_body_size") != std::string::npos) {
-		serverConfig.setMaxBodySize(line.substr(line.find("max_body_size") + 15, line.find(":") - line.find("max_body_size") - 15));
+		serverConfig.setMaxBodySize(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("default_file") != std::string::npos) {
-		serverConfig.setDefaultFile(line.substr(line.find("default_file") + 14, line.find(":") - line.find("default_file") - 14));
+		serverConfig.setDefaultFile((line.substr(line.find(":") + 1)));
 	}
 	else if (line.find("error_page") != std::string::npos) {
-		serverConfig.setErrorPage(line.substr(line.find("error_page") + 11, line.find(":") - line.find("error_page") - 12));
+		serverConfig.setErrorPage((line.substr(line.find(":") + 1)));
 	}
 	else if (line.find("root") != std::string::npos) {
-		serverConfig.setRoot(line.substr(line.find("root") + 6, line.find(":") - line.find("root") - 7));
+		serverConfig.setRoot((line.substr(line.find(":") + 1)));
+		
 	}
 }
 
 LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationConfig& location)
 {
 	if (line.find("path") != std::string::npos)
-	{
-		location.setPath(line.substr(line.find("path") + 6, line.find(":") - line.find("path") - 6));
+	{   
+		location.setPath(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("redirect") != std::string::npos)
 	{
-		location.setRedirect(line.substr(line.find("redirect") + 10, line.find(":") - line.find("redirect") - 10));
+		location.setRedirect(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("methods") != std::string::npos)
 	{
@@ -85,6 +86,8 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 		line.erase(0, line.find_first_not_of(" \t"));
         line.erase(line.find_last_not_of(" \t") + 1);
 
+		if (line.empty())
+			continue;
 		if (line.find("server_start") != std::string::npos)
 		{
 			currentServerConfig = ServerConfig();
@@ -94,6 +97,7 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 		{
 			serverConfigs.push_back(currentServerConfig);
 			inServerConfig = false;
+			currentServerConfig = ServerConfig();
 		}
 		else if (inServerConfig)
 		{
@@ -107,12 +111,10 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 				currentServerConfig.addLocation(location.getPath() ,location);
 				inLocationConfig = false;
 			}
-			else if (inLocationConfig)
-			{
+			else if (inLocationConfig){
 				parseLocationConfig(line, location);
 			}
-			else
-			{
+			else if (inServerConfig){
 				parseServerConfig(line, currentServerConfig);
 			}
 		}

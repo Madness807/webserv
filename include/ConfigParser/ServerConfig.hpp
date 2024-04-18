@@ -6,6 +6,7 @@
 #include <list>
 #include <iostream>
 #include "LocationConfig.hpp"
+#include "../utils/utils.hpp"
 
 class ServerConfig{
     private:
@@ -44,6 +45,7 @@ class ServerConfig{
         std::string getRoot();
         std::pair<std::string, int> getPairIpPort();
         LocationConfig getLocationConfig(std::string path);
+        std::map<std::string, LocationConfig> &getMapLocation();
 
         // Méthodes
         void addLocation(const std::string& path, const LocationConfig& _locationConfig);

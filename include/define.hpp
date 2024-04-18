@@ -64,7 +64,7 @@ enum HttpStatus{
     // redirection
     MOVED_PERMANENTLY = 301,
     FOUND = 302,
-    not_modified = 304,
+    NOT_MODIFIED = 304,
     // client error
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,
