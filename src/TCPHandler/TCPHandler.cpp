@@ -262,94 +262,95 @@ int TCPHandler::handlingCommunication(int i)
 
 // int TCPHandler::handlingRequest(Client &client)
 // {
-// 	int reading = 0;
-// 	//std::string buffer;
-// 	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
-// 	char tmp[BUFFER_SIZE];
-// 	memset(tmp, 0, sizeof(tmp));
-// 	//std::cout << "SERVER SOCKET : " << client.getServerSocketAssociated() << std::endl;
-// 	//Response response(tmp, serverConfig);
-// 	//buffer = &tmp[0];
-// 	//Response response(buffer, &this->_servers[client.getServerSocketAssociated()].getServerConfig());
-// 	//_response = response;
-// 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+//     int reading = 0;
 
-// 	//std::cout << "SERVER CONFIG : " << this->_servers[client.getServerSocketAssociated()].getServerConfig().getDefaultFile() << std::endl;
+//     //std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
+//     char tmp[BUFFER_SIZE];
+//     std::string buffer;
+//     memset(tmp, 0, sizeof(tmp));
+//     reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+//     buffer = &tmp[0];
+//     Response response(buffer, _servers[client.getServerSocketAssociated()].getServerConfigRef());
+//     _response = &response;
 
-// 	//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
-// 	return(reading);
-// }
+//     //std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
+//     std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
+//     //it->setReading(reading);
 
-// int TCPHandler::handlingResponse(Client &client)
-// {
-// 	std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
-// 	std::string toto = "website" + test;
-
-// 	// std::ifstream file(getFile().c_str());
-// 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
-// 	std::ifstream file(toto);
-// 	//std::ifstream file(*ServerConfig.getPath());
-
-// 	std::stringstream buffer;
-// 	buffer << file.rdbuf();
-// 	//std::cout << "buffer: " << buffer.str() << std::endl;
-
-// 	std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-// 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-
-// 	//std::string response = getResponse() + buffer.str();
-// 	send(client.getSocketClient(), response.c_str(), response.size(), 0);
-
-// 	clientIsDisconnected(client);
-// 	client.setSocketClient(-1);
-
-// 	return(0);
+//     //std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
+//     return(reading);
 // }
 
 int TCPHandler::handlingRequest(Client &client)
 {
-    int reading = 0;
+	int reading = 0;
+	//std::string buffer;
+	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
+	char tmp[BUFFER_SIZE];
+	memset(tmp, 0, sizeof(tmp));
+	//std::cout << "SERVER SOCKET : " << client.getServerSocketAssociated() << std::endl;
+	//Response response(tmp, serverConfig);
+	//buffer = &tmp[0];
+	//Response response(buffer, &this->_servers[client.getServerSocketAssociated()].getServerConfig());
+	//_response = response;
+	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
 
-    //std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
-    char tmp[BUFFER_SIZE];
-    std::string buffer;
-    memset(tmp, 0, sizeof(tmp));
-    reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
-    buffer = &tmp[0];
-    Response response(buffer, _servers[client.getServerSocketAssociated()].getServerConfigRef());
-    _response = &response;
+	//std::cout << "SERVER CONFIG : " << this->_servers[client.getServerSocketAssociated()].getServerConfig().getDefaultFile() << std::endl;
 
-    //std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
-    std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
-    //it->setReading(reading);
-
-    //std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
-    return(reading);
+	//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
+	return(reading);
 }
 
 int TCPHandler::handlingResponse(Client &client)
 {
-    std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
-    std::string toto = "website" + test;
+	std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
+	std::string toto = "website" + test;
 
-    // std::ifstream file(getFile().c_str());
-    //std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
-    std::ifstream file(toto);
-    //std::ifstream file(*ServerConfig.getPath());
-    std::stringstream buffer;
-    buffer << file.rdbuf();
+	// std::ifstream file(getFile().c_str());
+	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
+	std::ifstream file(toto);
+	//std::ifstream file(*ServerConfig.getPath());
 
-    //std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-    // std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+	std::stringstream buffer;
+	buffer << file.rdbuf();
+	//std::cout << "buffer: " << buffer.str() << std::endl;
 
-    //std::string response = getResponse() + buffer.str();
-    send(client.getSocketClient(), _response->getResponse().c_str(), _response->getResponse().length(), 0);
-    std::cout << "Closing fd client" << std::endl;
-    close(client.getSocketClient());
+	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
 
-    client.setSocketClient(-1);
-    return(0);
+	//std::string response = getResponse() + buffer.str();
+	send(client.getSocketClient(), response.c_str(), response.size(), 0);
+
+	clientIsDisconnected(client);
+	client.setSocketClient(-1);
+
+	return(0);
 }
+
+
+// int TCPHandler::handlingResponse(Client &client)
+// {
+//     std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
+//     std::string toto = "website" + test;
+
+//     // std::ifstream file(getFile().c_str());
+//     //std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
+//     std::ifstream file(toto);
+//     //std::ifstream file(*ServerConfig.getPath());
+//     std::stringstream buffer;
+//     buffer << file.rdbuf();
+
+//     //std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+//     // std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+
+//     //std::string response = getResponse() + buffer.str();
+//     send(client.getSocketClient(), _response->getResponse().c_str(), _response->getResponse().length(), 0);
+//     std::cout << "Closing fd client" << std::endl;
+//     close(client.getSocketClient());
+
+//     client.setSocketClient(-1);
+//     return(0);
+// }
 
 int TCPHandler::clientIsDisconnected(Client &client)
 {

@@ -37,6 +37,7 @@ OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))
 CXX				=		g++
 CXXFLAGS		=		-Wall -Wextra -Werror -std=c++98 -g
 
+
 # Recipes
 all: logo start $(NAME)
 
