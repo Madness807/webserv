@@ -1,0 +1,4 @@
+*.o
+./build
+webserv
+.DS_Store
