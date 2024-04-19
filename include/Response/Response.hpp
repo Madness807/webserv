@@ -1,8 +1,8 @@
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
 
- #include "../Request/Request.hpp"
  #include "../define.hpp"
+ #include "../Request/Request.hpp"
  #include "../ConfigParser/ServerConfig.hpp"
 
 class Response
@@ -39,8 +39,9 @@ class Response
 
     public:
 
+        // CONSTRUCTEUR / DESTRUCTEUR
+        Response();
         Response(std::string &, ServerConfig &);
-        // Response();
         ~Response();
 
         // GETTERS PUBLIC

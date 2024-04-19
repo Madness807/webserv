@@ -3,6 +3,8 @@
 //##################################################################
 //                          Constructeur                           #
 //##################################################################
+Response::Response() {}
+
 Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
@@ -31,7 +33,7 @@ void    Response::setStatusLine()
     _response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
 }
 
-void Response::setHeaderLine()
+void    Response::setHeaderLine()
 {
     for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
         if (it->second != "")

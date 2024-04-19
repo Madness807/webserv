@@ -3,11 +3,12 @@
 
 #include "ServerConfig.hpp"
 #include "../utils/utils.hpp"
-#include <string>
-#include <map>
-#include <list>
-#include <iostream>
-#include <fstream>
+#include "../define.hpp"
+// #include <string>
+// #include <map>
+// #include <list>
+// #include <iostream>
+// #include <fstream>
 
 class parsingSrvConf{
     public:

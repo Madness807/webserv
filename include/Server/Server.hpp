@@ -4,14 +4,14 @@
 #include "../../include/ConfigParser/ConfigParser.hpp"
 #include "../../include/Connection/Connection.hpp"
 #include "../ConfigParser/ServerConfig.hpp"
-#include "../Response/Response.hpp"
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <string.h>
-#include <fstream>
+#include "../define.hpp"
+// #include <iostream>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <unistd.h>
+// #include <arpa/inet.h>
+// #include <string.h>
+// #include <fstream>
 
 #define BUFFER_SIZE 1024
 class Server

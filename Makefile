@@ -21,9 +21,6 @@ SRC				=		main.cpp\
 						src/Client/Client.cpp\
 						src/Response/Response.cpp\
 						src/Request/Request.cpp\
-						src/Request/delete.cpp\
-						src/Request/get.cpp\
-						src/Request/post.cpp\
 						src/Request/Parse.cpp\
 						src/Connection/Connection.cpp\
 						src/CGIHandler/CGIHandler.cpp\

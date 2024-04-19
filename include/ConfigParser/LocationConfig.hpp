@@ -1,12 +1,13 @@
 #ifndef LOCATIONCONFIG_HPP
 #define LOCATIONCONFIG_HPP
 
-#include <string>
-#include <map>
-#include <list>
-#include <iostream>
-#include <vector>
-#include <sstream>
+// #include <string>
+// #include <map>
+// #include <list>
+// #include <iostream>
+// #include <vector>
+// #include <sstream>
+#include "../define.hpp"
 #include "../utils/utils.hpp"
 
 class LocationConfig{

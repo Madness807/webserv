@@ -15,7 +15,7 @@ class Request
 	std::string							_port;
 	std::string							_path;
 	std::string							_query;
-	std::string							&_raw;
+	std::string							_raw;
 
 	//Parsing
 	int									parse(const std::string &str);
@@ -32,8 +32,8 @@ class Request
 	void								setRet(int ret);
     public:
     // Constructeur et destructeur
+		Request();
         Request(std::string &str);
-		//Request();
         ~Request();
 
 	// Copie d'assignation
@@ -55,13 +55,11 @@ class Request
 
 	// Utils
 		void										resetHeaders();
-		// void										stripAll();
 		void										displayHeaders() const;
-		// std::string									readKey(std::string &str);
-		// std::string									readValue(std::string &str);
 
 		static	std::vector<std::string>			initMethods();
 };
 
 std::ostream	&operator<<(std::ostream& out, const Request& request);
+
 #endif
