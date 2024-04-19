@@ -135,7 +135,7 @@ void TCPHandler::initServer() {
 
 		std::cout << COLOR_GREEN << "│" << COLOR_RESET 
 				  << " -> [Port: " << it->getPort() << "] [FD: " << serverSocket << "]     "
-				  << std::string(43 - 16 - std::to_string(it->getPort()).length() - std::to_string(serverSocket).length(), ' ') // Calculer l'espacement
+				  //< std::string(43 - 16 - std::to_string(it->getPort()).length() - std::to_string(serverSocket).length(), ' ') // Calculer l'espacement
 				  << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
 	}
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
@@ -289,20 +289,27 @@ int TCPHandler::clientIsDisconnected(Client &client)
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
-	//std::string buffer;
-	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
-	char tmp[BUFFER_SIZE];
-	memset(tmp, 0, sizeof(tmp));
-	//std::cout << "SERVER SOCKET : " << client.getServerSocketAssociated() << std::endl;
-	//Response response(tmp, serverConfig);
-	//buffer = &tmp[0];
-	//Response response(buffer, &this->_servers[client.getServerSocketAssociated()].getServerConfig());
-	//_response = response;
-	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
-
+	std::string buffer;
+	char tmp[2000];
+	ServerConfig& test = this->_servers[client.getServerSocketAssociated()].getServerConfigRef();
+	memset(tmp, 0, sizeof(tmp)); // Clear the buffer
+	reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
+	// do {
+	// 	memset(tmp, 0, sizeof(tmp)); // Clear the buffer
+	// 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
+	// 	if (reading > 0) {
+	// 		buffer.append(tmp, reading);
+	// 	}
+	// } while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
+//std::string buffer = "GET /home.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: 120.0.0.1:8888\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
+	
+	buffer = &tmp[0];
+	std::cout << "-------> buffer" << buffer << std::endl;
+	Response response(buffer, test);
+	std::cout << "check 1" << std::endl;
+	_response = response;
+	std::cout << "bffer 2 : " << buffer << std::endl;
 	//std::cout << "SERVER CONFIG : " << this->_servers[client.getServerSocketAssociated()].getServerConfig().getDefaultFile() << std::endl;
-
-	//std::cout << "reading: " << reading << " it->reading : " << it->getReading() << std::endl;
 	return(reading);
 }
 
@@ -313,7 +320,7 @@ int TCPHandler::handlingResponse(Client &client)// c est cella qui marche si jam
 
 	// std::ifstream file(getFile().c_str());
 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
-	std::ifstream file(toto);
+	std::ifstream file(toto.c_str());
 	//std::ifstream file(*ServerConfig.getPath());
 
 	std::stringstream buffer;

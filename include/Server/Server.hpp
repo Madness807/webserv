@@ -58,6 +58,7 @@ class Server
 		std::string		getIpAdress() const;
 		std::string		getBuffer() const;
 		ServerConfig&	getServerConfigRef() const;
+		ServerConfig	getServerConfig() const;
 
 		// Méthodes
 		int Init();

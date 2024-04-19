@@ -33,7 +33,13 @@ void ServerConfig::setPort(std::string port) {
         std::cerr << "Error: Port: empty port" << std::endl;
         exit (1);
     }
-    _pair_ip_port.second = std::stoi(port);
+    std::istringstream iss(port);
+    int portNumber;
+    if (!(iss >> portNumber)) {
+        std::cerr << "Error: Port: invalid port number" << std::endl;
+        exit (1);
+    }
+    _pair_ip_port.second = portNumber;
 }
 void ServerConfig::setMaxBodySize(std::string max_body_size) {
     max_body_size = trim(max_body_size);

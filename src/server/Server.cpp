@@ -111,6 +111,10 @@ ServerConfig& Server::getServerConfigRef() const{
 	return ref;
 }
 
+ServerConfig Server::getServerConfig() const{
+	return this->_serverConfig;
+}
+
 //##################################################################
 //                           Methodes                              #
 //##################################################################
