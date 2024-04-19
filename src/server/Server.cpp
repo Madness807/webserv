@@ -85,10 +85,6 @@ std::string Server::getFile() const{
 	return this->_file;
 }
 
-// std::string Server::getResponse() const{
-// 	return this->_response;
-// }
-
 int Server::getServerSocket() const{
 	return this->_serverSocket;
 }
@@ -121,7 +117,6 @@ ServerConfig& Server::getServerConfigRef() const{
 int Server::Init()
 {
 	// socket creation
-	// -> int sockfd = socket(domain, type, protocol)
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
 	if (_serverSocket == -1)
 	{
@@ -129,15 +124,14 @@ int Server::Init()
 		exit(-1);
 	}
 	// option to prevent error "address already in use”."
-	// -> int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen); // permet de reutiliser le port
 	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
 		std::cerr << "Error: Server setsockopt failed" << std::endl;
 		exit(-1);
 	}
 	// bind the socket to an address
-	//int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
 	{
+		perror("bind failed");
 		std::cerr << "Error: Bind failed" << std::endl;
 		exit(-1);
 	}

@@ -95,5 +95,5 @@ void Client::fillInfo(int serverSocket){
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
 	this->setServerSocketAssociated(serverSocket);
-	std::cout << "Client is accepted: " << clientSize << std::endl;
+	//std::cout << "Client is accepted: " << clientSize << std::endl;
 }

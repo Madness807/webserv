@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include "../ConfigParser/ServerConfig.hpp"
 
 void printSRVConfig(ServerConfig *serverconfig);
 

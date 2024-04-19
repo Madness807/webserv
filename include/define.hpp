@@ -1,6 +1,17 @@
 #ifndef _DEFINE_HPP
 #define _DEFINE_HPP
 
+// Class Includes
+#include "ConfigParser/ServerManager.hpp"
+#include "ConfigParser/ServerConfig.hpp"
+#include "ConfigParser/ConfigParser.hpp"
+#include "Server/Server.hpp"
+#include "client/Client.hpp"
+#include "Request/Request.hpp"
+#include "Response/Response.hpp"
+#include "TCPHandler/TCPHandler.hpp"
+#include "verbose/verbose.hpp"
+
 // CPP Includes
 # include <iostream>
 # include <iomanip>

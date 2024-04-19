@@ -21,12 +21,12 @@ class Server
 		int        	 			_serverSocket;
 		int         			_newSocket;
 		int         			_port;
+		int 	   				_socketCount;
 		std::string 			_ipAdress;
+		std::string        		_buffer;
+		std::string 			_file;
 		ssize_t      			_reading;
 		struct sockaddr_in 		_addr;
-		std::string        		_buffer;
-		int 	   				_socketCount;
-		std::string 			_file;
 		ServerConfig			_serverConfig;
 
 	protected:
@@ -51,14 +51,13 @@ class Server
 		void setReading(int reading);
 
 		// GETTERS
-		std::string getResponse() const;
-		int getServerSocket() const;
-		std::string getFile() const;
-		int getPort() const;
-		std::string getIpAdress() const;
-		std::string getBuffer() const;
-		int getReading() const;
-		ServerConfig& getServerConfigRef() const;
+		int				getServerSocket() const;
+		int				getPort() const;
+		int				getReading() const;
+		std::string		getFile() const;
+		std::string		getIpAdress() const;
+		std::string		getBuffer() const;
+		ServerConfig&	getServerConfigRef() const;
 
 		// Méthodes
 		int Init();
