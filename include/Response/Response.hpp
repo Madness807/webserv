@@ -30,7 +30,7 @@ class Response
         void                                    setMethod();
     
     // GETTERS PRIVÉ
-        void                                    getContentFile(std::string filename);
+        void                                    getHtmlFile(std::string filename);
 
     // METHODS PRIVÉE
         void                                    requestGet();
@@ -40,7 +40,7 @@ class Response
     public:
 
         Response(std::string &, ServerConfig &);
-        Response();
+        // Response();
         ~Response();
 
         // GETTERS PUBLIC

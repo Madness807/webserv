@@ -30,7 +30,7 @@ class TCPHandler
 		int 					_maxFd;
 		int 					_nbOfServer;
 		ServerManager 			_serverManager;
-		Response*				_response;
+		// Response*				_response;
 
 	public :
 		// constructeur et destructeur

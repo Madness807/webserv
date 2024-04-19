@@ -1,6 +1,8 @@
 #include "../../include/Response/Response.hpp"
 
-/* ------------------- Constructeur -------------------*/
+//##################################################################
+//                          Constructeur                           #
+//##################################################################
 Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
@@ -16,10 +18,14 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     std::cout << _request << std::endl;
 }
 
-/* ------------------- Destructeur -------------------*/
+//##################################################################
+//                          Destructeur                            #
+//##################################################################
 Response::~Response() {}
 
-/* ------------------- Setter -------------------*/
+//##################################################################
+//                          Setter                                 #
+//##################################################################
 void    Response::setStatusLine()
 {
     _response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
@@ -102,7 +108,9 @@ void    Response::setServer(ServerConfig &serverconfig)
 }
 
 
-/* ------------------- Getter -------------------*/
+//##################################################################
+//                          Getter                                 #
+//##################################################################
 int Response::getStatusCode() const
 {
     return (_statusCode);
@@ -126,31 +134,33 @@ const Request Response::getRequest() const
 {
     return (_request);
 }
-/* ------------------- Methods -------------------*/
-void    Response::requestGet()
+//##################################################################
+//                          Methods                                #
+//##################################################################
+void    Response::requestGet() // --> GET
 {
-    std::map<std::string, LocationConfig>::iterator it = _server.getMapLocation().find(_request.getPath());
+    std::map<std::string, LocationConfig>::iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
     if (it != _server.getMapLocation().end())
     {
-        std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod());
+        std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
         if (it2 != it->second.getMethods().end())
         {
-            getContentFile(it->second.getPath());
+            getHtmlFile(it->second.getPath());
         }
     }
 }
 
-void    Response::requestPost()
+void    Response::requestPost() // --> POST
 {
 
 }
 
-void    Response::requestDelete()
+void    Response::requestDelete() // --> DELETE
 {
 
 }
 
-void    Response::getContentFile(std::string filename)
+void    Response::getHtmlFile(std::string filename) // --> GET HTML FILES
 {
     (void) filename;
     std::string filePath = "website/default.html";
@@ -171,7 +181,9 @@ void    Response::getContentFile(std::string filename)
     inFile.close();
 }
 
-/* ------------------- Other -------------------*/
+//##################################################################
+//                          Others                                 #
+//##################################################################
 std::string intToString(int value)
 {
     std::ostringstream oss;
