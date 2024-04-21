@@ -290,64 +290,24 @@ int TCPHandler::clientIsDisconnected(Client &client)
 //Request and Response##############################################
 int TCPHandler::handlingRequest(Client &client)
 {
-// 	int reading = 0;
-// 	std::string buffer = "GET /home.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: 120.0.0.1:8888\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
-// 	char tmp[BUFFER_SIZE];
-// 	ServerConfig& test = this->_servers[client.getServerIdx()].getServerConfigRef();
-// 	//memset(tmp, 0, sizeof(tmp)); // Clear the buffer
-// 	//reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
-// 	do {
-// 		memset(tmp, 0, sizeof(tmp)); // Clear the buffer
-// 		reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
-// 		if (reading > 0) {
-// 			buffer.append(tmp, reading);
-// 		}
-// 		if (reading < 0)
-// 			perror("reading");
-// 	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
-// //std::string buffer = "GET /home.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: 120.0.0.1:8888\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
-
-// 	//buffer = &tmp[0];
-// 	std::cout << "-------> buffer" << buffer << std::endl;
-// 	Response response(buffer, test);
-// 	std::cout << "check 1" << std::endl;
-// 	_response = response;
-// 	std::cout << "bffer 2 : " << buffer << std::endl;
-// 	std::cout << "SERVER CONFIG : " << this->_servers[client.getServerSocketAssociated()].getServerConfig().getDefaultFile() << std::endl;
-//------------------------------------------
-
-int reading = 0;
-	std::string bufferBrut = "GET /home.html?blabla=blabla+bla=bla+inc=inc HTTP/1.1\r\nHost: 120.0.0.1:8888\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nCookie: userId=12345; sessionId=67890\r\n\r\nbody: {bla}\r\n";
-	std::string bufferRecup;
+	int reading = 0;
+	std::string buffer2;
 	char tmp[BUFFER_SIZE];
 	ServerConfig& test = this->_servers[client.getServerIdx()].getServerConfigRef();
-	//std::cout << "Port ref : " << test.getPort() << std::endl;
 
+	do {
+		memset(tmp, 0, sizeof(tmp)); // Clear the buffer
+		reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
+		if (reading > 0) {
+			buffer2.append(tmp, reading);
+		}
+		// if (reading < 0)
+		// 	perror("reading");
+	} while (reading > 0 && buffer2.find("\r\n\r\n") == std::string::npos);
 
-	// std::vector<Server>::size_type index = static_cast<std::vector<Server>::size_type>(client.getServerSocketAssociated());
-	// if (index < _servers.size()) {
-	// 	std::cout << "Port servers : " << _servers[client.getServerIdx()].getPort() << std::endl;
-	// } else {
-	// 	std::cout << "Invalid server index: " << index << std::endl;
-	// }
-	// std::cout << "Port servers : " << _servers[client.getServerIdx()].getPort() << std::endl;
+	Response response(buffer2, test);
+	_response = response;
 
-	do
-	{
-		memset(tmp, 0, sizeof(tmp));
-		reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0);
-		if (reading > 0)
-			bufferRecup.append(tmp, reading);
-		std::cout << "string bufferRecup capacity : " << bufferRecup.capacity() << std::endl;
-
-	} while (reading > 0);
-
-	std::cout << "bufferRecup : " << bufferRecup << std::endl;
-	std::cout << "bufferBrut : " << bufferBrut << std::endl;
-
-
-
-	Response response(bufferBrut, test);
 	return(reading);
 }
 
