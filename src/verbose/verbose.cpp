@@ -1,58 +1,48 @@
- #include "../include/verbose/verbose.hpp"
- #include "../include/define.hpp"
+#include "../include/verbose/verbose.hpp"
+#include "../include/define.hpp"
 
- void printSRVConfig(ServerConfig *serverconfig)
- {
-	//Print the server config
-	std::cout << COLOR_RED << "┌SERVER CONFIG ───────────────────────────────────────────────┐"                                        << COLOR_RESET << std::endl;
-	std::cout << COLOR_RED << "│ " << COLOR_RESET << "Name:\t\t\tt"           << serverconfig->getServerName()   <<  std::endl;
-	std::cout << COLOR_RED << "│ " << COLOR_RESET << "IP:\t\t\t"             << serverconfig->getIp()            << std::endl;
-	std::cout << COLOR_RED << "│ " << COLOR_RESET << "Port:\t\t\t"           << serverconfig->getPort()          <<  std::endl;
-	std::cout << COLOR_RED << "│ " << COLOR_RESET << "Max Body Size:\t"    << serverconfig->getMaxBodySize()     <<  std::endl;
-	std::cout << COLOR_RED << "│ " << COLOR_RESET << "Default File:\t\t"     << serverconfig->getDefaultFile()   <<  std::endl;
-	std::cout << COLOR_RED << "│ " << COLOR_RESET << "Error Page:\t\t"       << serverconfig->getErrorPage()     << std::endl;
-	std::cout << COLOR_RED << "│ " << COLOR_RESET << "Root:\t\t\t"           << serverconfig->getRoot()          << std::endl;
+void printAllSrvConfig(ServerManager *serverManager)
+{
+    std::vector<ServerConfig> servers = serverManager->getServerConfig(); // récupérer la liste des serveurs
 
-	int size1 = serverconfig->getLocationConfig("/").getMethods().size();
-	int i = 0;
-	std::cout << "" << std::endl;
-	std::cout << COLOR_BLUE		<< "LOCATION 1" << COLOR_RESET	<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Path:\t\t\t" 			<< serverconfig->getLocationConfig("/").getPath() 				<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Redirection:\t\t" 		<< serverconfig->getLocationConfig("/").getRedirect() 			<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "DirectoryListing:\t" 	<< serverconfig->getLocationConfig("/").getDirectoryListing() 	<< std::endl;
-	while (i < size1)
-	{
-		std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Methods:\t\t" << serverconfig->getLocationConfig("/").getMethods().at(i) << std::endl;
-		i++;
-	}    
-	std::cout << "" << std::endl;
+    for (size_t i = 0; i < servers.size(); ++i)
+    {
+        const ServerConfig& serverConfig = servers[i];
+        // imprimer les informations de chaque serveur
+        std::cout << COLOR_RED << "┌SERVER CONFIG ───────────────────────────────────────────────" << COLOR_RESET << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Name:\t\t\t" << serverConfig.getServerName() << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "IP:\t\t\t" << serverConfig.getIp() << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Port:\t\t\t" << serverConfig.getPort() << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Max Body Size:\t" << serverConfig.getMaxBodySize() << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Default File:\t\t" << serverConfig.getDefaultFile() << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Error Page:\t\t" << serverConfig.getErrorPage() << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Root:\t\t\t" << serverConfig.getRoot() << std::endl;
+		std::cout << ""<< std::endl;
 
-	int size2 = serverconfig->getLocationConfig("/uploads").getMethods().size();
-	i = 0;
-	std::cout << COLOR_BLUE		<< "LOCATION 1" << COLOR_RESET	<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Path:\t\t\t" 			<< serverconfig->getLocationConfig("/uploads").getPath() 				<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Redirection:\t\t" 		<< serverconfig->getLocationConfig("/uploads").getRedirect() 			<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "DirectoryListing:\t" 	<< serverconfig->getLocationConfig("/uploads").getDirectoryListing() 	<< std::endl;
-	while (i < size2)
-	{
-		std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Methods:\t\t" << serverconfig->getLocationConfig("/uploads").getMethods().at(i) << std::endl;
-		i++;
-	}  
-	std::cout << "" << std::endl;
-
-
-	int size3 = serverconfig->getLocationConfig("/home.html").getMethods().size();
-	i = 0;
-	std::cout << COLOR_BLUE		<< "LOCATION 1" << COLOR_RESET	<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Path:\t\t\t" 			<< serverconfig->getLocationConfig("/img").getPath() 				<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Redirection:\t\t" 		<< serverconfig->getLocationConfig("/img").getRedirect() 			<< std::endl;
-	std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "DirectoryListing:\t" 	<< serverconfig->getLocationConfig("/img").getDirectoryListing() 	<< std::endl;
-	while (i < size3)
-	{
-		std::cout << COLOR_RED 		<< "│ " 		<< COLOR_RESET  << "Methods:\t\t" << serverconfig->getLocationConfig("/img").getMethods().at(i) << std::endl;
-		i++;
-	}
-	std::cout << "" << std::endl;
-	std::cout << "" << std::endl;
- }
-
+        std::map<std::string, LocationConfig> locations = serverConfig.getMapLocation();
+        for (std::map<std::string, LocationConfig>::const_iterator it = locations.begin(); it != locations.end(); ++it)
+        {
+            const LocationConfig& locationConfig = it->second;
+            std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Location:\t\t" << locationConfig.getPath() << std::endl;
+            std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Redirection:\t\t" << locationConfig.getRedirect() << std::endl;
+            if (locationConfig.getDirectoryListing())
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Directory Listing:\t" << "ON" << std::endl;
+            else
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Directory Listing:\t" << "OFF" << std::endl;
+            if (locationConfig.getCgiPath().empty())
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Path:\t\t" << "OFF" << std::endl;
+            else
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Path:\t\t" << locationConfig.getCgiPath() << std::endl;
+            if (locationConfig.getCgiExtension().empty())
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:\t" << "OFF" << std::endl;
+            else
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:\t\t" << locationConfig.getCgiExtension() << std::endl;
+            std::vector<std::string> methods = locationConfig.getMethods();
+            for (size_t j = 0; j < methods.size(); ++j)
+            {
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Methods:\t\t" << methods[j] << std::endl;
+            }
+            std::cout << std::endl; // Espace entre les serveurs pour une meilleure lisibilité
+        }
+    }
+}

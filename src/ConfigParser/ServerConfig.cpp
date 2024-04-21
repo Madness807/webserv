@@ -23,9 +23,7 @@ void ServerConfig::setIp(std::string ip) {
     }
     _pair_ip_port.first = ip;
 }
-// void ServerConfig::setPort(std::string port) {
-//     _pair_ip_port.second = std::stoi(port);
-// }
+
 void ServerConfig::setPort(std::string port) {
     port = trim(port);
     if (port.empty())
@@ -78,7 +76,7 @@ void ServerConfig::setLocations_map(std::map<std::string, LocationConfig> locati
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
-std::string ServerConfig::getServerName() {
+std::string ServerConfig::getServerName() const{
     return _server_name;
 }
 int ServerConfig::getPort() const {
@@ -87,27 +85,25 @@ int ServerConfig::getPort() const {
 std::string ServerConfig::getIp() const {
     return _pair_ip_port.first;
 }
-
 std::pair<std::string, int> ServerConfig::getPairIpPort() {
     return _pair_ip_port;
 }
-
-std::string ServerConfig::getMaxBodySize() {
+std::string ServerConfig::getMaxBodySize() const{
     return _max_body_size;
 }
-std::string ServerConfig::getDefaultFile() {
+std::string ServerConfig::getDefaultFile() const{
     return _default_file;
 }
-std::string ServerConfig::getErrorPage() {
+std::string ServerConfig::getErrorPage() const{
     return _error_page;
 }
-std::string ServerConfig::getRoot() {
+std::string ServerConfig::getRoot() const{
     return _root;
 }
 LocationConfig ServerConfig::getLocationConfig(std::string path) {
     return _locations_map.at(path);
 }
-std::map<std::string, LocationConfig> &ServerConfig::getMapLocation(){
+const std::map<std::string, LocationConfig> &ServerConfig::getMapLocation() const{
     return _locations_map;
 }
 

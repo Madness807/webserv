@@ -43,6 +43,14 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 	{
 		location.setRedirect(line.substr(line.find(":") + 1));
 	}
+	else if (line.find("cgi_path") != std::string::npos)
+	{
+		location.setCgiPath(line.substr(line.find(":") + 1));
+	}
+	else if (line.find("cgi_extension") != std::string::npos)
+	{
+		location.setCgiExtension(line.substr(line.find(":") + 1));
+	}
 	else if (line.find("methods") != std::string::npos)
 	{
 		std::string methodsSubstr = line.substr(line.find("methods") + 9 , line.find(":") - line.find("methods") - 9);

@@ -11,7 +11,7 @@
 
 class ServerConfig{
     private:
-        // Attributs Configuration de base du serveur✅
+        // Attributs Configuration de base du serveur
         std::string _server_name;
         std::string _max_body_size;
         std::string _default_file;
@@ -25,7 +25,6 @@ class ServerConfig{
             ServerConfig();
             ~ServerConfig();
 
-        // Méthodes Configuration de base du serveur///////////////
         // SETTERS
         void setServerName(std::string server_name);
         void setPort(std::string _port);
@@ -37,16 +36,17 @@ class ServerConfig{
         void setLocations_map(std::map<std::string, LocationConfig > _locations_map);
 
         // GETTERS
-        std::string getServerName();
+        std::string getServerName() const;
         int getPort() const;
         std::string getIp() const;
-        std::string getMaxBodySize();
-        std::string getDefaultFile();
-        std::string getErrorPage();
-        std::string getRoot();
+        std::string getMaxBodySize() const;
+        std::string getDefaultFile() const;
+        std::string getErrorPage() const;
+        std::string getRoot() const;
         std::pair<std::string, int> getPairIpPort();
+        
         LocationConfig getLocationConfig(std::string path);
-        std::map<std::string, LocationConfig> &getMapLocation();
+        const std::map<std::string, LocationConfig> &getMapLocation() const;
 
         // Méthodes
         void addLocation(const std::string& path, const LocationConfig& _locationConfig);

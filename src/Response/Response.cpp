@@ -141,7 +141,7 @@ const Request Response::getRequest() const
 //##################################################################
 void    Response::requestGet() // --> GET
 {
-    std::map<std::string, LocationConfig>::iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
+    std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
     if (it != _server.getMapLocation().end())
     {
         std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path

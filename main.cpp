@@ -19,8 +19,10 @@ int main(int argc, char **argv)
 //##################################################################
     ServerManager server_manager(config_file);
 
+    printAllSrvConfig(&server_manager);
+
     // Print all servers config
-    printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
+    //printSRVConfig(server_manager.getServerConfig("127.0.0.1", 8888));
     // printSRVConfig(server_manager.getServerConfig("127.0.0.1", 7777));
     // printSRVConfig(server_manager.getServerConfig("127.0.0.1", 5555));
 
@@ -30,10 +32,10 @@ int main(int argc, char **argv)
 //##################################################################
 //                          JDEFAYES                               #
 //##################################################################
-    TCPHandler tcpHandler;
-    tcpHandler.setTabServers(server_manager);
-    tcpHandler.initServer();
-    tcpHandler.runServer();
+    // TCPHandler tcpHandler;
+    // tcpHandler.setTabServers(server_manager);
+    // tcpHandler.initServer();
+    // tcpHandler.runServer();
 
     //commande pour voir les ports ouverts : watch "netstat -an | grep 127.0.0.1"
 //##################################################################
