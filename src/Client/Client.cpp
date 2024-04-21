@@ -17,6 +17,7 @@ Client::Client(const Client &other) {
 
 Client &Client::operator=(const Client &other) {
 	if (this != &other) {
+		this->_idxServer = other._idxServer;
 		this->_socketClient = other._socketClient;
 		this->_serverSocketAssociated = other._serverSocketAssociated;
 		this->_clientRequete = other._clientRequete;
@@ -84,16 +85,31 @@ socklen_t Client::getAddrClientSize() const{
 	return sizeof(this->_addrClient);
 }
 
+int Client::getServerIdx() const{
+	return this->_idxServer;
+}
+
 //##################################################################
 //                           Methodes                              #
 //##################################################################
-void Client::fillInfo(int serverSocket){
+void Client::fillInfo(int serverSocket, std::vector<Server> server){
 
+	for (std::vector<Server>::iterator it = server.begin(); it != server.end(); ++it)
+	{
+		std::cout << "it->getServerSocket() : " << it->getServerSocket() << " serverSocket  : " << serverSocket << std::endl;
+		if (it->getServerSocket() == serverSocket)
+		{
+			std::cout << "getIdx fillinfo : " << it->getIdx();
+			_idxServer = it->getIdx();
+		}
+
+	}
 	socklen_t clientSize = this->getAddrClientSize();
 	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
 	//std::cout << "clientClass > client socket : " << socketClient << std::endl;
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
 	this->setServerSocketAssociated(serverSocket);
+	//this->_idxServer =
 	//std::cout << "Client is accepted: " << clientSize << std::endl;
 }

@@ -9,9 +9,9 @@ Server::Server(){}
 
 Server::~Server(){}
 
-Server::Server(std::string ipAdress, int port, ServerConfig conf) :_port(port),  _ipAdress(ipAdress)
+Server::Server(std::string ipAdress, int port, ServerConfig conf, int idx) :_port(port),  _ipAdress(ipAdress), _idx(idx)
 {
-	_serverSocket = 20;
+	_serverSocket = 0;
 	_newSocket = 0;
 	_opt = 1;
 	_reading = 0;
@@ -43,17 +43,18 @@ Server::Server(const Server &other) {
 Server &Server::operator=(const Server &other)
 {
 	if (this != &other) {
+		_port = other._port;
+		_ipAdress = other._ipAdress;
+		_idx = other._idx;
 		_opt = other._opt;
 		_serverSocket = other._serverSocket;
 		_newSocket = other._newSocket;
-		_port = other._port;
-		_ipAdress = other._ipAdress;
-		_reading = other._reading;
-		_addr = other._addr;
-		_buffer = other._buffer;
 		_socketCount = other._socketCount;
+		_buffer = other._buffer;
 		_file = other._file;
+		_reading = other._reading;
 		_serverConfig = other._serverConfig;
+		_addr = other._addr;
 		//_response = other._response;
 	}
 	return *this;
@@ -113,6 +114,10 @@ ServerConfig& Server::getServerConfigRef() const{
 
 ServerConfig Server::getServerConfig() const{
 	return this->_serverConfig;
+}
+
+int Server::getIdx(){
+	return this->_idx;
 }
 
 //##################################################################

@@ -17,17 +17,18 @@
 class Server
 {
 	private:
+		int         			_port;
+		std::string 			_ipAdress;
+		int						_idx;
 		int         			_opt;
 		int        	 			_serverSocket;
 		int         			_newSocket;
-		int         			_port;
 		int 	   				_socketCount;
-		std::string 			_ipAdress;
 		std::string        		_buffer;
 		std::string 			_file;
 		ssize_t      			_reading;
-		struct sockaddr_in 		_addr;
 		ServerConfig			_serverConfig;
+		struct sockaddr_in 		_addr;
 
 	protected:
 
@@ -37,7 +38,7 @@ class Server
 	public:
 		// constructeur et destructeur
 		Server();
-		Server(std::string ipAdress, int port, ServerConfig conf);
+		Server(std::string ipAdress, int port, ServerConfig conf, int idx);
 		virtual ~Server();
 
 		// constructeur par copie et operateur d'affectation
@@ -59,6 +60,7 @@ class Server
 		std::string		getBuffer() const;
 		ServerConfig&	getServerConfigRef() const;
 		ServerConfig	getServerConfig() const;
+		int 			getIdx();
 
 		// Méthodes
 		int Init();
