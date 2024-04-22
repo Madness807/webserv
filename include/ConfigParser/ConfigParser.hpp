@@ -4,11 +4,6 @@
 #include "ServerConfig.hpp"
 #include "../utils/utils.hpp"
 #include "../define.hpp"
-// #include <string>
-// #include <map>
-// #include <list>
-// #include <iostream>
-// #include <fstream>
 
 class parsingSrvConf{
     public:
@@ -19,6 +14,8 @@ class parsingSrvConf{
         // Destructeur
             ~parsingSrvConf();
 
+        std::set<int> usedPorts;//liste des ports utilisés
+        
         // Méthodes///////////////////
         std::vector<ServerConfig> readConfigFile(std::string filename);
         void parseServerConfig(std::string line, ServerConfig& serverConfig);
@@ -32,6 +29,3 @@ class parsingSrvConf{
 
 #endif
 
-// todo faire la gestion d erreur pour les fichiers de config
-// verifier que j ai au moin l adresse ip et le port
-// verifier que j ai au moin un path

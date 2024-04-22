@@ -34,9 +34,9 @@ void printAllSrvConfig(ServerManager *serverManager)
             else
                 std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Path:\t\t" << locationConfig.getCgiPath() << std::endl;
             if (locationConfig.getCgiExtension().empty())
-                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:\t" << "OFF" << std::endl;
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:" << "OFF" << std::endl;
             else
-                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:\t\t" << locationConfig.getCgiExtension() << std::endl;
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:\t" << locationConfig.getCgiExtension() << std::endl;
             std::vector<std::string> methods = locationConfig.getMethods();
             for (size_t j = 0; j < methods.size(); ++j)
             {

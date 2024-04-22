@@ -1,12 +1,6 @@
 #ifndef LOCATIONCONFIG_HPP
 #define LOCATIONCONFIG_HPP
 
-// #include <string>
-// #include <map>
-// #include <list>
-// #include <iostream>
-// #include <vector>
-// #include <sstream>
 #include "../define.hpp"
 #include "../utils/utils.hpp"
 
@@ -15,8 +9,8 @@ class LocationConfig{
 
 		std::string _path;
 		std::string _redirect;
-		std::string cgiPath;
-		std::string cgiExtension;
+		std::string _cgiPath;
+		std::string _cgiExtension;
 		std::vector<std::string> _methods;
 		bool _directory_listing;
 		

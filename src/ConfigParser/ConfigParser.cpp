@@ -16,7 +16,15 @@ void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverCon
 		serverConfig.setIp(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("port") != std::string::npos) {
-		serverConfig.setPort(line.substr(line.find(":") + 1));
+		std::istringstream iss(line.substr(line.find(":") + 1));
+        int port;
+        iss >> port;
+        if (usedPorts.find(port) != usedPorts.end()) {
+            std::cerr << "Erreur: port en double détecté: " << port << std::endl;
+            exit(1);
+        }
+        usedPorts.insert(port);
+        serverConfig.setPort(line.substr(line.find(":") + 1));
 	}
 	else if (line.find("max_body_size") != std::string::npos) {
 		serverConfig.setMaxBodySize(line.substr(line.find(":") + 1));
@@ -29,7 +37,6 @@ void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverCon
 	}
 	else if (line.find("root") != std::string::npos) {
 		serverConfig.setRoot((line.substr(line.find(":") + 1)));
-		
 	}
 }
 
@@ -43,11 +50,11 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 	{
 		location.setRedirect(line.substr(line.find(":") + 1));
 	}
-	else if (line.find("cgi_path") != std::string::npos)
+	else if (line.find("cgiP") != std::string::npos)
 	{
 		location.setCgiPath(line.substr(line.find(":") + 1));
 	}
-	else if (line.find("cgi_extension") != std::string::npos)
+	else if (line.find("cgiE") != std::string::npos)
 	{
 		location.setCgiExtension(line.substr(line.find(":") + 1));
 	}
