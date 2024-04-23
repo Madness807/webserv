@@ -1,6 +1,6 @@
 #include "../../include/Server/Server.hpp"
-#include "../../include/client/Client.hpp"
-#include "../../include/Response/Response.hpp"
+// #include "../../include/client/Client.hpp"
+// #include "../../include/Response/Response.hpp"
 
 //##################################################################
 //                   Constructor && Destructor                     #
@@ -9,9 +9,9 @@ Server::Server(){}
 
 Server::~Server(){}
 
-Server::Server(std::string ipAdress, int port, ServerConfig conf) :_port(port),  _ipAdress(ipAdress)
+Server::Server(std::string ipAdress, int port, ServerConfig conf, int idx) :_port(port),  _ipAdress(ipAdress), _idx(idx)
 {
-	_serverSocket = 20;
+	_serverSocket = 0;
 	_newSocket = 0;
 	_opt = 1;
 	_reading = 0;
@@ -43,17 +43,18 @@ Server::Server(const Server &other) {
 Server &Server::operator=(const Server &other)
 {
 	if (this != &other) {
+		_port = other._port;
+		_ipAdress = other._ipAdress;
+		_idx = other._idx;
 		_opt = other._opt;
 		_serverSocket = other._serverSocket;
 		_newSocket = other._newSocket;
-		_port = other._port;
-		_ipAdress = other._ipAdress;
-		_reading = other._reading;
-		_addr = other._addr;
-		_buffer = other._buffer;
 		_socketCount = other._socketCount;
+		_buffer = other._buffer;
 		_file = other._file;
+		_reading = other._reading;
 		_serverConfig = other._serverConfig;
+		_addr = other._addr;
 		//_response = other._response;
 	}
 	return *this;
@@ -85,10 +86,6 @@ std::string Server::getFile() const{
 	return this->_file;
 }
 
-// std::string Server::getResponse() const{
-// 	return this->_response;
-// }
-
 int Server::getServerSocket() const{
 	return this->_serverSocket;
 }
@@ -115,13 +112,20 @@ ServerConfig& Server::getServerConfigRef() const{
 	return ref;
 }
 
+ServerConfig Server::getServerConfig() const{
+	return this->_serverConfig;
+}
+
+int Server::getIdx(){
+	return this->_idx;
+}
+
 //##################################################################
 //                           Methodes                              #
 //##################################################################
 int Server::Init()
 {
 	// socket creation
-	// -> int sockfd = socket(domain, type, protocol)
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
 	if (_serverSocket == -1)
 	{
@@ -129,15 +133,14 @@ int Server::Init()
 		exit(-1);
 	}
 	// option to prevent error "address already in use”."
-	// -> int setsockopt(int sockfd, int level, int optname,  const void *optval, socklen_t optlen); // permet de reutiliser le port
 	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
 		std::cerr << "Error: Server setsockopt failed" << std::endl;
 		exit(-1);
 	}
 	// bind the socket to an address
-	//int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
 	{
+		perror("bind failed");
 		std::cerr << "Error: Bind failed" << std::endl;
 		exit(-1);
 	}

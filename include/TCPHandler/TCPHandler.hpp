@@ -7,16 +7,17 @@
 #include "../ConfigParser/ServerManager.hpp"
 #include "../ConfigParser/ConfigParser.hpp"
 #include "../Response/Response.hpp"
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <string.h>
-#include <fstream>
-#include <cstdlib>
-#include <csignal>
-#include <cstring>
+#include "../define.hpp"
+// #include <iostream>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <unistd.h>
+// #include <arpa/inet.h>
+// #include <string.h>
+// #include <fstream>
+// #include <cstdlib>
+// #include <csignal>
+// #include <cstring>
 
 
 class TCPHandler
@@ -30,7 +31,7 @@ class TCPHandler
 		int 					_maxFd;
 		int 					_nbOfServer;
 		ServerManager 			_serverManager;
-		Response*				_response;
+		Response				_response;
 
 	public :
 		// constructeur et destructeur

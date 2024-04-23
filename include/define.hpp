@@ -1,6 +1,17 @@
 #ifndef _DEFINE_HPP
 #define _DEFINE_HPP
 
+// Class Includes
+// #include "ConfigParser/ServerManager.hpp"
+// #include "ConfigParser/ServerConfig.hpp"
+// #include "ConfigParser/ConfigParser.hpp"
+// #include "Server/Server.hpp"
+// #include "client/Client.hpp"
+// #include "Request/Request.hpp"
+// #include "Response/Response.hpp"
+// #include "TCPHandler/TCPHandler.hpp"
+// #include "verbose/verbose.hpp"
+
 // CPP Includes
 # include <iostream>
 # include <iomanip>
@@ -64,7 +75,7 @@ enum HttpStatus{
     // redirection
     MOVED_PERMANENTLY = 301,
     FOUND = 302,
-    not_modified = 304,
+    NOT_MODIFIED = 304,
     // client error
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,

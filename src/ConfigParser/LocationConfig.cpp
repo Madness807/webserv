@@ -4,12 +4,24 @@
 //                          SETTERS                                #
 //##################################################################
 void LocationConfig::setPath(std::string path) {
+    path = trim(path);
+    if (path.empty())
+    {
+        std::cerr << "Error: Path: empty path" << std::endl;
+        exit (1);
+    }
     _path = path;
 }
 void LocationConfig::setMethods(std::vector<std::string> methods) {
     _methods = methods;
 }
 void LocationConfig::setRedirect(std::string redirect) {
+    redirect = trim(redirect);
+    if (redirect.empty())
+    {
+        std::cerr << "Error: Redirect: empty redirect" << std::endl;
+        exit (1);
+    }
     _redirect = redirect;
 }
 void LocationConfig::setDirectoryListing(bool directory_listing) {

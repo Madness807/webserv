@@ -3,17 +3,19 @@
 
 #include "../Connection/Connection.hpp"
 #include "../Response/Response.hpp"
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <string.h>
+#include "../Server/Server.hpp"
+// #include <iostream>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <unistd.h>
+// #include <arpa/inet.h>
+// #include <string.h>
 
 #define BUFFER_SIZE 1024
 class Client
 {
 	private:
+		int					_idxServer;
 		int					_socketClient;
 		int					_serverSocketAssociated;
 		std::string			_clientRequete;
@@ -50,9 +52,9 @@ class Client
 		int getSocketClient() const;
 		int getServerSocketAssociated() const;
 		const struct sockaddr_in& getAddrClient() const;
-
+		int getServerIdx()const;
 		// METHODES
-		void fillInfo(int serverSocket);
+		void fillInfo(int serverSocket, std::vector<Server> server);
 };
 
 #endif

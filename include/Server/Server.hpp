@@ -4,30 +4,31 @@
 #include "../../include/ConfigParser/ConfigParser.hpp"
 #include "../../include/Connection/Connection.hpp"
 #include "../ConfigParser/ServerConfig.hpp"
-#include "../Response/Response.hpp"
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <string.h>
-#include <fstream>
+#include "../define.hpp"
+// #include <iostream>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <unistd.h>
+// #include <arpa/inet.h>
+// #include <string.h>
+// #include <fstream>
 
 #define BUFFER_SIZE 1024
 class Server
 {
 	private:
+		int         			_port;
+		std::string 			_ipAdress;
+		int						_idx;
 		int         			_opt;
 		int        	 			_serverSocket;
 		int         			_newSocket;
-		int         			_port;
-		std::string 			_ipAdress;
-		ssize_t      			_reading;
-		struct sockaddr_in 		_addr;
-		std::string        		_buffer;
 		int 	   				_socketCount;
+		std::string        		_buffer;
 		std::string 			_file;
+		ssize_t      			_reading;
 		ServerConfig			_serverConfig;
+		struct sockaddr_in 		_addr;
 
 	protected:
 
@@ -37,7 +38,7 @@ class Server
 	public:
 		// constructeur et destructeur
 		Server();
-		Server(std::string ipAdress, int port, ServerConfig conf);
+		Server(std::string ipAdress, int port, ServerConfig conf, int idx);
 		virtual ~Server();
 
 		// constructeur par copie et operateur d'affectation
@@ -51,14 +52,15 @@ class Server
 		void setReading(int reading);
 
 		// GETTERS
-		std::string getResponse() const;
-		int getServerSocket() const;
-		std::string getFile() const;
-		int getPort() const;
-		std::string getIpAdress() const;
-		std::string getBuffer() const;
-		int getReading() const;
-		ServerConfig& getServerConfigRef() const;
+		int				getServerSocket() const;
+		int				getPort() const;
+		int				getReading() const;
+		std::string		getFile() const;
+		std::string		getIpAdress() const;
+		std::string		getBuffer() const;
+		ServerConfig&	getServerConfigRef() const;
+		ServerConfig	getServerConfig() const;
+		int 			getIdx();
 
 		// Méthodes
 		int Init();

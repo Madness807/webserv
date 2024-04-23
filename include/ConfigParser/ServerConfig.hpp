@@ -1,11 +1,13 @@
 #ifndef CONFIGSRVCONF_HPP
 #define CONFIGSRVCONF_HPP
 
-#include <string>
-#include <map>
-#include <list>
-#include <iostream>
+// #include <string>
+// #include <map>
+// #include <list>
+// #include <iostream>
+#include "../define.hpp"
 #include "LocationConfig.hpp"
+#include "../utils/utils.hpp"
 
 class ServerConfig{
     private:
@@ -44,6 +46,7 @@ class ServerConfig{
         std::string getRoot();
         std::pair<std::string, int> getPairIpPort();
         LocationConfig getLocationConfig(std::string path);
+        std::map<std::string, LocationConfig> &getMapLocation();
 
         // Méthodes
         void addLocation(const std::string& path, const LocationConfig& _locationConfig);

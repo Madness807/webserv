@@ -1,12 +1,14 @@
 #ifndef PARSINGSRVCONF_HPP
 #define PARSINGSRVCONF_HPP
 
-#include <string>
-#include <map>
-#include <list>
 #include "ServerConfig.hpp"
-#include <iostream>
-#include <fstream>
+#include "../utils/utils.hpp"
+#include "../define.hpp"
+// #include <string>
+// #include <map>
+// #include <list>
+// #include <iostream>
+// #include <fstream>
 
 class parsingSrvConf{
     public:

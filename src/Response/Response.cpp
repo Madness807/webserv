@@ -1,16 +1,17 @@
 #include "../../include/Response/Response.hpp"
 
-// Constructeur
-//Response::Response() : _request() {}
+//##################################################################
+//                          Constructeur                           #
+//##################################################################
+Response::Response() {}
 
 Response::Response(std::string &str, ServerConfig &serverconfig): _request(str), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _headers(_request.getHeaders()), _body("")
 {
     this->setServer(serverconfig);
+    this->setMethod();
     // if (_server.getRet() != 200)
     //     this->setStatusCode(_server.getRet());
-
-        this->setStatusCode(200);
-    // if(_request.getEnv() != "") --> If CGI exist
+    // this->setStatusCode(200);
     // if (server.getCgi() == "On") -->> si cgi actif
         // go->cgi();
     this->setStatusLine();
@@ -19,16 +20,20 @@ Response::Response(std::string &str, ServerConfig &serverconfig): _request(str),
     std::cout << _request << std::endl;
 }
 
-// Destructeur
+//##################################################################
+//                          Destructeur                            #
+//##################################################################
 Response::~Response() {}
 
-//Setter
+//##################################################################
+//                          Setter                                 #
+//##################################################################
 void    Response::setStatusLine()
 {
     _response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
 }
 
-void Response::setHeaderLine()
+void    Response::setHeaderLine()
 {
     for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
         if (it->second != "")
@@ -38,25 +43,24 @@ void Response::setHeaderLine()
 
 void    Response::setContent()
 {
-    // if (_request.getMethod() == "GET")
-    //     this->getMethod();
-    // else if (_request.getMethod() == "POST")
-    //     this->postMethod();
-    // else if (_request.getMethod() == "DELETE")
-    //     this->deleteMethod();
-    // else
-    // {
+    std::map<std::string, ptrFt>::iterator it = this->_methods.find(_request.getMethod());
+    if (it != this->_methods.end())
+    {
+        ptrFt method = it->second;
+        (this->*method)();
+    }
+    else
+    {
         this->setStatusCode(405);
         this->setErrorBody();
-    // }
+    }
     _response.append(_body);
 }
 
 void    Response::setErrorBody()
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
-    std::cout << errPath << std::endl;
-    const char* filename = errPath.c_str();
+    const char* filename = errPath.c_str(); 
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
         perror("open");
@@ -73,30 +77,19 @@ void    Response::setErrorBody()
     inFile.close();
 }
 
-// int main() {
-//     std::string errPath = "your_error_file.txt"; // Replace with your actual error file path
-//     // Convert std::string to const char*
-
-//     std::ifstream inFile(filename); // Open the file
-
-//     if (!inFile.is_open()) {
-//         std::cerr << "Error opening file: " << errPath << std::endl;
-//         return 1;
-//     }
-
-//     // Rest of your code here
-
-//     inFile.close();
-//     return 0;
-// }
-
 void    Response::setStatusCode(const int &code)
 {
     _statusCode = code;
     _statusMessage = this->getStatusMessage(code);
 }
 
-// Setter
+void   Response::setMethod()
+{
+    _methods["GET"] = &Response::requestGet;
+    _methods["POST"] = &Response::requestPost;
+    _methods["DELETE"] = &Response::requestDelete;
+}
+
 std::map<int, std::string>    Response::setStatusMessages()
 {
     std::map<int, std::string>  messages;
@@ -117,18 +110,20 @@ void    Response::setServer(ServerConfig &serverconfig)
 }
 
 
-// Getter
+//##################################################################
+//                          Getter                                 #
+//##################################################################
 int Response::getStatusCode() const
 {
     return (_statusCode);
 }
 
-std::string   Response::getResponse() const
+const std::string   Response::getResponse() const
 {
     return(_response);
 }
 
-std::string Response::getStatusMessage(const int &code)
+const std::string Response::getStatusMessage(const int &code)
 {
     std::map<int, std::string>::iterator it = _statusMessages.find(code);
     if (it != _statusMessages.end())
@@ -137,13 +132,60 @@ std::string Response::getStatusMessage(const int &code)
         return ("Error");
 }
 
-Request Response::getRequest() const
+const Request Response::getRequest() const
 {
     return (_request);
 }
+//##################################################################
+//                          Methods                                #
+//##################################################################
+void    Response::requestGet() // --> GET
+{
+    std::map<std::string, LocationConfig>::iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
+    if (it != _server.getMapLocation().end())
+    {
+        std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
+        if (it2 != it->second.getMethods().end())
+        {
+            getHtmlFile(it->second.getPath());
+        }
+    }
+}
 
+void    Response::requestPost() // --> POST
+{
 
-//Other
+}
+
+void    Response::requestDelete() // --> DELETE
+{
+
+}
+
+void    Response::getHtmlFile(std::string filename) // --> GET HTML FILES
+{
+    (void) filename;
+    std::string filePath = "website/default.html";
+    const char *file = filePath.c_str();
+    std::ifstream inFile(file, std::ifstream::in);
+    if (!inFile.is_open())
+        perror("open");
+    std::string line;
+    while (std::getline(inFile, line))
+    {
+        if (this->_body != "")
+        {
+            this->_body.append(line);
+            continue;
+        }
+        this->_body = line;
+    }
+    inFile.close();
+}
+
+//##################################################################
+//                          Others                                 #
+//##################################################################
 std::string intToString(int value)
 {
     std::ostringstream oss;
