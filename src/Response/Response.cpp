@@ -165,7 +165,7 @@ void    Response::requestDelete() // --> DELETE
 void    Response::getHtmlFile(std::string filename) // --> GET HTML FILES
 {
     (void) filename;
-    std::string filePath = "website/default.html";
+    std::string filePath = "website/page/site_1.html";
     const char *file = filePath.c_str();
     std::ifstream inFile(file, std::ifstream::in);
     if (!inFile.is_open())
