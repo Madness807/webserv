@@ -28,12 +28,12 @@ Response::~Response() {}
 //##################################################################
 //                          Setter                                 #
 //##################################################################
-void    Response::setStatusLine()
+void    Response::setStatusLine() //--> Creat status response
 {
     _response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
 }
 
-void    Response::setHeaderLine()
+void    Response::setHeaderLine() //--> Creat Header response
 {
     for (std::map<std::string, std::string>::const_iterator it = _request.getHeaders().begin(); it != _request.getHeaders().end(); ++it)
         if (it->second != "")
@@ -41,7 +41,7 @@ void    Response::setHeaderLine()
     _response.append("\r\n");
 }
 
-void    Response::setContent()
+void    Response::setContent() //--> Creat body response
 {
     std::map<std::string, ptrFt>::iterator it = this->_methods.find(_request.getMethod());
     if (it != this->_methods.end())
@@ -57,7 +57,7 @@ void    Response::setContent()
     _response.append(_body);
 }
 
-void    Response::setErrorBody()
+void    Response::setErrorBody() //--> Creat Error Body response
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
     const char* filename = errPath.c_str(); 
@@ -147,8 +147,13 @@ void    Response::requestGet() // --> GET
         std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
         if (it2 != it->second.getMethods().end())
         {
-            getHtmlFile(it->second.getPath());
+            getHtmlFile(it->second);
         }
+    }
+    else
+    {
+        setStatusCode(404);
+        setErrorBody();
     }
 }
 
@@ -162,12 +167,10 @@ void    Response::requestDelete() // --> DELETE
 
 }
 
-void    Response::getHtmlFile(std::string filename) // --> GET HTML FILES
+void    Response::getHtmlFile(LocationConfig path) // --> GET HTML FILES
 {
-    (void) filename;
-    std::string filePath = "website/default.html";
-    const char *file = filePath.c_str();
-    std::ifstream inFile(file, std::ifstream::in);
+    std::string pathRedirection = "website/page" + path.getRedirect();
+    std::ifstream inFile(pathRedirection.c_str(), std::ifstream::in);
     if (!inFile.is_open())
         perror("open");
     std::string line;
