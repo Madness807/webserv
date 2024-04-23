@@ -30,7 +30,7 @@ class Response
         void                                    setMethod();
     
     // GETTERS PRIVÉ
-        void                                    getHtmlFile(std::string filename);
+        void                                    getHtmlFile(LocationConfig path);
 
     // METHODS PRIVÉE
         void                                    requestGet();
