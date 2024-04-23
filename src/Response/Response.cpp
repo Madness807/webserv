@@ -60,7 +60,7 @@ void    Response::setContent()
 void    Response::setErrorBody()
 {
     std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
-    const char* filename = errPath.c_str(); 
+    const char* filename = errPath.c_str();
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
         perror("open");
@@ -164,8 +164,13 @@ void    Response::requestDelete() // --> DELETE
 
 void    Response::getHtmlFile(std::string filename) // --> GET HTML FILES
 {
-    (void) filename;
-    std::string filePath = "website/default.html";
+    // (void) filename;
+    std::string filePath;
+    // std::cout << "FILENAME --> " << filename << std::endl;
+    if (filename == "/")
+        filePath = "website/page/site_1.html";
+    else
+        filePath = "website/page/" + filename;
     const char *file = filePath.c_str();
     std::ifstream inFile(file, std::ifstream::in);
     if (!inFile.is_open())

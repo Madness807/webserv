@@ -166,17 +166,19 @@ void TCPHandler::runServer()
 			}
 		}
 		std::cout << COLOR_YELLOW << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-		fd_set *copy = &_masterFd;
-		socketCount = select(_maxFd + 1, copy, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture, exceptions, delai d'attente
+		fd_set copyW = _masterFd;
+		//fd_set copyR = _masterFd;
+		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
 			std::cerr << "Error : SocketCount " << std::endl;
+		std::cout << "socketCount : " << socketCount << std::endl;
 		for (int i = 0; i <= _maxFd; i++)
 		{
-			if (FD_ISSET(i, copy))
+			if (FD_ISSET(i, &copyW))
 			{
 				handlingNewClient(i); // accept new client
 			}
-			if (FD_ISSET(i, copy))
+			if (FD_ISSET(i, &copyW))
 			{
 				handlingCommunication(i); // recv n send data
 			}
@@ -301,8 +303,13 @@ int TCPHandler::handlingRequest(Client &client)
 		if (reading > 0) {
 			buffer2.append(tmp, reading);
 		}
-		// if (reading < 0)
-		// 	perror("reading");
+		if (reading < 0)
+		{
+			std::cerr << "Error recv" << std::endl;
+			clientIsDisconnected(client);
+			return (-1);
+		}
+
 	} while (reading > 0 && buffer2.find("\r\n\r\n") == std::string::npos);
 
 	Response response(buffer2, test);
@@ -313,23 +320,30 @@ int TCPHandler::handlingRequest(Client &client)
 
 int TCPHandler::handlingResponse(Client &client)// c est cella qui marche si jamais
 {
-	std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
-	std::string toto = "website/page" + test;
+	// std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
+	// std::string toto = "website/page" + test;
 
 	// std::ifstream file(getFile().c_str());
 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
-	std::ifstream file(toto.c_str());
+	//std::ifstream file(toto.c_str());
 	//std::ifstream file(*ServerConfig.getPath());
 
-	std::stringstream buffer;
-	buffer << file.rdbuf();
+	//std::stringstream buffer;
+	//buffer << file.rdbuf();
 	//std::cout << "buffer: " << buffer.str() << std::endl;
 
 	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-	std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+	//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
 
 	//std::string response = getResponse() + buffer.str();
-	send(client.getSocketClient(), response.c_str(), response.size(), 0);
+	std::cout << "response : " << _response.getResponse() << std::endl;
+	if (send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0) == -1)
+	{
+		std::cerr << "Error send" << std::endl;
+		clientIsDisconnected(client);
+		return (-1);
+	}
+
 
 	clientIsDisconnected(client);
 	//client.setSocketClient(-1);
