@@ -27,21 +27,35 @@ void LocationConfig::setRedirect(std::string redirect) {
 void LocationConfig::setDirectoryListing(bool directory_listing) {
     _directory_listing = directory_listing;
 }
+void LocationConfig::setCgiPath(std::string cgiPath) {
+    cgiPath = trim(cgiPath);
+    _cgiPath = cgiPath;
+}
+void LocationConfig::setCgiExtension(std::string cgiExtension) {
+    cgiExtension = trim(cgiExtension);
+    _cgiExtension = cgiExtension;
+}
 
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
-std::string LocationConfig::getPath() {
+std::string LocationConfig::getPath() const{
     return _path;
 }
-std::string LocationConfig::getRedirect() {
+std::string LocationConfig::getRedirect() const{
     return _redirect;
 }
-bool LocationConfig::getDirectoryListing() {
+bool LocationConfig::getDirectoryListing() const{
     return _directory_listing;
 }
-std::vector<std::string> LocationConfig::getMethods() {
+std::vector<std::string> LocationConfig::getMethods() const{
     return _methods;
+}
+std::string LocationConfig::getCgiPath() const{
+    return _cgiPath;
+}
+std::string LocationConfig::getCgiExtension() const{
+    return _cgiExtension;
 }
 
 //##################################################################
@@ -59,6 +73,8 @@ LocationConfig::LocationConfig() {
     _redirect = "";
     _directory_listing = false;
     _methods = std::vector<std::string>();
+    _cgiPath = "Not set";
+    _cgiExtension = "Not set";
 }
 LocationConfig::~LocationConfig() {
 }

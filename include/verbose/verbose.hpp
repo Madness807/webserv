@@ -1,14 +1,11 @@
 #ifndef VERBOSE_HPP
 #define VERBOSE_HPP
 
-#include <string>
-#include <map>
-#include <list>
-#include <iostream>
-#include <vector>
-#include <sstream>
+#include "../define.hpp"
 #include "../ConfigParser/ServerConfig.hpp"
+#include "../ConfigParser/LocationConfig.hpp"
+#include "../ConfigParser/ServerManager.hpp"
 
-void printSRVConfig(ServerConfig *serverconfig);
+void printAllSrvConfig(ServerManager *serverManager);
 
 #endif

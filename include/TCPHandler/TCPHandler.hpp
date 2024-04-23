@@ -8,16 +8,6 @@
 #include "../ConfigParser/ConfigParser.hpp"
 #include "../Response/Response.hpp"
 #include "../define.hpp"
-// #include <iostream>
-// #include <sys/socket.h>
-// #include <netinet/in.h>
-// #include <unistd.h>
-// #include <arpa/inet.h>
-// #include <string.h>
-// #include <fstream>
-// #include <cstdlib>
-// #include <csignal>
-// #include <cstring>
 
 
 class TCPHandler

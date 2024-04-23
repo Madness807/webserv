@@ -10,24 +10,28 @@
 #include "ConfigParser.hpp"
 
 class ServerManager{
-    private:
-        std::vector<ServerConfig> _configs;
+	private:
+		std::vector<ServerConfig> _configs;
 
-    public:
-        // constructeur et destructeur
-            ServerManager();
-            ServerManager(std::string filename);
-            ~ServerManager();
+	public:
+		// constructeur et destructeur
+		ServerManager();
+		ServerManager(std::string filename);
+		~ServerManager();
 
-    // Méthodes pour gérer les configurations de serveur
-            void addServerConfig(const std::string& ip, int port, const ServerConfig& config);
-            void setServerConfig(std::string filename);
-            void removeServerConfig(const std::string& ip, int port);
-            ServerConfig* getServerConfig(const std::string& ip, int port);
-            const std::vector<ServerConfig> getServerConfig() const;
+	// Méthodes pour gérer les configurations de serveur
+		void addServerConfig(const std::string& ip, int port, const ServerConfig& config);
+		void removeServerConfig(const std::string& ip, int port);
+
+	// Setters
+		void setServerConfig(std::string filename);
+
+	// Getters
+		const std::vector<ServerConfig> getServerConfig() const;
+		ServerConfig* getServerConfig(const std::string& ip, int port);
 
 
-    };
+	};
 
 #endif
 

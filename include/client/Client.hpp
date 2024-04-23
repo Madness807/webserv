@@ -4,12 +4,6 @@
 #include "../Connection/Connection.hpp"
 #include "../Response/Response.hpp"
 #include "../Server/Server.hpp"
-// #include <iostream>
-// #include <sys/socket.h>
-// #include <netinet/in.h>
-// #include <unistd.h>
-// #include <arpa/inet.h>
-// #include <string.h>
 
 #define BUFFER_SIZE 1024
 class Client

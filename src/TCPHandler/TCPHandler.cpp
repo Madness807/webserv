@@ -293,9 +293,22 @@ int TCPHandler::clientIsDisconnected(Client &client)
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
+<<<<<<< HEAD
 	std::string buffer2;
 	char tmp[BUFFER_SIZE];
 	ServerConfig& test = this->_servers[client.getServerIdx()].getServerConfigRef();
+=======
+	std::string buffer;
+	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
+	char tmp[BUFFER_SIZE];
+	memset(tmp, 0, sizeof(tmp));
+	//std::cout << "SERVER SOCKET : " << client.getServerSocketAssociated() << std::endl;
+	buffer = &tmp[0];
+	// Response response(buffer, _serverManager.getServerConfig());
+	Response response(buffer, this->_servers[client.getServerSocketAssociated()].getServerConfigRef());
+	_response = response;
+	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
+>>>>>>> origin/main
 
 	do {
 		memset(tmp, 0, sizeof(tmp)); // Clear the buffer
@@ -325,6 +338,7 @@ int TCPHandler::handlingResponse(Client &client)// c est cella qui marche si jam
 
 	// std::ifstream file(getFile().c_str());
 	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
+<<<<<<< HEAD
 	//std::ifstream file(toto.c_str());
 	//std::ifstream file(*ServerConfig.getPath());
 
@@ -344,6 +358,22 @@ int TCPHandler::handlingResponse(Client &client)// c est cella qui marche si jam
 		return (-1);
 	}
 
+=======
+	// std::ifstream file(toto);
+	//std::ifstream file(*ServerConfig.getPath());
+
+	// std::stringstream buffer;
+	// buffer << file.rdbuf();
+	//std::cout << "buffer: " << buffer.str() << std::endl;
+
+	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
+	// std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
+
+	//std::string response = getResponse() + buffer.str();
+	// std::cout << "reponse" << response.c_str() << std::endl;
+	std::cout << _response.getResponse() << std::endl;
+	send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0);
+>>>>>>> origin/main
 
 	clientIsDisconnected(client);
 	//client.setSocketClient(-1);
