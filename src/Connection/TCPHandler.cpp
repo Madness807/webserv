@@ -156,7 +156,6 @@ void TCPHandler::runServer()
 		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
 			std::cerr << "Error : SocketCount " << std::endl;
-		std::cout << "socketCount : " << socketCount << std::endl;
 		for (int i = 0; i <= _maxFd; i++)
 		{
 			if (FD_ISSET(i, &copyW))
@@ -172,6 +171,37 @@ void TCPHandler::runServer()
 }
 
 //FILE DESCRIPTOR###################################################
+// int TCPHandler::setupMasterFd()
+// {
+// 	FD_ZERO(&_masterFd);
+
+// 	std::vector<int>fdServers = getFdServers();
+// 	for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
+// 	{
+// 		FD_SET(*it, &_masterFd);
+// 	}
+
+// 	std::vector<int>fdClients = getFdClients();
+// 	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
+// 	{
+// 		struct sockaddr_in addr;
+// 		socklen_t len = sizeof(addr);
+// 		if (getsockname(*it, (struct sockaddr *)&addr, &len) == -1)
+// 		{
+// 			if (close(*it) == -1)
+// 			{
+// 				perror("fd");
+// 				std::cerr << "Error closing fd 1" << std::endl;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			FD_SET(*it, &_masterFd);
+// 		}
+// 	}
+// 	return (0);
+// }
+
 int TCPHandler::setupMasterFd()
 {
 	FD_ZERO(&_masterFd);
@@ -187,11 +217,7 @@ int TCPHandler::setupMasterFd()
 	{
 		struct sockaddr_in addr;
 		socklen_t len = sizeof(addr);
-		if (getsockname(*it, (struct sockaddr *)&addr, &len) == -1)
-		{
-			close(*it);
-		}
-		else
+		if (getsockname(*it, (struct sockaddr *)&addr, &len) == 0)
 		{
 			FD_SET(*it, &_masterFd);
 		}
@@ -204,14 +230,24 @@ int TCPHandler::closeFd() {
 	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
 		std::cout << COLOR_YELLOW <<"CLOSING -> it->getServerSocket() : " << it->getServerSocket() << COLOR_RESET << std::endl;
-		close(it->getServerSocket());
+		if (close(it->getServerSocket()) == -1)
+		{
+			std::cerr << "Error closing fd 2" << std::endl;
+		}
 	}
-	std::vector<int>fdClients = getFdClients();
-	for (size_t i = 0; i < fdClients.size(); i++)
-	{
-		std::cout << COLOR_YELLOW << "CLOSING -> fdClients[i] : " << fdClients[i] << COLOR_RESET << std::endl;
-		close(fdClients[i]);
-	}
+	// std::vector<int>fdClients = getFdClients();
+	// for (size_t i = 0; i < fdClients.size(); i++)
+	// {
+	// 	std::cout << COLOR_YELLOW << "CLOSING -> fdClients[i] : " << fdClients[i] << COLOR_RESET << std::endl;
+	// 	if (fdClients[i] > 0)
+	// 	{
+	// 		std::cout << fdClients[i] << std::endl;
+	// 		if (close(fdClients[i]) == -1)
+	// 		{
+	// 			perror("fd");
+	// 		}
+	// 	}
+	// }
 	return(0);
 }
 
@@ -260,7 +296,11 @@ int TCPHandler::createNewClient(int socketServer)
 
 int TCPHandler::clientIsDisconnected(Client &client)
 {
-	close(client.getSocketClient());
+	if (close(client.getSocketClient()) == -1)
+	{
+		perror("fd");
+		std::cerr << "Error closing fd 4" << std::endl;
+	}
 	std::vector<int> fdClients = getFdClients();
 	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end();)
 	{
@@ -285,16 +325,22 @@ int TCPHandler::handlingRequest(Client &client)
 	do {
 		memset(tmp, 0, sizeof(tmp)); // Clear the buffer
 		reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
-		if (reading > 0) {
+		if (reading > 0)
+		{
 			buffer.append(tmp, reading);
 		}
-		if (reading < 0)
+		else if (reading == 0)
+		{
+			std::cerr << "Client closed connection" << std::endl;
+			clientIsDisconnected(client);
+			return (0);
+		}
+		else
 		{
 			std::cerr << "Error recv" << std::endl;
 			clientIsDisconnected(client);
 			return (-1);
 		}
-
 	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
 
 	Response response(buffer, test);
@@ -303,14 +349,21 @@ int TCPHandler::handlingRequest(Client &client)
 	return(reading);
 }
 
-int TCPHandler::handlingResponse(Client &client)// c est cella qui marche si jamais
+int TCPHandler::handlingResponse(Client &client)
 {
-	std::cout << "response : " << _response.getResponse() << std::endl;
-	if (send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0) == -1)
+	int res = send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0);
+
+	if (res == -1)
 	{
 		std::cerr << "Error send" << std::endl;
 		clientIsDisconnected(client);
-		return (-1);
+		return -1;
+	}
+	else if (res == 0)
+	{
+		std::cerr << "No data sent" << std::endl;
+		clientIsDisconnected(client);
+		return -1;
 	}
 	clientIsDisconnected(client);
 	std::cout << COLOR_YELLOW << "Closing fd client" << COLOR_RESET << std::endl;

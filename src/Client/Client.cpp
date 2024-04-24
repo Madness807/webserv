@@ -75,7 +75,7 @@ int Client::getServerIdx() const{
 //##################################################################
 //                           Methodes                              #
 //##################################################################
-void Client::fillInfo(int serverSocket, std::vector<Server> server){
+int Client::fillInfo(int serverSocket, std::vector<Server> server){
 
 	for (std::vector<Server>::iterator it = server.begin(); it != server.end(); ++it)
 	{
@@ -86,8 +86,11 @@ void Client::fillInfo(int serverSocket, std::vector<Server> server){
 	}
 	socklen_t clientSize = this->getAddrClientSize();
 	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize);
-
+	if (socketClient == -1)
+		return (-1);
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
 	this->setServerSocketAssociated(serverSocket);
+
+	return (0);
 }

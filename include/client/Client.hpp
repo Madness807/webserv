@@ -42,7 +42,7 @@ class Client
 		int getServerIdx()const;
 
 		// METHODES
-		void fillInfo(int serverSocket, std::vector<Server> server);
+		int fillInfo(int serverSocket, std::vector<Server> server);
 };
 
 #endif
