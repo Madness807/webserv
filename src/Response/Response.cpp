@@ -59,7 +59,7 @@ void    Response::setContent() //--> Creat body response
 
 void    Response::setErrorBody() //--> Creat Error Body response
 {
-    std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
+    std::string errPath = _server.getRoot() + "errors/" + intToString(this->getStatusCode()) + ".html";
     const char* filename = errPath.c_str();
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
@@ -93,14 +93,21 @@ void   Response::setMethod()
 std::map<int, std::string>    Response::setStatusMessages()
 {
     std::map<int, std::string>  messages;
-    messages[200] = "OK";
-    messages[400] = "Bad Request";
-    messages[403] = "Forbidden";
-    messages[404] = "Not Found";
-    messages[405] = "Method Not Allowed";
-    messages[410] = "Gone";
-    messages[413] = "Payload To Large";
-    messages[500] = "Internal Server Error";
+    messages[OK] = "OK";
+    messages[CREATED] = "Created";
+    messages[ACCEPTED] = "Accepted";
+    messages[NO_CONTENT] = "No Content";
+    messages[MOVED_PERMANENTLY] = "Moved Permanetly";
+    messages[NOT_MODIFIED] = "Not Modified";
+    messages[BAD_REQUEST] = "Bad Request";
+    messages[UNAUTHORIZED] = "Unauthorized";
+    messages[FORBIDDEN] = "Forbidden";
+    messages[NOT_FOUND] = "Not Found";
+    messages[METHOD_NOT_ALLOWED] = "Method Not Allowed";
+    messages[INTERNAL_SERVER_ERROR] = "Internal Server Error";
+    messages[NOT_IMPLEMENTED] = "Not Implemented";
+    messages[BAD_GATEWAY] = "Bad Gateway";
+    messages[SERVICE_UNAVAILABLE] = "Service Unavailable";
     return (messages);
 }
 
