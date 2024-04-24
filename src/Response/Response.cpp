@@ -169,7 +169,7 @@ void    Response::requestDelete() // --> DELETE
 
 void    Response::getHtmlFile(LocationConfig path) // --> GET HTML FILES
 {
-    std::string pathRedirection = "website/page" + path.getRedirect();
+    std::string pathRedirection = _server.getRoot() + path.getRedirect();
     std::ifstream inFile(pathRedirection.c_str(), std::ifstream::in);
     if (!inFile.is_open())
         perror("open");
