@@ -1,10 +1,6 @@
 #ifndef SERVERMANAGER_HPP
 #define SERVERMANAGER_HPP
 
-// #include <string>
-// #include <map>
-// #include <list>
-// #include <iostream>
 #include "../define.hpp"
 #include "ServerConfig.hpp"
 #include "ConfigParser.hpp"

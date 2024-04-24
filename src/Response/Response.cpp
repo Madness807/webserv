@@ -169,20 +169,8 @@ void    Response::requestDelete() // --> DELETE
 
 void    Response::getHtmlFile(LocationConfig path) // --> GET HTML FILES
 {
-<<<<<<< HEAD
-    // (void) filename;
-    std::string filePath;
-    // std::cout << "FILENAME --> " << filename << std::endl;
-    if (filename == "/")
-        filePath = "website/page/site_1.html";
-    else
-        filePath = "website/page/" + filename;
-    const char *file = filePath.c_str();
-    std::ifstream inFile(file, std::ifstream::in);
-=======
     std::string pathRedirection = "website/page" + path.getRedirect();
     std::ifstream inFile(pathRedirection.c_str(), std::ifstream::in);
->>>>>>> origin/main
     if (!inFile.is_open())
         perror("open");
     std::string line;

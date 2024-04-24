@@ -1,20 +1,7 @@
-#include "../include/TCPHandler/TCPHandler.hpp"
-#include <fcntl.h>
-#include <ctime>
+#include "../../include/Connection/TCPHandler.hpp"
 
 TCPHandler* g_tcpHandlerInstance = NULL;
 void globalSignalHandler(int signal);
-
-std::string getCurrentTimestamp() {
-	char buffer[20];
-	time_t now = time(0);
-	struct tm *timeinfo = localtime(&now);
-
-	// Format: YYYY-MM-DD HH:MM:SS
-	strftime(buffer, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
-
-	return std::string(buffer);
-}
 
 //##################################################################
 //                   Constructor && Destructor                     #
@@ -76,7 +63,6 @@ void TCPHandler::setTabServers(ServerManager &server_manager)
 	{
 		Server newserver(it->getIp(), it->getPort(), *it, count);
 		count++;
-		//std::cout << "CHECK " << newserver.getServerConfig().getIp() << " PORT: " << newserver.getServerConfig().getPort() << std::endl;
 		servers.push_back(newserver);
 	}
 
@@ -137,7 +123,6 @@ void TCPHandler::initServer() {
 
 		std::cout << COLOR_GREEN << "│" << COLOR_RESET
 				  << " -> [Port: " << it->getPort() << "] [FD: " << serverSocket << "]     "
-				  //< std::string(43 - 16 - std::to_string(it->getPort()).length() - std::to_string(serverSocket).length(), ' ') // Calculer l'espacement
 				  << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
 	}
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
@@ -293,28 +278,15 @@ int TCPHandler::clientIsDisconnected(Client &client)
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
-<<<<<<< HEAD
-	std::string buffer2;
+	std::string buffer;
 	char tmp[BUFFER_SIZE];
 	ServerConfig& test = this->_servers[client.getServerIdx()].getServerConfigRef();
-=======
-	std::string buffer;
-	//std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
-	char tmp[BUFFER_SIZE];
-	memset(tmp, 0, sizeof(tmp));
-	//std::cout << "SERVER SOCKET : " << client.getServerSocketAssociated() << std::endl;
-	buffer = &tmp[0];
-	// Response response(buffer, _serverManager.getServerConfig());
-	Response response(buffer, this->_servers[client.getServerSocketAssociated()].getServerConfigRef());
-	_response = response;
-	reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
->>>>>>> origin/main
 
 	do {
 		memset(tmp, 0, sizeof(tmp)); // Clear the buffer
 		reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
 		if (reading > 0) {
-			buffer2.append(tmp, reading);
+			buffer.append(tmp, reading);
 		}
 		if (reading < 0)
 		{
@@ -323,9 +295,9 @@ int TCPHandler::handlingRequest(Client &client)
 			return (-1);
 		}
 
-	} while (reading > 0 && buffer2.find("\r\n\r\n") == std::string::npos);
+	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
 
-	Response response(buffer2, test);
+	Response response(buffer, test);
 	_response = response;
 
 	return(reading);
@@ -333,23 +305,6 @@ int TCPHandler::handlingRequest(Client &client)
 
 int TCPHandler::handlingResponse(Client &client)// c est cella qui marche si jamais
 {
-	// std::string test = _serverManager.getServerConfig("127.0.0.1", 8888)->getDefaultFile();
-	// std::string toto = "website/page" + test;
-
-	// std::ifstream file(getFile().c_str());
-	//std::ifstream file("/Users/jdefayes/documents/git/Cursus/webserv/website/bali_m.jpg.image.694.390.low.jpg");
-<<<<<<< HEAD
-	//std::ifstream file(toto.c_str());
-	//std::ifstream file(*ServerConfig.getPath());
-
-	//std::stringstream buffer;
-	//buffer << file.rdbuf();
-	//std::cout << "buffer: " << buffer.str() << std::endl;
-
-	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-	//std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-
-	//std::string response = getResponse() + buffer.str();
 	std::cout << "response : " << _response.getResponse() << std::endl;
 	if (send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0) == -1)
 	{
@@ -357,30 +312,8 @@ int TCPHandler::handlingResponse(Client &client)// c est cella qui marche si jam
 		clientIsDisconnected(client);
 		return (-1);
 	}
-
-=======
-	// std::ifstream file(toto);
-	//std::ifstream file(*ServerConfig.getPath());
-
-	// std::stringstream buffer;
-	// buffer << file.rdbuf();
-	//std::cout << "buffer: " << buffer.str() << std::endl;
-
-	//std::string response = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\n\n" + buffer.str();
-	// std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n" + buffer.str(); // regarder meme types des fichiers, text/html, image/jpeg
-
-	//std::string response = getResponse() + buffer.str();
-	// std::cout << "reponse" << response.c_str() << std::endl;
-	std::cout << _response.getResponse() << std::endl;
-	send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0);
->>>>>>> origin/main
-
 	clientIsDisconnected(client);
-	//client.setSocketClient(-1);
-	//std::string response = getResponse() + buffer.str();
-	//send(client.getSocketClient(), response.c_str(), response.length(), 0);
 	std::cout << COLOR_YELLOW << "Closing fd client" << COLOR_RESET << std::endl;
-	//close(client.getSocketClient());
 
 	return(0);
 }
@@ -407,24 +340,6 @@ int TCPHandler::handlingCommunication(int i)
 	}
 	return (0);
 }
-
-// A trier ou a supprimer###########################################
-// int TCPHandler::handlingRequest(Client &client)
-// {
-//     int reading = 0;
-
-//     //std::cout << ">> client socket : " << client.getSocketClient() << std::endl;
-//     char tmp[BUFFER_SIZE];
-//     std::string buffer;
-//     memset(tmp, 0, sizeof(tmp));
-//     reading = recv(client.getSocketClient(), tmp, sizeof(tmp), 0);
-//     buffer = &tmp[0];
-//     Response response(buffer, _servers[client.getServerSocketAssociated()].getServerConfigRef());
-//     _response = &response;
-
-//     //std::cout << "fdclient *_fdClients.begin() : " << *_fdClients.begin() << std::endl;
-//     std::cout << "fdclient newClient.getSocketClient() : " << client.getSocketClient() << std::endl;
-//     //it->setReading(reading);
 
 void globalSignalHandler(int signal) {
 	if (signal == SIGINT)

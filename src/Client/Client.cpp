@@ -1,6 +1,4 @@
-#include "../include/client/Client.hpp"
-#include <string>
-#include <iostream>
+#include "../../include/client/Client.hpp"
 
 //##################################################################
 //                   Constructor && Destructor                     #
@@ -31,14 +29,6 @@ Client &Client::operator=(const Client &other) {
 //##################################################################
 //                          SETTERS                                #
 //##################################################################
-// void Client::setRequete(std::string requete){
-// 	this->_clientRequete = requete;
-// }
-
-// void Client::setReponse(std::string reponse){
-// 	this->_clientReponse = reponse;
-// }
-
 void Client::setSocketClient(int socketClient){
 	this->_socketClient = socketClient;
 }
@@ -62,12 +52,6 @@ void Client::setAddrClient(struct sockaddr_in addrClient){
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
-// std::string Client::getRequete() const{
-// 	return this->_clientRequete;
-// }
-// std::string Client::getReponse() const{
-// 	return this->_clientReponse;
-// }
 int Client::getSocketClient() const{
 	return this->_socketClient;
 }
@@ -75,7 +59,6 @@ int Client::getServerSocketAssociated() const{
 	return this->_serverSocketAssociated;
 }
 std::string Client::getBuffer() const{
-	//std::string str(this->_buffer[BUFFER_SIZE - 1]);
 	return this->_buffer;
 }
 const struct sockaddr_in& Client::getAddrClient() const{
@@ -96,20 +79,15 @@ void Client::fillInfo(int serverSocket, std::vector<Server> server){
 
 	for (std::vector<Server>::iterator it = server.begin(); it != server.end(); ++it)
 	{
-		std::cout << "it->getServerSocket() : " << it->getServerSocket() << " serverSocket  : " << serverSocket << std::endl;
 		if (it->getServerSocket() == serverSocket)
 		{
-			std::cout << "getIdx fillinfo : " << it->getIdx();
 			_idxServer = it->getIdx();
 		}
-
 	}
 	socklen_t clientSize = this->getAddrClientSize();
-	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize); // accept
-	//std::cout << "clientClass > client socket : " << socketClient << std::endl;
+	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize);
+
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
 	this->setServerSocketAssociated(serverSocket);
-	//this->_idxServer =
-	//std::cout << "Client is accepted: " << clientSize << std::endl;
 }

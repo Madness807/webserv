@@ -1,6 +1,4 @@
 #include "../../include/Server/Server.hpp"
-// #include "../../include/client/Client.hpp"
-// #include "../../include/Response/Response.hpp"
 
 //##################################################################
 //                   Constructor && Destructor                     #
@@ -29,8 +27,6 @@ Server::Server(std::string ipAdress, int port, ServerConfig conf, int idx) :_por
 		std::cerr << "IPv4 error conversion." << std::endl;
 	}
 	_addr.sin_port = htons(_port);
-	//std::cout << "Server created with ip : " << _ipAdress << " on port : " << _port  << std::endl;
-	//_addr.sin_addr.s_addr = htonl(_ipAdress);
 }
 
 //##################################################################
@@ -55,7 +51,6 @@ Server &Server::operator=(const Server &other)
 		_reading = other._reading;
 		_serverConfig = other._serverConfig;
 		_addr = other._addr;
-		//_response = other._response;
 	}
 	return *this;
 }
@@ -66,10 +61,6 @@ Server &Server::operator=(const Server &other)
 void Server::setFile(std::string file){
 	this->_file = file;
 }
-
-// void Server::setResponse(std::string response){
-// 	this->_response = response;
-// }
 
 void Server::setServerSocket(int serverSocket){
 	this->_serverSocket = serverSocket;

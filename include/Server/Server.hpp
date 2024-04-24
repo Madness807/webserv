@@ -1,9 +1,8 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "../../include/ConfigParser/ConfigParser.hpp"
-#include "../../include/Connection/Connection.hpp"
 #include "../ConfigParser/ServerConfig.hpp"
+#include "../Response/Response.hpp"
 #include "../define.hpp"
 
 #define BUFFER_SIZE 1024

@@ -3,11 +3,11 @@
 
 #include "../Server/Server.hpp"
 #include "../client/Client.hpp"
-#include "../../include/Connection/Connection.hpp"
 #include "../ConfigParser/ServerManager.hpp"
 #include "../ConfigParser/ConfigParser.hpp"
 #include "../Response/Response.hpp"
 #include "../define.hpp"
+#include "../utils/utils.hpp"
 
 
 class TCPHandler

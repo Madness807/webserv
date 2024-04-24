@@ -12,19 +12,18 @@ LOGO = "\
 "
 
 # Sources / Objs
-SRC				=		main.cpp\
+SRC				=		src/main.cpp\
 						src/ConfigParser/ConfigParser.cpp\
 						src/ConfigParser/ServerConfig.cpp\
 						src/ConfigParser/LocationConfig.cpp\
 						src/ConfigParser/ServerManager.cpp\
-						src/server/Server.cpp\
+						src/Server/Server.cpp\
 						src/Client/Client.cpp\
 						src/Response/Response.cpp\
 						src/Request/Request.cpp\
 						src/Request/Parse.cpp\
-						src/Connection/Connection.cpp\
+						src/Connection/TCPHandler.cpp\
 						src/CGIHandler/CGIHandler.cpp\
-						src/TCPHandler/TCPHandler.cpp\
 						src/verbose/verbose.cpp\
 						src/utils/utils.cpp\
 

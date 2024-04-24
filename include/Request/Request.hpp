@@ -1,7 +1,7 @@
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
- #include "../define.hpp"
+#include "../define.hpp"
 
 class Request
 {
