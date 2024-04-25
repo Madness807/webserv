@@ -23,7 +23,8 @@ void printAllSrvConfig(ServerManager *serverManager)
         for (std::map<std::string, LocationConfig>::const_iterator it = locations.begin(); it != locations.end(); ++it)
         {
             const LocationConfig& locationConfig = it->second;
-            std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Location:\t\t" << locationConfig.getPath() << std::endl;
+            std::cout << COLOR_BLUE << "│ " << "Location:\t\t" << locationConfig.getPath() << COLOR_RESET << std::endl;
+            std::cout << COLOR_BLUE << "───────────────────────────────────────────────" << COLOR_RESET << std::endl;
             std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Redirection:\t\t" << locationConfig.getRedirect() << std::endl;
             if (locationConfig.getDirectoryListing())
                 std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Directory Listing:\t" << "ON" << std::endl;
