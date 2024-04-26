@@ -6,7 +6,7 @@
 class Request
 {
     std::string							_method;
-	std::vector<std::string>			_methods;
+	std::vector<std::string>			_methods;/config
 	std::string							_version;
 	std::map<std::string, std::string>	_headers;
 	std::map<std::string, std::string>	_env_cgi;
@@ -38,6 +38,7 @@ class Request
 
 	// Copie d'assignation
         Request										&operator=(const Request &other);
+		Request										(const Request &other);
 
 
     // Getters
