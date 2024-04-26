@@ -38,7 +38,7 @@ class Request
 
 	// Copie d'assignation
         Request										&operator=(const Request &other);
-
+		Request(const Request &other);
 
     // Getters
 		const std::string							&getMethod() const;

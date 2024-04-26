@@ -17,7 +17,7 @@ std::string getCurrentTimestamp() {
 	struct tm *timeinfo = localtime(&now);
 
 	// Format: YYYY-MM-DD HH:MM:SS
-	strftime(buffer, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
+	strftime(buffer, 20, "%H:%M:%S", timeinfo);
 
 	return std::string(buffer);
 }

@@ -34,6 +34,11 @@ Request &Request::operator=(const Request &other)
 	return (*this);
 }
 
+Request::Request(const Request &other)
+{
+	*this = other;
+}
+
 //##################################################################
 //                          GETTERS                                #
 //##################################################################

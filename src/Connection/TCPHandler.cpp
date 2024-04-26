@@ -1,29 +1,32 @@
 #include "../../include/Connection/TCPHandler.hpp"
 
-TCPHandler* g_tcpHandlerInstance = NULL;
+TCPHandler *g_tcpHandlerInstance = NULL;
 void globalSignalHandler(int signal);
 
-//##################################################################
-//                   Constructor && Destructor                     #
-//##################################################################
+// ##################################################################
+//                    Constructor && Destructor                     #
+// ##################################################################
 TCPHandler::TCPHandler() : _response()
 {
-		FD_ZERO(&_masterFd);
-		_maxFd = 0;
-		_nbOfServer = 2;
+	FD_ZERO(&_masterFd);
+	_maxFd = 0;
+	_nbOfServer = 2;
 }
 
 TCPHandler::~TCPHandler() {}
 
-//##################################################################
+// ##################################################################
 //		constructeur par copie et operateur d'affectation		   #
-//##################################################################
-TCPHandler::TCPHandler(const TCPHandler &other) {
+// ##################################################################
+TCPHandler::TCPHandler(const TCPHandler &other)
+{
 	*this = other;
 }
 
-TCPHandler &TCPHandler::operator=(const TCPHandler &other) {
-	if (this != &other) {
+TCPHandler &TCPHandler::operator=(const TCPHandler &other)
+{
+	if (this != &other)
+	{
 		_servers = other._servers;
 		_clients = other._clients;
 		_masterFd = other._masterFd;
@@ -37,18 +40,21 @@ TCPHandler &TCPHandler::operator=(const TCPHandler &other) {
 	return *this;
 }
 
-//##################################################################
-//                          SETTERS                                #
-//##################################################################
-void TCPHandler::setMaxFd(int maxFd) {
+// ##################################################################
+//                           SETTERS                                #
+// ##################################################################
+void TCPHandler::setMaxFd(int maxFd)
+{
 	this->_maxFd = maxFd;
 }
 
-void TCPHandler::setMasterFd(fd_set masterFd) {
+void TCPHandler::setMasterFd(fd_set masterFd)
+{
 	this->_masterFd = masterFd;
 }
 
-void TCPHandler::setServerManager(ServerManager &serverManager) {
+void TCPHandler::setServerManager(ServerManager &serverManager)
+{
 	this->_serverManager = serverManager;
 }
 
@@ -59,7 +65,7 @@ void TCPHandler::setTabServers(ServerManager &server_manager)
 	const std::vector<ServerConfig> serverConfigs = this->_serverManager.getServerConfig();
 	int count = 0;
 
-	for(std::vector<ServerConfig>::const_iterator it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
+	for (std::vector<ServerConfig>::const_iterator it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
 	{
 		Server newserver(it->getIp(), it->getPort(), *it, count);
 		count++;
@@ -69,44 +75,51 @@ void TCPHandler::setTabServers(ServerManager &server_manager)
 	this->_servers = servers;
 }
 
-//##################################################################
-//                          GETTERS                                #
-//##################################################################
-int TCPHandler::getMaxFd() const {
+// ##################################################################
+//                           GETTERS                                #
+// ##################################################################
+int TCPHandler::getMaxFd() const
+{
 	return _maxFd;
 }
 
-fd_set TCPHandler::getMasterFd() const {
+fd_set TCPHandler::getMasterFd() const
+{
 	return this->_masterFd;
 }
 
-std::vector<int> TCPHandler::getFdServers() const {
+std::vector<int> TCPHandler::getFdServers() const
+{
 	return this->_fdServers;
 }
 
-std::vector<int> TCPHandler::getFdClients() const {
+std::vector<int> TCPHandler::getFdClients() const
+{
 	return this->_fdClients;
 }
 
-int TCPHandler::getNbOfServer() const {
+int TCPHandler::getNbOfServer() const
+{
 	return this->_nbOfServer;
 }
 
-std::vector<Server> TCPHandler::getTabServers() const {
+std::vector<Server> TCPHandler::getTabServers() const
+{
 	return this->_servers;
 }
 
-//##################################################################
-//                           Methodes                              #
-//##################################################################
+// ##################################################################
+//                            Methodes                              #
+// ##################################################################
 
-//SERVEUR###########################################################
-void TCPHandler::initServer() {
+// SERVEUR###########################################################
+void TCPHandler::initServer()
+{
 
 	int serverSocket = 0;
 
-		std::cout << std::endl;
-	std::cout << COLOR_GREEN << "INIT SERVER\t\t\t[" << getCurrentTimestamp() << "]" << COLOR_RESET << std::endl;
+	std::cout << std::endl;
+	std::cout << COLOR_GREEN << "INIT SERVER\t\t\t" << getCurrentTimestamp() <<  COLOR_RESET << std::endl;
 	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
 	std::cout << COLOR_GREEN << "│" << COLOR_RESET << " Server listen on Port                             " << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
 	std::cout << COLOR_GREEN << "│" << COLOR_RESET << "                                                   " << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
@@ -121,9 +134,7 @@ void TCPHandler::initServer() {
 			this->_maxFd = serverSocket;
 		it->setServerSocket(serverSocket);
 
-		std::cout << COLOR_GREEN << "│" << COLOR_RESET
-				  << " -> [Port: " << it->getPort() << "] [FD: " << serverSocket << "]\t\t\t"
-				  << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
+		std::cout << COLOR_GREEN << "│ " << COLOR_RESET << " * [Port: " << it->getPort() << "]" << " -> "  << "[Server Socket: " << serverSocket << "]\t\t\t" << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
 	}
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
@@ -136,27 +147,25 @@ void TCPHandler::runServer()
 	g_tcpHandlerInstance = this;
 	signal(SIGINT, globalSignalHandler);
 
-	std::cout << COLOR_GREEN << "SERVER RUN\t\t\t[" << getCurrentTimestamp() << "]" << COLOR_RESET << std::endl;
+	std::cout << COLOR_GREEN << "SERVER RUN\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
 	while (running)
 	{
 		setupMasterFd();
 		std::cout << "" << std::endl;
 		std::cout << "" << std::endl;
-		std::cout << "" << std::endl;
-		std::cout << COLOR_RED << "NEW CONNECTION 🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻" << COLOR_RESET << std::endl;
-		std::cout << "" << std::endl;
-		std::cout << COLOR_YELLOW << "MASTER FD STATE\t\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
+		std::cout << COLOR_YELLOW << "SOCKET STATE\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
 		std::cout << COLOR_YELLOW << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
 		for (int i = 0; i < FD_SETSIZE; i++)
 		{
 			if (FD_ISSET(i, &_masterFd))
 			{
-				std::cout << COLOR_YELLOW << "│" << COLOR_RESET << " FD [" << i << "] is open \t\t\t\t\t    " << COLOR_YELLOW << "│" << COLOR_RESET << std::endl;
+				std::cout << COLOR_YELLOW << "│" << COLOR_RESET << " Socket [" << i << "] is open \t\t\t\t     " << COLOR_YELLOW << "│" << COLOR_RESET << std::endl;
 			}
 		}
 		std::cout << COLOR_YELLOW << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+		std::cout << "" << std::endl;
 		fd_set copyW = _masterFd;
-		//fd_set copyR = _masterFd;
+		// fd_set copyR = _masterFd;
 		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
 			std::cerr << "Error : SocketCount " << std::endl;
@@ -178,13 +187,13 @@ int TCPHandler::setupMasterFd()
 {
 	FD_ZERO(&_masterFd);
 
-	std::vector<int>fdServers = getFdServers();
+	std::vector<int> fdServers = getFdServers();
 	for (std::vector<int>::iterator it = fdServers.begin(); it != fdServers.end(); ++it)
 	{
 		FD_SET(*it, &_masterFd);
 	}
 
-	std::vector<int>fdClients = getFdClients();
+	std::vector<int> fdClients = getFdClients();
 	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end(); ++it)
 	{
 		struct sockaddr_in addr;
@@ -197,39 +206,49 @@ int TCPHandler::setupMasterFd()
 	return (0);
 }
 
-int TCPHandler::closeFd() {
-
-	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+int TCPHandler::closeFd()
+{
+	for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
-		std::cout << COLOR_YELLOW <<"CLOSING -> it->getServerSocket() : " << it->getServerSocket() << COLOR_RESET << std::endl;
+		std::cout << COLOR_YELLOW << "CLOSING Server Socket "
+				  << "[" << it->getServerSocket() << "]" << COLOR_RESET << std::endl;
 		if (close(it->getServerSocket()) == -1)
 		{
 			std::cerr << "Error closing fd 2" << std::endl;
 		}
 	}
-	return(0);
+	std::vector<int> fdClients = getFdClients();
+	for (size_t i = 0; i < fdClients.size(); i++)
+	{
+		std::cout << COLOR_YELLOW << "CLOSING Client Socket " << fdClients[i] << COLOR_RESET << std::endl;
+		close(fdClients[i]);
+	}
+	return (0);
 }
 
-//CLIENTS###########################################################
+// CLIENTS###########################################################
 int TCPHandler::handlingNewClient(int i)
 {
-	std::cout << COLOR_BLUE << "Handling New Client\t\t\t   " << getCurrentTimestamp() << COLOR_RESET << std::endl;
+	std::cout << COLOR_RED << "NEW CONNECTION 🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻" << COLOR_RESET << std::endl;
+	std::cout << "" << std::endl;
+	std::cout << COLOR_BLUE << "Handling New Client\t\t   " << getCurrentTimestamp() << COLOR_RESET << std::endl;
 	std::cout << COLOR_BLUE << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
 	bool clientConnected = false;
-	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+	for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
 		if (i == it->getServerSocket())
 		{
 			int newClientFD = createNewClient(it->getServerSocket());
 			if (newClientFD != -1) // Assurez-vous que createNewClient retourne le FD du nouveau client ou -1 en cas d'échec
 			{
-				std::cout << COLOR_BLUE <<"│ " << COLOR_RESET <<  "New client connected                              "  << COLOR_BLUE<< "│" << COLOR_RESET << std::endl;
+				std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "New client connected                              " << COLOR_BLUE << "│" << COLOR_RESET << std::endl;
 				clientConnected = true;
 				break; // Sortir de la boucle si un client a été connecté
 			}
 		}
 	}
-	if (!clientConnected){
+	if (!clientConnected)
+	{
 		std::cout << "│ No new client was connected                       │" << std::endl;
 	}
 	std::cout << COLOR_BLUE << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
@@ -242,15 +261,15 @@ int TCPHandler::createNewClient(int socketServer)
 	newClient.fillInfo(socketServer, this->_servers);
 	_clients[newClient.getSocketClient()] = newClient;
 	std::cout << COLOR_BLUE << "│ Create New Client:\t\t\t\t\t " << COLOR_BLUE << "│" << COLOR_RESET << std::endl;
-	std::cout << COLOR_BLUE << "│ " << COLOR_RESET <<"BIND FD: " << "[" <<newClient.getSocketClient() << "]" << " Socket: " << "[" << newClient.getServerSocketAssociated() << "]\t\t\t\t     "<< COLOR_BLUE << "│" << COLOR_RESET << std::endl;
+	std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "BIND: "<< "Socket client: " << "[" << newClient.getSocketClient() << "]" << " Server Socket: " << "[" << newClient.getServerSocketAssociated() << "]\t" << COLOR_BLUE << "│" << COLOR_RESET << std::endl;
 	_fdClients.push_back(newClient.getSocketClient());
-	if(newClient.getSocketClient() == -1)
+	if (newClient.getSocketClient() == -1)
 	{
 		std::cerr << "Error in accepting client";
 	}
-	if(newClient.getSocketClient() > _maxFd)
+	if (newClient.getSocketClient() > _maxFd)
 		_maxFd = newClient.getSocketClient();
-	return(0);
+	return (0);
 }
 
 int TCPHandler::clientIsDisconnected(Client &client)
@@ -270,19 +289,21 @@ int TCPHandler::clientIsDisconnected(Client &client)
 		else
 			++it;
 	}
+	std::cout << COLOR_BLUE << "Client Socket [" << client.getSocketClient() << "]"<< COLOR_RED << " disconnected\t\t" << COLOR_RESET << getCurrentTimestamp() << COLOR_RESET << std::endl;
 	return (0);
 }
 
-//Request and Response##############################################
+// Request and Response##############################################
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
 	std::string buffer;
 	char tmp[BUFFER_SIZE];
-	ServerConfig& test = this->_servers[client.getServerIdx()].getServerConfigRef();
+	ServerConfig &test = this->_servers[client.getServerIdx()].getServerConfigRef();
 
-	do {
-		memset(tmp, 0, sizeof(tmp)); // Clear the buffer
+	do
+	{
+		memset(tmp, 0, sizeof(tmp));									   // Clear the buffer
 		reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
 		if (reading > 0)
 		{
@@ -305,11 +326,12 @@ int TCPHandler::handlingRequest(Client &client)
 	Response response(buffer, test);
 	_response = response;
 
-	return(reading);
+	return (reading);
 }
 
 int TCPHandler::handlingResponse(Client &client)
 {
+	// std::cout << "CHECK RESPONSE" << _response.getResponse().c_str() << std::endl;
 	int res = send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0);
 
 	if (res == -1)
@@ -325,20 +347,19 @@ int TCPHandler::handlingResponse(Client &client)
 		return -1;
 	}
 	clientIsDisconnected(client);
-	std::cout << COLOR_YELLOW << "CLOSING FD\t\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
-	
-	return(0);
+
+	return (0);
 }
 
 int TCPHandler::handlingCommunication(int i)
 {
-	for(std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
+	for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
 		if (_clients.count(i) > 0) // verif si cle i existe
 		{
 			if (i != it->getServerSocket())
 			{
-				Client& client = _clients[i]; // recup valeur se trouvnt a la cle i
+				Client &client = _clients[i]; // recup valeur se trouvnt a la cle i
 				int reading = handlingRequest(client);
 				it->setReading(reading);
 
@@ -353,10 +374,11 @@ int TCPHandler::handlingCommunication(int i)
 	return (0);
 }
 
-void globalSignalHandler(int signal) {
+void globalSignalHandler(int signal)
+{
 	if (signal == SIGINT)
 	{
-		if(g_tcpHandlerInstance != NULL)
+		if (g_tcpHandlerInstance != NULL)
 			g_tcpHandlerInstance->closeFd();
 	}
 	exit(0);
