@@ -1,7 +1,8 @@
 #include "../include/Request/Request.hpp"
 
-/* -------------------- Constructeur & Destructeur --------------------*/
-
+//##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
 Request::Request() {}
 
 Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port("80"), _path(""), _query(""), _raw(str)
@@ -16,7 +17,9 @@ Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body
 
 Request::~Request() {}
 
-/* -------------------- Operateur d'assignation --------------------*/
+//##################################################################
+//		constructeur par copie et operateur d'affectation		   #
+//##################################################################
 Request &Request::operator=(const Request &other)
 {
 	this->_method = other.getMethod();
@@ -31,63 +34,46 @@ Request &Request::operator=(const Request &other)
 	return (*this);
 }
 
-/* -------------------- Getters --------------------*/
-const std::string	&Request::getMethod() const
-{
+//##################################################################
+//                          GETTERS                                #
+//##################################################################
+const std::string	&Request::getMethod() const{
 	return (_method);
 }
-
-const std::string	&Request::getVersion() const
-{
+const std::string	&Request::getVersion() const{
 	return (_version);
 }
-
-const std::map<std::string, std::string>	&Request::getHeaders() const
-{
+const std::map<std::string, std::string>	&Request::getHeaders() const{
 	return (_headers);
 }
-
-const std::map<std::string, std::string>	&Request::getEnv() const
-{
+const std::map<std::string, std::string>	&Request::getEnv() const{
 	return (_env_cgi);
 }
-
-int	Request::getRet() const
-{
+int	Request::getRet() const{
 	return (_ret);
 }
-
-const std::string	&Request::getBody() const
-{
+const std::string	&Request::getBody() const{
 	return (_body);
 }
-
-const std::string	Request::getPort() const
-{
+const std::string	Request::getPort() const{
 	return (_port);
 }
-
-const std::string	&Request::getPath() const
-{
+const std::string	&Request::getPath() const{
 	return (_path);
 }
-
-const std::string	&Request::getQuery() const
-{
+const std::string	&Request::getQuery() const{
 	return (_query);
 }
-
-const std::string	&Request::getRaw() const
-{
+const std::string	&Request::getRaw() const{
 	return (_raw);
 }
-
-const std::string	&Request::getOneHeaders(const std::string &key)
-{
+const std::string	&Request::getOneHeaders(const std::string &key){
 	return (_headers[key]);
 }
 
-/* -------------------- Setters --------------------*/
+//##################################################################
+//                          SETTERS                                #
+//##################################################################
 void Request::setMethod(const std::string &method)
 {
 	this->_method = method;

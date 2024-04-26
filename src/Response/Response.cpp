@@ -12,10 +12,7 @@ Response::Response(const Request& request, ServerConfig& serverconfig): _request
     initMimeType();// Initialize the MIME types
     this->setServer(serverconfig);// Set the server
     this->setMethod();// Set the methods
-
     //initResponseHeaders();// Initialize the response header
-
-
     this->setContent();// Set the content of the response
     this->setStatusLine();// Set the status of the response
     this->setHeaderLine();// Set the header of the response
@@ -59,11 +56,10 @@ void    Response::setContent() //--> Creat body response
     setHeaderLine();
     _response.append(_body);
 
-    std::cout << COLOR_GREEN << "REPONSE REQUEST  🗄️  -> 🧑🏻‍💻\t  " << getCurrentTimestamp() << COLOR_RESET << std::endl;
-	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-    std::cout << _response <<  std::endl;
-    std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-
+    std::cout << COLOR_GREEN << "REPONSE REQUEST\t🗄️   ->   🖥️\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
+	 std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+    // std::cout << _response <<  std::endl;
+     std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
 
 void    Response::setErrorBody() //--> Creat Error Body response
@@ -160,9 +156,12 @@ void    Response::requestGet() // --> GET
     std::string path_f_request = "";
     std::string path_f_config = "";
 
-    std::cout << COLOR_GREEN << "REQUEST GET\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-    std::cout << _request << std::endl;
-    std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
+    std::cout << COLOR_GREEN << "REQUEST GET\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
+    std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+    // std::cout << _request.getRaw() << std::endl;
+    std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+    std::cout << "" << std::endl;
+
 
     path_f_request = _request.getPath(); // tester dans le cas ou cest un path qui provient de la requette
     std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist

@@ -1,6 +1,20 @@
 #include "../../include/ConfigParser/LocationConfig.hpp"
 
 //##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
+LocationConfig::LocationConfig() {
+    _path = "";
+    _redirect = "";
+    _directory_listing = false;
+    _methods = std::vector<std::string>();
+    _cgiPath = "Not set";
+    _cgiExtension = "Not set";
+}
+LocationConfig::~LocationConfig() {
+}
+
+//##################################################################
 //                          SETTERS                                #
 //##################################################################
 void LocationConfig::setPath(std::string path) {
@@ -65,16 +79,3 @@ void LocationConfig::addMethod(std::string method) {
     _methods.push_back(method);
 }
 
-//##################################################################
-//                   Constructor && Destructor                     #
-//##################################################################
-LocationConfig::LocationConfig() {
-    _path = "";
-    _redirect = "";
-    _directory_listing = false;
-    _methods = std::vector<std::string>();
-    _cgiPath = "Not set";
-    _cgiExtension = "Not set";
-}
-LocationConfig::~LocationConfig() {
-}

@@ -4,6 +4,12 @@
 #include "../include/ConfigParser/ServerManager.hpp"
 
 //##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
+parsingSrvConf::parsingSrvConf() {}
+parsingSrvConf::~parsingSrvConf() {}
+
+//##################################################################
 //                          Methodes                               #
 //##################################################################
 
@@ -136,12 +142,4 @@ std::vector<ServerConfig> parsingSrvConf::readConfigFile(std::string filename)
 	}
 	configFile.close();
 	return serverConfigs;
-}
-
-//##################################################################
-//                   Constructor && Destructor                     #
-//##################################################################
-parsingSrvConf::parsingSrvConf() {
-}
-parsingSrvConf::~parsingSrvConf() {
 }

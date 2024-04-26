@@ -1,6 +1,19 @@
 #include "../include/ConfigParser/ServerConfig.hpp"
-#include <string>
-#include <cstdlib>
+
+//##################################################################
+//                   Constructor && Destructor                     #
+//##################################################################
+ServerConfig::ServerConfig() {
+    _server_name = "";
+    _pair_ip_port.first = "";
+    _pair_ip_port.second = 0;
+    _max_body_size = "";
+    _default_file = "";
+    _error_page = "";
+    _root = "";
+}
+ServerConfig::~ServerConfig() {
+}
 
 //##################################################################
 //                          SETTERS                                #
@@ -120,17 +133,4 @@ void ServerConfig::addLocation(const std::string& path, const LocationConfig& _l
     _locations_map[path] = _locationConfig;
 }
 
-//##################################################################
-//                   Constructor && Destructor                     #
-//##################################################################
-ServerConfig::ServerConfig() {
-    _server_name = "";
-    _pair_ip_port.first = "";
-    _pair_ip_port.second = 0;
-    _max_body_size = "";
-    _default_file = "";
-    _error_page = "";
-    _root = "";
-}
-ServerConfig::~ServerConfig() {
-}
+
