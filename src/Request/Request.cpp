@@ -125,7 +125,7 @@ void	Request::resetHeaders()
 	this->_headers["Accept-Post"] = "";
 	this->_headers["Allow"] = "";
 	this->_headers["Authorization"] = "";
-	this->_headers["Connection"] = "Keep-Alive";
+	this->_headers["Connection"] = "";
 	this->_headers["Content-Language"] = "";
 	this->_headers["Content-Lenght"] = "";
 	this->_headers["Content-Location"] = "";
@@ -140,6 +140,7 @@ void	Request::resetHeaders()
 	this->_headers["Transfer-Encoding"] = "";
 	this->_headers["User-Agent"] = "";
 	this->_headers["WWW-Authenticate"] = "";
+	this->_headers["Filename"] = "";
 }
 
 void				Request::findQuery()

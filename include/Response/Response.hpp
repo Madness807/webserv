@@ -4,9 +4,11 @@
  #include "../define.hpp"
  #include "../Request/Request.hpp"
  #include "../ConfigParser/ServerConfig.hpp"
+ #include "../utils/utils.hpp"
 
 class Response
 {
+    private:
         Request                                 _request;
         ServerConfig                            _server;
         int                                     _statusCode;
@@ -17,6 +19,7 @@ class Response
         std::map<std::string , std::string>     _headers;
         std::string                             _response;
         std::string                             _body;
+        std::map<std::string, std::string>      mimeTypes;// Map des types MIME pour les content-type
 
     // SETTERS PRIVÉ
         void                                    setStatusCode(const int &code);
@@ -28,9 +31,12 @@ class Response
         void                                    setContent();
         void                                    setErrorBody();
         void                                    setMethod();
-    
+        void                                    initMimeType();// Initialise la map des types MIME
+        void                                    initResponseHeaders();// Initialise la map des méthodes
+        
     // GETTERS PRIVÉ
-        void                                    getHtmlFile(LocationConfig path);
+        void                                    getHtmlFile(std::string path);
+        std::string                             getPath();
 
     // METHODS PRIVÉE
         void                                    requestGet();
@@ -41,7 +47,7 @@ class Response
 
         // CONSTRUCTEUR / DESTRUCTEUR
         Response();
-        Response(std::string &, ServerConfig &);
+        Response(const Request &request, ServerConfig &serverconfig);
         ~Response();
 
         // GETTERS PUBLIC
@@ -49,6 +55,7 @@ class Response
         const std::string                 getStatusMessage(const int &code);
         const Request                     getRequest() const;
         const std::string                 getResponse() const;
+        void                              printHeaders() const;
 
 };
 
