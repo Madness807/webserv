@@ -123,6 +123,10 @@ int Server::Init()
 		std::cerr << "Error: Server socket creation failed" << std::endl;
 		exit(-1);
 	}
+	if (fcntl(_serverSocket, F_SETFL, O_NONBLOCK) == -1)
+	{
+		perror("server fnctl");
+	}
 	// option to prevent error "address already in use”."
 	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
 		std::cerr << "Error: Server setsockopt failed" << std::endl;
@@ -135,7 +139,7 @@ int Server::Init()
 		std::cerr << "Error: Bind failed" << std::endl;
 		exit(-1);
 	}
-	if(listen(_serverSocket, 25) < 0)// mettre variable pour waiting list
+	if(listen(_serverSocket, 255) < 0)// mettre variable pour waiting list
 	{
 		std::cerr << "Error: Listen failed" << std::endl;
 		exit(-1);

@@ -17,7 +17,7 @@ class TCPHandler
 		std::map<int, Client> 	_clients;
 		fd_set 					_masterFd;
 		std::vector<int> 		_fdServers;
-		std::vector<int> 		_fdClients;
+		std::vector<int>&		_fdClients;
 		int 					_maxFd;
 		int 					_nbOfServer;
 		ServerManager 			_serverManager;
@@ -26,6 +26,7 @@ class TCPHandler
 	public :
 		// constructeur et destructeur
 		TCPHandler();
+		TCPHandler(std::vector<int>& clients);
 		~TCPHandler();
 
 		// constructeur par copie et operateur d'affectation
@@ -43,7 +44,7 @@ class TCPHandler
 		fd_set getMasterFd() const;
 		int getNbOfServer() const;
 		std::vector<int> getFdServers() const;
-		std::vector<int> getFdClients() const;
+		std::vector<int> &getFdClients() const;
 		std::vector<Server> getTabServers() const;
 
 		// Méthodes

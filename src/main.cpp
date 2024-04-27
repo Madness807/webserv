@@ -13,11 +13,11 @@ int main(int argc, char **argv)
         std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
         return 1;
     }
-
     ServerManager server_manager(config_file);
     printAllSrvConfig(&server_manager);
 
-    TCPHandler tcpHandler;
+    std::vector<int> clients;
+    TCPHandler tcpHandler(clients);
     tcpHandler.setTabServers(server_manager);
     tcpHandler.initServer();
     tcpHandler.runServer();

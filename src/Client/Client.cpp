@@ -87,7 +87,14 @@ int Client::fillInfo(int serverSocket, std::vector<Server> server){
 	socklen_t clientSize = this->getAddrClientSize();
 	int socketClient = accept(serverSocket, (sockaddr*)&this->getAddrClient(), &clientSize);
 	if (socketClient == -1)
+	{
+		std::cerr << "Error accepting new cient" << std::endl;
 		return (-1);
+	}
+	if (fcntl(socketClient, F_SETFL, O_NONBLOCK) == -1)
+	{
+    	perror("fcntl");
+	}
 	this->setSocketClient(socketClient);
 	this->setAddrClientSize(clientSize);
 	this->setServerSocketAssociated(serverSocket);

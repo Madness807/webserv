@@ -6,11 +6,12 @@ void globalSignalHandler(int signal);
 // ##################################################################
 //                    Constructor && Destructor                     #
 // ##################################################################
-TCPHandler::TCPHandler() : _response()
+
+TCPHandler::TCPHandler(std::vector<int>& clients) :  _fdClients(clients), _response()
 {
 	FD_ZERO(&_masterFd);
 	_maxFd = 0;
-	_nbOfServer = 2;
+	_nbOfServer = 0;
 }
 
 TCPHandler::~TCPHandler() {}
@@ -18,7 +19,7 @@ TCPHandler::~TCPHandler() {}
 // ##################################################################
 //		constructeur par copie et operateur d'affectation		   #
 // ##################################################################
-TCPHandler::TCPHandler(const TCPHandler &other)
+TCPHandler::TCPHandler(const TCPHandler &other) : _fdClients(other._fdClients), _response(other._response)
 {
 	*this = other;
 }
@@ -93,7 +94,7 @@ std::vector<int> TCPHandler::getFdServers() const
 	return this->_fdServers;
 }
 
-std::vector<int> TCPHandler::getFdClients() const
+std::vector<int> &TCPHandler::getFdClients() const
 {
 	return this->_fdClients;
 }
@@ -165,8 +166,9 @@ void TCPHandler::runServer()
 		std::cout << COLOR_YELLOW << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 		std::cout << "" << std::endl;
 		fd_set copyW = _masterFd;
-		// fd_set copyR = _masterFd;
+		fd_set copyR = _masterFd;
 		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
+		socketCount = select(_maxFd + 1, &copyW, &copyR, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
 			std::cerr << "Error : SocketCount " << std::endl;
 		for (int i = 0; i <= _maxFd; i++)
@@ -274,17 +276,19 @@ int TCPHandler::createNewClient(int socketServer)
 
 int TCPHandler::clientIsDisconnected(Client &client)
 {
-	if (close(client.getSocketClient()) == -1)
+	if(client.getSocketClient() > 3)
 	{
-		perror("fd");
-		std::cerr << "Error closing fd 4" << std::endl;
+		if (close(client.getSocketClient()) == -1)
+		{
+			perror("fd");
+			std::cerr << "Error closing fd 4" << std::endl;
+		}
 	}
-	std::vector<int> fdClients = getFdClients();
-	for (std::vector<int>::iterator it = fdClients.begin(); it != fdClients.end();)
+	for (std::vector<int>::iterator it = _fdClients.begin(); it != _fdClients.end();)
 	{
 		if (*it == client.getSocketClient())
 		{
-			it = fdClients.erase(it);
+			it = _fdClients.erase(it);
 		}
 		else
 			++it;
@@ -312,7 +316,6 @@ int TCPHandler::handlingRequest(Client &client)
 		else if (reading == 0)
 		{
 			std::cerr << "Client closed connection" << std::endl;
-			clientIsDisconnected(client);
 			return (0);
 		}
 		else
@@ -331,7 +334,6 @@ int TCPHandler::handlingRequest(Client &client)
 
 int TCPHandler::handlingResponse(Client &client)
 {
-	// std::cout << "CHECK RESPONSE" << _response.getResponse().c_str() << std::endl;
 	int res = send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0);
 
 	if (res == -1)
