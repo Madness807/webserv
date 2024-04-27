@@ -58,7 +58,7 @@ void    Response::setContent() //--> Creat body response
 
     std::cout << COLOR_GREEN << "REPONSE REQUEST\t🗄️   ->   🖥️\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
 	 std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-    // std::cout << _response <<  std::endl;
+     //std::cout << _response <<  std::endl;
      std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
 
@@ -158,7 +158,7 @@ void    Response::requestGet() // --> GET
 
     std::cout << COLOR_GREEN << "REQUEST GET\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
     std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-    // std::cout << _request.getRaw() << std::endl;
+    //std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
     std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
     std::cout << "" << std::endl;
 
@@ -184,12 +184,20 @@ void    Response::requestGet() // --> GET
 
 void    Response::requestPost() // --> POST
 {
-
+    std::cout << COLOR_GREEN << "REQUEST POST\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
+    std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+    //std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
+    std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+    std::cout << "" << std::endl;
 }
 
 void    Response::requestDelete() // --> DELETE
 {
-
+    std::cout << COLOR_GREEN << "REQUEST DELETE\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
+    std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+    //std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
+    std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+    std::cout << "" << std::endl;
 }
 
 void    Response::getHtmlFile(std::string path) // --> GET HTML FILES

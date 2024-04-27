@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     if (argc > 1)
         config_file = argv[1];
     else {
-        std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
+        std::cerr << "ERROR: Usage: " << argv[0] << " <config_file>" << std::endl;
         return 1;
     }
 
@@ -23,3 +23,6 @@ int main(int argc, char **argv)
     tcpHandler.runServer();
 }
 
+/*
+
+*/
