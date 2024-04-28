@@ -21,6 +21,7 @@ class Server
 		ssize_t      			_reading;
 		ServerConfig			_serverConfig;
 		struct sockaddr_in 		_addr;
+		int						_statusCode;
 
 	protected:
 
@@ -42,6 +43,7 @@ class Server
 		void setResponse(std::string response);
 		void setServerSocket(int serverSocket);
 		void setReading(int reading);
+		void setStatusCode(int statusCode);
 
 		// GETTERS
 		int				getServerSocket() const;
@@ -52,7 +54,8 @@ class Server
 		std::string		getBuffer() const;
 		ServerConfig&	getServerConfigRef() const;
 		ServerConfig	getServerConfig() const;
-		int 			getIdx();
+		int 			getIdx() const;
+		int				getStatusCode() const;
 
 		// Méthodes
 		int Init();

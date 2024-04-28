@@ -167,7 +167,7 @@ void TCPHandler::runServer()
 		std::cout << "" << std::endl;
 		fd_set copyW = _masterFd;
 		fd_set copyR = _masterFd;
-		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
+		//socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		socketCount = select(_maxFd + 1, &copyW, &copyR, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
 			std::cerr << "Error : SocketCount " << std::endl;
@@ -293,6 +293,7 @@ int TCPHandler::clientIsDisconnected(Client &client)
 		else
 			++it;
 	}
+	FD_ZERO(&_masterFd);
 	std::cout << COLOR_BLUE << "Client Socket [" << client.getSocketClient() << "]"<< COLOR_RED << " disconnected\t\t" << COLOR_RESET << getCurrentTimestamp() << COLOR_RESET << std::endl;
 	return (0);
 }
@@ -321,6 +322,7 @@ int TCPHandler::handlingRequest(Client &client)
 		else
 		{
 			std::cerr << "Error recv" << std::endl;
+			this->_servers[client.getServerIdx()].setStatusCode(500);
 			clientIsDisconnected(client);
 			return (-1);
 		}
@@ -339,6 +341,7 @@ int TCPHandler::handlingResponse(Client &client)
 	if (res == -1)
 	{
 		std::cerr << "Error send" << std::endl;
+		this->_servers[client.getServerIdx()].setStatusCode(500);
 		clientIsDisconnected(client);
 		return -1;
 	}
@@ -349,7 +352,6 @@ int TCPHandler::handlingResponse(Client &client)
 		return -1;
 	}
 	clientIsDisconnected(client);
-
 	return (0);
 }
 

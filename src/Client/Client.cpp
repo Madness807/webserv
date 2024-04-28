@@ -75,7 +75,7 @@ int Client::getServerIdx() const{
 //##################################################################
 //                           Methodes                              #
 //##################################################################
-int Client::fillInfo(int serverSocket, std::vector<Server> server){
+int Client::fillInfo(int serverSocket, std::vector<Server> &server){
 
 	for (std::vector<Server>::iterator it = server.begin(); it != server.end(); ++it)
 	{
@@ -89,6 +89,7 @@ int Client::fillInfo(int serverSocket, std::vector<Server> server){
 	if (socketClient == -1)
 	{
 		std::cerr << "Error accepting new cient" << std::endl;
+		server[_idxServer].setStatusCode(500);
 		return (-1);
 	}
 	if (fcntl(socketClient, F_SETFL, O_NONBLOCK) == -1)

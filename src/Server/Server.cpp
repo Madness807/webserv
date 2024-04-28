@@ -16,6 +16,7 @@ Server::Server(std::string ipAdress, int port, ServerConfig conf, int idx) :_por
 	_socketCount = 0;
 	_addr.sin_family = AF_INET;
 	_serverConfig = conf;
+	_statusCode = 0;
 
 	int result = inet_pton(AF_INET, _ipAdress.c_str(), &_addr.sin_addr); // converti une adresse IP de la forme texte ("127.0.0.1") en une forme binaire structurée que les fonctions de réseau peuvent utiliser.
 	if (result == 0)
@@ -70,6 +71,11 @@ void Server::setReading(int reading){
 	this->_reading = reading;
 }
 
+void Server::setStatusCode(int statusCode)
+{
+	this->_statusCode = statusCode;
+}
+
 //##################################################################
 //                          GETTERS                                #
 //##################################################################
@@ -107,9 +113,14 @@ ServerConfig Server::getServerConfig() const{
 	return this->_serverConfig;
 }
 
-int Server::getIdx(){
+int Server::getIdx() const{
 	return this->_idx;
 }
+
+int	Server::getStatusCode() const{
+	return this->_statusCode;
+}
+
 
 //##################################################################
 //                           Methodes                              #
@@ -121,6 +132,7 @@ int Server::Init()
 	if (_serverSocket == -1)
 	{
 		std::cerr << "Error: Server socket creation failed" << std::endl;
+		setStatusCode(500);
 		exit(-1);
 	}
 	if (fcntl(_serverSocket, F_SETFL, O_NONBLOCK) == -1)
@@ -137,11 +149,14 @@ int Server::Init()
 	{
 		perror("bind failed");
 		std::cerr << "Error: Bind failed" << std::endl;
+		setStatusCode(500);
+
 		exit(-1);
 	}
 	if(listen(_serverSocket, 255) < 0)// mettre variable pour waiting list
 	{
 		std::cerr << "Error: Listen failed" << std::endl;
+		setStatusCode(500);
 		exit(-1);
 	}
 	return (_serverSocket);

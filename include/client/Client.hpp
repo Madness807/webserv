@@ -27,22 +27,22 @@ class Client
 		Client &operator=(const Client &other);
 
 		// SETTERS
-		void setSocketClient(int socketClient);
-		void setBuffer(std::string message);
-		void setAddrClient(struct sockaddr_in addrClient);
-		void setAddrClientSize(socklen_t size);
-		void setServerSocketAssociated(int serverSocket);
+		void						setSocketClient(int socketClient);
+		void						setBuffer(std::string message);
+		void						setAddrClient(struct sockaddr_in addrClient);
+		void						setAddrClientSize(socklen_t size);
+		void						setServerSocketAssociated(int serverSocket);
 
 		// GETTERS
-		std::string getBuffer() const;
-		socklen_t getAddrClientSize() const;
-		int getSocketClient() const;
-		int getServerSocketAssociated() const;
-		const struct sockaddr_in& getAddrClient() const;
-		int getServerIdx()const;
+		std::string					getBuffer() const;
+		socklen_t					getAddrClientSize() const;
+		int							getSocketClient() const;
+		int							getServerSocketAssociated() const;
+		const struct sockaddr_in&	getAddrClient() const;
+		int							getServerIdx()const;
 
 		// METHODES
-		int fillInfo(int serverSocket, std::vector<Server> server);
+		int							fillInfo(int serverSocket, std::vector<Server> &server);
 };
 
 #endif
