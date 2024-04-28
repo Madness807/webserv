@@ -58,6 +58,10 @@ class TCPHandler
 		int handlingRequest(Client &client);
 		int handlingResponse(Client &client);
 		int clientIsDisconnected(Client &client);
-};
 
+		// DEBUG
+		void printSocketState();
+		void printNewClientStatus(bool clientConnected, int port);
+		void printNewClientInfo(const Client& newClient);
+};
 #endif

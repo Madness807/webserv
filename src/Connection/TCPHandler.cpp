@@ -134,8 +134,7 @@ void TCPHandler::initServer()
 		if (serverSocket > this->_maxFd)
 			this->_maxFd = serverSocket;
 		it->setServerSocket(serverSocket);
-
-		std::cout << COLOR_GREEN << "│ " << COLOR_RESET << " * [Port: " << it->getPort() << "]" << " -> "  << "[Server Socket: " << serverSocket << "]\t\t\t" << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
+		std::cout << COLOR_GREEN << "│ " << COLOR_RESET << " * [Port: " << it->getPort() << "]" << " -> "  << "[Server Socket: " << serverSocket << "]\t\t" << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
 	}
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
@@ -145,40 +144,30 @@ void TCPHandler::runServer()
 	bool running = true;
 	int socketCount = 0;
 
-	g_tcpHandlerInstance = this;
 	signal(SIGINT, globalSignalHandler);
+	g_tcpHandlerInstance = this;
 
 	std::cout << COLOR_GREEN << "SERVER RUN\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
+	std::cout << "" << std::endl;
 	while (running)
 	{
 		setupMasterFd();
-		std::cout << "" << std::endl;
-		std::cout << "" << std::endl;
-		std::cout << COLOR_YELLOW << "SOCKET STATE\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
-		std::cout << COLOR_YELLOW << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-		for (int i = 0; i < FD_SETSIZE; i++)
-		{
-			if (FD_ISSET(i, &_masterFd))
-			{
-				std::cout << COLOR_YELLOW << "│" << COLOR_RESET << " Socket [" << i << "] is open \t\t\t\t     " << COLOR_YELLOW << "│" << COLOR_RESET << std::endl;
-			}
-		}
-		std::cout << COLOR_YELLOW << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-		std::cout << "" << std::endl;
+		printSocketState();// Print the state of the sockets
 		fd_set copyW = _masterFd;
 		fd_set copyR = _masterFd;
 		socketCount = select(_maxFd + 1, &copyW, &copyR, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
+		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
+		if (socketCount == -1){
 			std::cerr << "Error : SocketCount " << std::endl;
+			continue;
+		}
 		for (int i = 0; i <= _maxFd; i++)
 		{
 			if (FD_ISSET(i, &copyW))
 			{
 				handlingNewClient(i); // accept new client
-			}
-			if (FD_ISSET(i, &copyW))
-			{
-				handlingCommunication(i); // recv n send data
+				handlingCommunication(i);
 			}
 		}
 	}
@@ -230,11 +219,9 @@ int TCPHandler::closeFd()
 // CLIENTS###########################################################
 int TCPHandler::handlingNewClient(int i)
 {
-	std::cout << COLOR_RED << "NEW CONNECTION 🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻" << COLOR_RESET << std::endl;
-	std::cout << "" << std::endl;
-	std::cout << COLOR_BLUE << "Handling New Client\t\t   " << getCurrentTimestamp() << COLOR_RESET << std::endl;
-	std::cout << COLOR_BLUE << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+
 	bool clientConnected = false;
+	int connectedPort = 0;
 	for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
 		if (i == it->getServerSocket())
@@ -242,17 +229,13 @@ int TCPHandler::handlingNewClient(int i)
 			int newClientFD = createNewClient(it->getServerSocket());
 			if (newClientFD != -1) // Assurez-vous que createNewClient retourne le FD du nouveau client ou -1 en cas d'échec
 			{
-				std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "New client connected                              " << COLOR_BLUE << "│" << COLOR_RESET << std::endl;
 				clientConnected = true;
+				connectedPort = it->getPort(); // Save the port number for display
 				break; // Sortir de la boucle si un client a été connecté
 			}
 		}
 	}
-	if (!clientConnected)
-	{
-		std::cout << "│ No new client was connected                       │" << std::endl;
-	}
-	std::cout << COLOR_BLUE << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+	printNewClientStatus(clientConnected, connectedPort);
 	return (0);
 }
 
@@ -260,17 +243,20 @@ int TCPHandler::createNewClient(int socketServer)
 {
 	Client newClient;
 	newClient.fillInfo(socketServer, this->_servers);
-	_clients[newClient.getSocketClient()] = newClient;
-	std::cout << COLOR_BLUE << "│ Create New Client:\t\t\t\t\t " << COLOR_BLUE << "│" << COLOR_RESET << std::endl;
-	std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "BIND: "<< "Socket client: " << "[" << newClient.getSocketClient() << "]" << " Server Socket: " << "[" << newClient.getServerSocketAssociated() << "]\t" << COLOR_BLUE << "│" << COLOR_RESET << std::endl;
-	_fdClients.push_back(newClient.getSocketClient());
-	if (newClient.getSocketClient() == -1)
-	{
+	if (newClient.getSocketClient() == -1){
 		std::cerr << "Error in accepting client";
+		return (-1);
 	}
+	printNewClientInfo(newClient);
+
+	_clients[newClient.getSocketClient()] = newClient;
+	_fdClients.push_back(newClient.getSocketClient());
+
+
 	if (newClient.getSocketClient() > _maxFd)
 		_maxFd = newClient.getSocketClient();
-	return (0);
+
+	return (newClient.getSocketClient());
 }
 
 int TCPHandler::clientIsDisconnected(Client &client)
@@ -294,6 +280,7 @@ int TCPHandler::clientIsDisconnected(Client &client)
 	}
 	FD_ZERO(&_masterFd);
 	std::cout << COLOR_BLUE << "Client Socket [" << client.getSocketClient() << "]"<< COLOR_RED << " disconnected\t\t" << COLOR_RESET << getCurrentTimestamp() << COLOR_RESET << std::endl;
+	std::cout << std::endl;
 	return (0);
 }
 
@@ -385,4 +372,43 @@ void globalSignalHandler(int signal)
 			g_tcpHandlerInstance->closeFd();
 	}
 	exit(0);
+}
+
+// debug
+void TCPHandler::printSocketState() {// Print the state of the sockets
+	std::cout << std::endl;
+    std::cout << COLOR_YELLOW << "SOCKET STATE\t\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
+    std::cout << COLOR_YELLOW << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+    for (int i = 0; i <= _maxFd; i++) {
+        if (FD_ISSET(i, &_masterFd)) {
+            std::cout << COLOR_YELLOW << "│" << COLOR_RESET << " Socket [" << i << "] is open \t\t\t\t    " << COLOR_YELLOW << "│" << COLOR_RESET << std::endl;
+        }
+    }
+    std::cout << COLOR_YELLOW << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+    std::cout << std::endl;
+}
+
+void TCPHandler::printNewClientStatus(bool clientConnected, int port) {// Print the status of the new client
+	std::cout << std::endl;
+    std::cout << COLOR_BLUE << "Info New Client\t\t " << getCurrentTimestamp() << COLOR_RESET << std::endl;
+    std::cout << COLOR_BLUE << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+
+    if (clientConnected) {
+        std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "New client connected on port " << port << "                          " << std::endl;
+    } else {
+        std::cout << "│ No new client was connected" << std::endl;
+    }
+
+    std::cout << COLOR_BLUE << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+}
+
+void TCPHandler::printNewClientInfo(const Client& newClient) {// Print the information of the new client
+    std::cout << COLOR_RED << "NEW CONNECTION 🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻" << COLOR_RESET << std::endl;
+    std::cout << std::endl;
+
+    std::cout << COLOR_BLUE << "Create New Client\t\t\t" << getCurrentTimestamp() << COLOR_RESET << std::endl;
+    std::cout << COLOR_BLUE << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+	std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Socket client: " << "[" << newClient.getSocketClient() << "]" << " is created" << COLOR_RESET << std::endl;
+    std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "BIND: "<< "Socket client: " << "[" << newClient.getSocketClient() << "]" << " Server Socket: " << "[" << newClient.getServerSocketAssociated() << "]\t" << std::endl;
+    std::cout << COLOR_BLUE << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
