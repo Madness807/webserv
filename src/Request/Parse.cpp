@@ -18,7 +18,6 @@ int	Request::readFirstLine(const std::string &str)
 		return (getRet());
 	}
     this->_method.assign(line, 0, index);
-	std::cout << getMethod() << std::endl;
 	std::vector<std::string>::iterator it = std::find(_methods.begin(), _methods.end(), getMethod());
 	if (it == _methods.end())
 	{
