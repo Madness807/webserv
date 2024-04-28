@@ -19,6 +19,7 @@ class Response
         std::map<std::string , std::string>     _headers;
         std::string                             _response;
         std::string                             _body;
+        std::string                             _requestBody;
         std::map<std::string, std::string>      mimeTypes;// Map des types MIME pour les content-type
 
     // SETTERS PRIVÉ
@@ -36,6 +37,7 @@ class Response
         
     // GETTERS PRIVÉ
         void                                    getHtmlFile(std::string path);
+        std::string                             getPath();
 
     // METHODS PRIVÉE
         void                                    requestGet();

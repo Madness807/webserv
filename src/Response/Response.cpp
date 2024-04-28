@@ -7,15 +7,21 @@ Response::Response() {
     initMimeType();
 }
 
-Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(200), _statusMessages(setStatusMessages()), _statusMessage(""), _body("")
+Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
 {   
     initMimeType();// Initialize the MIME types
-    this->setServer(serverconfig);// Set the server
-    this->setMethod();// Set the methods
-    //initResponseHeaders();// Initialize the response header
-    this->setContent();// Set the content of the response
-    this->setStatusLine();// Set the status of the response
-    this->setHeaderLine();// Set the header of the response
+    setServer(serverconfig);// Set the server
+    setMethod();// Set the methods
+
+    // if (_server.getStatusCode() != 200)
+    //     _statusCode = _server.getStatusCode();
+    // if (tcpConfig.getStatusCode() != 200)
+    //     _statusCode = tcpConfig.getStatusCode();
+
+
+    setContent();// Set the content of the response
+    setStatusLine();// Set the status of the response
+    setHeaderLine();// Set the header of the response
 }
 
 //##################################################################
@@ -41,16 +47,21 @@ void    Response::setHeaderLine() //--> Creat Header response
 
 void    Response::setContent() //--> Creat body response
 {
-    std::map<std::string, ptrFt>::iterator it = this->_methods.find(_request.getMethod());
-    if (it != this->_methods.end())
-    {
-        ptrFt method = it->second;
-        (this->*method)();
-    }
+    if (getStatusCode() != 200)
+        setErrorBody();
     else
     {
-        this->setStatusCode(405);
-        this->setErrorBody();
+        std::map<std::string, ptrFt>::iterator it = _methods.find(_request.getMethod());
+        if (it != _methods.end())
+        {
+            ptrFt method = it->second;
+            (this->*method)();
+        }
+        else
+        {
+            setStatusCode(405);
+            setErrorBody();
+        }
     }
     setStatusLine();
     setHeaderLine();
@@ -64,7 +75,8 @@ void    Response::setContent() //--> Creat body response
 
 void    Response::setErrorBody() //--> Creat Error Body response
 {
-    std::string errPath = "website/errors/" + intToString(this->getStatusCode()) + ".html";
+    std::string errorPath = _server.getErrorPage().substr(0, _server.getErrorPage().find_last_of("/") + 1);
+    std::string errPath = _server.getRoot() + errorPath + intToString(getStatusCode()) + ".html";
     const char* filename = errPath.c_str();
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
@@ -72,12 +84,12 @@ void    Response::setErrorBody() //--> Creat Error Body response
     std::string line;
     while (std::getline(inFile, line))
     {
-        if (this->_body != "")
+        if (_body != "")
         {
-            this->_body.append("line");
+            _body.append(line);
             continue;
         }
-        this->_body = line;
+        _body = line;
     }
     inFile.close();
 }
@@ -85,7 +97,7 @@ void    Response::setErrorBody() //--> Creat Error Body response
 void    Response::setStatusCode(const int &code)
 {
     _statusCode = code;
-    _statusMessage = this->getStatusMessage(code);
+    _statusMessage = getStatusMessage(code);
 }
 
 void   Response::setMethod()
@@ -99,13 +111,21 @@ std::map<int, std::string>    Response::setStatusMessages()
 {
     std::map<int, std::string>  messages;
     messages[200] = "OK";
+    messages[201] = "Created";
+    messages[202] = "Accepted";
+    messages[204] = "No Content";
+    messages[301] = "Move Permanently";
+    messages[302] = "Found";
+    messages[304] = "Not Modified";
     messages[400] = "Bad Request";
+    messages[401] = "Unauthorized";
     messages[403] = "Forbidden";
     messages[404] = "Not Found";
     messages[405] = "Method Not Allowed";
-    messages[410] = "Gone";
-    messages[413] = "Payload To Large";
     messages[500] = "Internal Server Error";
+    messages[501] = "Not Implemented";
+    messages[502] = "Bad Gateway";
+    messages[503] = "Service Unvailable";
     return (messages);
 }
 
@@ -141,20 +161,14 @@ const Request Response::getRequest() const
     return (_request);
 }
 
-void Response::printHeaders() const {// Print the headers
-    for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it) {
-        std::cout << it->first << ": " << it->second << "\n";
-    }
-    std::cout << std::endl;
-}
-
 //##################################################################
 //                          Methods                                #
 //##################################################################
 void    Response::requestGet() // --> GET
 {
-    std::string path_f_request = "";
-    std::string path_f_config = "";
+    // std::string path_f_request = "";
+    // std::string path_f_config = "";
+    std::string getResponse = "";
 
     std::cout << COLOR_GREEN << "REQUEST GET\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
     std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
@@ -163,32 +177,55 @@ void    Response::requestGet() // --> GET
     std::cout << "" << std::endl;
 
 
-    path_f_request = _request.getPath(); // tester dans le cas ou cest un path qui provient de la requette
-    std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
-    if (it != _server.getMapLocation().end())
-    {
-        std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
-        if (it2 == it->second.getMethods().end())
-        {
-            setStatusCode(METHOD_NOT_ALLOWED);
-            setErrorBody();
-            return;
-        }
-        path_f_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
-    }
-    if (path_f_config != "")
-        getHtmlFile(path_f_config);
-    else
-        getHtmlFile(path_f_request);
+    getResponse = getPath();
+    if (getStatusCode() != METHOD_NOT_ALLOWED)
+        getHtmlFile(getPath());
+    // path_f_request = _request.getPath(); // tester dans le cas ou cest un path qui provient de la requette
+    // std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
+    // if (it != _server.getMapLocation().end())
+    // {
+    //     std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
+    //     if (it2 == it->second.getMethods().end())
+    //     {
+    //         setStatusCode(METHOD_NOT_ALLOWED);
+    //         setErrorBody();
+    //         return;
+    //     }
+    //     path_f_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
+    // }
+    // if (path_f_config != "")
+    //     getHtmlFile(path_f_config);
+    // else
+    //     getHtmlFile(path_f_request);
 }
 
 void    Response::requestPost() // --> POST
 {
-    std::cout << COLOR_GREEN << "REQUEST POST\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-    std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-    //std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
-    std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-    std::cout << "" << std::endl;
+    std::ofstream outFile;
+    std::string postPath = "";
+
+    std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
+    std::cout << _request << std::endl;
+    std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
+
+    std::string dbPath = _server.getRoot() + _server.getLocationConfig("/submit-form").getRedirect();
+    outFile.open(dbPath, std::ios::out | std::ios::app);
+    if (outFile.is_open())
+    {
+        std::cout << "---------------> 1\n";
+        outFile << _requestBody + "\n";
+        setStatusCode(CREATED);
+        outFile.close();
+    }
+    else
+    {
+        std::cout << "---------------> 2\n";
+        setStatusCode(NOT_FOUND);
+        setErrorBody();
+        return;
+    }
+    postPath = "/";
+    getHtmlFile(postPath);
 }
 
 void    Response::requestDelete() // --> DELETE
@@ -212,8 +249,9 @@ void    Response::getHtmlFile(std::string path) // --> GET HTML FILES
 
     // Open the file in binary mode and check if it's open
     std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
-    if (!inFile.is_open()){
-        setStatusCode(404);
+    if (!inFile.is_open())
+    {
+        setStatusCode(NOT_FOUND);
         setErrorBody();
         return;
     }
@@ -228,6 +266,30 @@ void    Response::getHtmlFile(std::string path) // --> GET HTML FILES
     _headers["Content-Length"] = std::to_string(_body.size());
 }
 
+std::string Response::getPath()
+{
+    std::string path_f_request = "";
+    std::string path_f_config = "";
+
+    path_f_request = _request.getPath(); // tester dans le cas ou cest un path qui provient de la requette
+    std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
+    if (it != _server.getMapLocation().end())
+    {
+        std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
+        if (it2 == it->second.getMethods().end())
+        {
+            setStatusCode(METHOD_NOT_ALLOWED);
+            setErrorBody();
+            return ("");
+        }
+        path_f_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
+    }
+    if (path_f_config != "")
+        return(path_f_config);
+    else
+        return(path_f_request);
+}
+
 //##################################################################
 //                       INIT MIME TYPES                           #
 //##################################################################
@@ -240,7 +302,8 @@ void Response::initMimeType()
     mimeTypes[".png"] = "image/png";
 }
 
-void Response::initResponseHeaders() {
+void Response::initResponseHeaders()
+{
     _headers["Server"] = "MyCustomServer/1.0" ;  // Informations sur le serveur
     _headers["Content-Type"] = ""; // Type de contenu par défaut
 }
@@ -248,6 +311,14 @@ void Response::initResponseHeaders() {
 //##################################################################
 //                          Others                                 #
 //##################################################################
+void Response::printHeaders() const
+{// Print the headers
+    for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it) {
+        std::cout << it->first << ": " << it->second << "\n";
+    }
+    std::cout << std::endl;
+}
+
 std::string intToString(int value)
 {
     std::ostringstream oss;

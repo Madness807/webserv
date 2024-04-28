@@ -18,6 +18,32 @@
         <li>{{random_number_2}}</li>
         <li>{{random_number_3}}</li>
     </ul>
+    <p></p>
+    <p>--------------------------------------------------------------------------</p>
+    <p></p>
+    <h1>Formulaire de contact</h1>
+    <form action="/submit-form" method="POST">
+        <label for="prenom">Prénom:</label>
+        <input type="text" id="prenom" name="prenom" required><br><br>
+
+        <label for="nom">Nom:</label>
+        <input type="text" id="nom" name="nom" required><br><br>
+
+        <input type="submit" value="Envoyer">
+    </form>
+    <p></p>
+    <p>--------------------------------------------------------------------------</p>
+    <p></p>
+    <h1>Téléversement d'image</h1>
+    <form action="/upload-image" method="POST" enctype="multipart/form-data">
+        <label for="file">Choisissez une image à téléverser :</label>
+        <input type="file" id="file" name="file" accept="image/*" required><br><br>
+
+        <input type="submit" value="Téléverser">
+    </form>
+    <p></p>
+    <p>--------------------------------------------------------------------------</p>
+    <p></p>
     <p>Actualisez la page pour générer un nouveau contenu.</p>
 
     <img src="/assets/img/photochien.jpeg">
