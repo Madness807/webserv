@@ -167,7 +167,6 @@ void TCPHandler::runServer()
 		std::cout << "" << std::endl;
 		fd_set copyW = _masterFd;
 		fd_set copyR = _masterFd;
-		//socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		socketCount = select(_maxFd + 1, &copyW, &copyR, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
 			std::cerr << "Error : SocketCount " << std::endl;
