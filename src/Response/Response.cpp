@@ -7,17 +7,21 @@ Response::Response() {
     initMimeType();
 }
 
-Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(200), _statusMessages(setStatusMessages()), _statusMessage(""), _body("")
+Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
 {   
     initMimeType();// Initialize the MIME types
-    this->setServer(serverconfig);// Set the server
-    this->setMethod();// Set the methods
+    setServer(serverconfig);// Set the server
+    setMethod();// Set the methods
 
-    //initResponseHeaders();// Initialize the response header
+    // if (_server.getStatusCode() != 200)
+    //     _statusCode = _server.getStatusCode();
+    // if (tcpConfig.getStatusCode() != 200)
+    //     _statusCode = tcpConfig.getStatusCode();
 
-    this->setContent();// Set the content of the response
-    this->setStatusLine();// Set the status of the response
-    this->setHeaderLine();// Set the header of the response
+
+    setContent();// Set the content of the response
+    setStatusLine();// Set the status of the response
+    setHeaderLine();// Set the header of the response
 }
 
 //##################################################################
@@ -43,16 +47,21 @@ void    Response::setHeaderLine() //--> Creat Header response
 
 void    Response::setContent() //--> Creat body response
 {
-    std::map<std::string, ptrFt>::iterator it = this->_methods.find(_request.getMethod());
-    if (it != this->_methods.end())
-    {
-        ptrFt method = it->second;
-        (this->*method)();
-    }
+    if (getStatusCode() != 200)
+        setErrorBody();
     else
     {
-        this->setStatusCode(405);
-        this->setErrorBody();
+        std::map<std::string, ptrFt>::iterator it = _methods.find(_request.getMethod());
+        if (it != _methods.end())
+        {
+            ptrFt method = it->second;
+            (this->*method)();
+        }
+        else
+        {
+            setStatusCode(405);
+            setErrorBody();
+        }
     }
     setStatusLine();
     setHeaderLine();
@@ -68,7 +77,7 @@ void    Response::setContent() //--> Creat body response
 void    Response::setErrorBody() //--> Creat Error Body response
 {
     std::string errorPath = _server.getErrorPage().substr(0, _server.getErrorPage().find_last_of("/") + 1);
-    std::string errPath = _server.getRoot() + errorPath + intToString(this->getStatusCode()) + ".html";
+    std::string errPath = _server.getRoot() + errorPath + intToString(getStatusCode()) + ".html";
     const char* filename = errPath.c_str();
     std::ifstream inFile(filename, std::ifstream::in);
     if (!inFile.is_open())
@@ -76,12 +85,12 @@ void    Response::setErrorBody() //--> Creat Error Body response
     std::string line;
     while (std::getline(inFile, line))
     {
-        if (this->_body != "")
+        if (_body != "")
         {
-            this->_body.append(line);
+            _body.append(line);
             continue;
         }
-        this->_body = line;
+        _body = line;
     }
     inFile.close();
 }
@@ -89,7 +98,7 @@ void    Response::setErrorBody() //--> Creat Error Body response
 void    Response::setStatusCode(const int &code)
 {
     _statusCode = code;
-    _statusMessage = this->getStatusMessage(code);
+    _statusMessage = getStatusMessage(code);
 }
 
 void   Response::setMethod()
@@ -197,27 +206,24 @@ void    Response::requestPost() // --> POST
     std::cout << _request << std::endl;
     std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
-    std::string dbPath = _server.getRoot() + _server.getLocationConfig("/uploads").getRedirect();
+    std::string dbPath = _server.getRoot() + _server.getLocationConfig("/submit-form").getRedirect();
     outFile.open(dbPath, std::ios::out | std::ios::app);
-    std::cout << "1\n";
     if (outFile.is_open())
     {
-        std::cout << "2\n";
-        outFile << _body;
+        std::cout << "---------------> 1\n";
+        outFile << _requestBody + "\n";
         setStatusCode(CREATED);
         outFile.close();
     }
     else
     {
-        std::cout << "3\n";
+        std::cout << "---------------> 2\n";
         setStatusCode(NOT_FOUND);
         setErrorBody();
         return;
     }
-    postPath = getPath();
-    std::cout << "A. " << postPath << " | " << "B. " << getStatusCode() << std::endl;
-    if (getStatusCode() != METHOD_NOT_ALLOWED && getStatusCode() != NOT_FOUND)
-        getHtmlFile(postPath);
+    postPath = "/";
+    getHtmlFile(postPath);
 }
 
 void    Response::requestDelete() // --> DELETE

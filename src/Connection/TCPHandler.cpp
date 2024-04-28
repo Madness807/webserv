@@ -122,7 +122,7 @@ void TCPHandler::initServer() {
 		it->setServerSocket(serverSocket);
 
 		std::cout << COLOR_GREEN << "│" << COLOR_RESET
-				  << " -> [Port: " << it->getPort() << "] [FD: " << serverSocket << "]     "
+				  << " -> [Port: " << it->getPort() << "] [FD: " << serverSocket << "]                           "
 				  << COLOR_GREEN << "│" << COLOR_RESET << std::endl;
 	}
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
@@ -149,7 +149,7 @@ void TCPHandler::runServer()
 		{
 			if (FD_ISSET(i, &_masterFd))
 			{
-				std::cout << COLOR_YELLOW << "│" << COLOR_RESET << " FD [" << i << "] is open \t\t\t\t    " << COLOR_YELLOW << "│" << COLOR_RESET << std::endl;
+				std::cout << COLOR_YELLOW << "│" << COLOR_RESET << " FD [" << i << "] is open \t\t\t\t\t    " << COLOR_YELLOW << "│" << COLOR_RESET << std::endl;
 			}
 		}
 		std::cout << COLOR_YELLOW << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
