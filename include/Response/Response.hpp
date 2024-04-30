@@ -20,6 +20,7 @@ class Response
         std::string                             _response;
         std::string                             _body;
         std::string                             _requestBody;
+        bool                                    directoryListing;
         std::map<std::string, std::string>      mimeTypes;// Map des types MIME pour les content-type
 
     // SETTERS PRIVÉ
@@ -34,6 +35,7 @@ class Response
         void                                    setMethod();
         void                                    initMimeType();// Initialise la map des types MIME
         void                                    initResponseHeaders();// Initialise la map des méthodes
+        void                                    setDirectoryListing(bool value);// Active ou désactive le listing des répertoires
         
     // GETTERS PRIVÉ
         void                                    getHtmlFile(std::string path);
@@ -56,7 +58,10 @@ class Response
         const std::string                 getStatusMessage(const int &code);
         const Request                     getRequest() const;
         const std::string                 getResponse() const;
+        bool                              getDirectoryListing() const;
         void                              printHeaders() const;
+
+        void generateDirectoryListing(const std::string& directoryPath, const std::string& path);
 
 };
 

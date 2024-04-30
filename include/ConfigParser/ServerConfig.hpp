@@ -10,7 +10,7 @@ class ServerConfig{
         // Attributs Configuration de base du serveur
         std::string _server_name;
         std::string _max_body_size;
-        std::string _default_file;
+        std::string _index;
         std::string _error_page;
         std::string _root;
         std::pair<std::string, int> _pair_ip_port;
@@ -26,7 +26,7 @@ class ServerConfig{
         void setPort(std::string _port);
         void setIp(std::string ip);
         void setMaxBodySize(std::string max_body_size);
-        void setDefaultFile(std::string default_file);
+        void setIndex(std::string index);
         void setErrorPage(std::string error_page);
         void setRoot(std::string root);
         void setLocations_map(std::map<std::string, LocationConfig > _locations_map);
@@ -36,7 +36,7 @@ class ServerConfig{
         int getPort() const;
         std::string getIp() const;
         std::string getMaxBodySize() const;
-        std::string getDefaultFile() const;
+        std::string getIndex() const;
         std::string getErrorPage() const;
         std::string getRoot() const;
         std::pair<std::string, int> getPairIpPort();

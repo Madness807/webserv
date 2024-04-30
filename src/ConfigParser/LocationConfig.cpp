@@ -8,8 +8,8 @@ LocationConfig::LocationConfig() {
     _redirect = "";
     _directory_listing = false;
     _methods = std::vector<std::string>();
-    _cgiPath = "Not set";
-    _cgiExtension = "Not set";
+    _cgiPath = "";
+    _cgiExtension = "";
 }
 LocationConfig::~LocationConfig() {
 }

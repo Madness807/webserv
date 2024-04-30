@@ -35,8 +35,8 @@ void parsingSrvConf::parseServerConfig(std::string line, ServerConfig& serverCon
 	else if (line.find("max_body_size") != std::string::npos) {
 		serverConfig.setMaxBodySize(line.substr(line.find(":") + 1));
 	}
-	else if (line.find("default_file") != std::string::npos) {
-		serverConfig.setDefaultFile((line.substr(line.find(":") + 1)));
+	else if (line.find("index") != std::string::npos) {
+		serverConfig.setIndex((line.substr(line.find(":") + 1)));
 	}
 	else if (line.find("error_page") != std::string::npos) {
 		serverConfig.setErrorPage((line.substr(line.find(":") + 1)));
@@ -79,11 +79,16 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 			methods.push_back(method);
 		}
 		location.setMethods(methods);
-		}
-		else if (line.find("directory_listing") != std::string::npos)
-		{
-			location.setDirectoryListing(false);
-		}
+	}
+	if (line.find("directory_listing") != std::string::npos)
+	{
+		if (line.find("on") != std::string::npos)
+			location.setDirectoryListing("TRUE");
+		else if (line.find("off") != std::string::npos)
+			location.setDirectoryListing("FALSE");
+		else
+			std::cerr << "Error: invalid directory listing value" << std::endl;
+	}
 	return (location);
 }
 

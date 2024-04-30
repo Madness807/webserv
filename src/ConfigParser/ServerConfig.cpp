@@ -8,7 +8,7 @@ ServerConfig::ServerConfig() {
     _pair_ip_port.first = "";
     _pair_ip_port.second = 0;
     _max_body_size = "";
-    _default_file = "";
+    _index = "";
     _error_page = "";
     _root = "";
 }
@@ -61,14 +61,14 @@ void ServerConfig::setMaxBodySize(std::string max_body_size) {
     }
     _max_body_size = max_body_size;
 }
-void ServerConfig::setDefaultFile(std::string default_file) {
-    default_file = trim(default_file);
-    if (default_file.empty())
+void ServerConfig::setIndex(std::string index) {
+    index = trim(index);
+    if (index.empty())
     {
         std::cerr << "Error: DefaultFile: empty default file" << std::endl;
         exit (1);
     }
-    _default_file = default_file;
+    _index = index;
 }
 void ServerConfig::setErrorPage(std::string error_page) {
     error_page = trim(error_page);
@@ -110,8 +110,8 @@ std::pair<std::string, int> ServerConfig::getPairIpPort() {
 std::string ServerConfig::getMaxBodySize() const{
     return _max_body_size;
 }
-std::string ServerConfig::getDefaultFile() const{
-    return _default_file;
+std::string ServerConfig::getIndex() const{
+    return _index;
 }
 std::string ServerConfig::getErrorPage() const{
     return _error_page;

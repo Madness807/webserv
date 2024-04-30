@@ -154,8 +154,8 @@ void TCPHandler::runServer()
 		setupMasterFd();
 		printSocketState();// Print the state of the sockets
 		fd_set copyW = _masterFd;
-		fd_set copyR = _masterFd;
-		socketCount = select(_maxFd + 1, &copyW, &copyR, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
+		//fd_set copyR = _masterFd;
+		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
 		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1){

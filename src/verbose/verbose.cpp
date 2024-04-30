@@ -14,7 +14,7 @@ void printAllSrvConfig(ServerManager *serverManager)
         std::cout << COLOR_RED << "│ " << COLOR_RESET << "IP:\t\t\t" << serverConfig.getIp() << std::endl;
         std::cout << COLOR_RED << "│ " << COLOR_RESET << "Port:\t\t\t" << serverConfig.getPort() << std::endl;
         std::cout << COLOR_RED << "│ " << COLOR_RESET << "Max Body Size:\t" << serverConfig.getMaxBodySize() << std::endl;
-        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Default File:\t\t" << serverConfig.getDefaultFile() << std::endl;
+        std::cout << COLOR_RED << "│ " << COLOR_RESET << "Index:\t\t" << serverConfig.getIndex() << std::endl;
         std::cout << COLOR_RED << "│ " << COLOR_RESET << "Error Page:\t\t" << serverConfig.getErrorPage() << std::endl;
         std::cout << COLOR_RED << "│ " << COLOR_RESET << "Root:\t\t\t" << serverConfig.getRoot() << std::endl;
 		std::cout << ""<< std::endl;
@@ -25,19 +25,20 @@ void printAllSrvConfig(ServerManager *serverManager)
             const LocationConfig& locationConfig = it->second;
             std::cout << COLOR_BLUE << "│ " << "Location:\t\t" << locationConfig.getPath() << COLOR_RESET << std::endl;
             std::cout << COLOR_BLUE << "───────────────────────────────────────────────" << COLOR_RESET << std::endl;
-            std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Redirection:\t\t" << locationConfig.getRedirect() << std::endl;
+            
+            if (!locationConfig.getRedirect().empty())
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Redirection:\t\t" << locationConfig.getRedirect() << std::endl;
+
             if (locationConfig.getDirectoryListing())
-                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Directory Listing:\t" << "ON" << std::endl;
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Directory Listing:\t" << COLOR_GREEN << "ON" << COLOR_RESET << std::endl;
             else
-                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Directory Listing:\t" << "OFF" << std::endl;
-            if (locationConfig.getCgiPath().empty())
-                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Path:\t\t" << "OFF" << std::endl;
-            else
+                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Directory Listing:\t" << COLOR_RED << "OFF" << COLOR_RESET << std::endl;
+
+            if (!locationConfig.getCgiPath().empty())
                 std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Path:\t\t" << locationConfig.getCgiPath() << std::endl;
-            if (locationConfig.getCgiExtension().empty())
-                std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:" << "OFF" << std::endl;
-            else
+            if (!locationConfig.getCgiExtension().empty())
                 std::cout << COLOR_BLUE << "│ " << COLOR_RESET << "Cgi Extension:\t" << locationConfig.getCgiExtension() << std::endl;
+
             std::vector<std::string> methods = locationConfig.getMethods();
             for (size_t j = 0; j < methods.size(); ++j)
             {
