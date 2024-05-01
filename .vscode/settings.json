@@ -74,6 +74,7 @@
 		"concepts": "cpp",
 		"variant": "cpp",
 		"csignal": "cpp",
-		"filesystem": "cpp"
+		"filesystem": "cpp",
+		"__functional_base_03": "cpp"
 	}
 }

@@ -320,6 +320,14 @@ int TCPHandler::handlingRequest(Client &client)
 
 int TCPHandler::handlingResponse(Client &client)
 {
+	// std::string test = "Content-type: text/html; charset=UTF-8\n"
+	// "\n"
+	// "<html><head><title>Test CGI</title></head><body>\n"
+	// "<h1>Test CGI Python</h1>\n"
+	// "<p>Ceci est un script CGI Python fonctionnant correctement!</p>\n"
+	// "</body></html>";
+
+	// int res = send(client.getSocketClient(), test.c_str(), test.size(), 0);
 	int res = send(client.getSocketClient(), _response.getResponse().c_str(), _response.getResponse().size(), 0);
 
 	if (res == -1)
@@ -400,7 +408,8 @@ void TCPHandler::printNewClientStatus(bool clientConnected, int port) {// Print 
     std::cout << COLOR_BLUE << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
 
-void TCPHandler::printNewClientInfo(const Client& newClient) {// Print the information of the new client
+void TCPHandler::printNewClientInfo(const Client& newClient)
+{// Print the information of the new client
     std::cout << COLOR_RED << "NEW CONNECTION 🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻" << COLOR_RESET << std::endl;
     std::cout << std::endl;
 

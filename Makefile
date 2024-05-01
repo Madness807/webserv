@@ -32,7 +32,7 @@ OBJ			=		$(patsubst src/%,$(OBJ_DIR)%,$(SRC:.cpp=.o))
 
 # Compiler and flags
 CXX				=		g++
-CXXFLAGS		=		-Wall -Wextra -Werror -g
+CXXFLAGS		=		-Wall -Wextra -Werror -g -fsanitize=address
 # CXXFLAGS		+= -fsanitize=address
 
 

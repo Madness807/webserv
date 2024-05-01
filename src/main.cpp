@@ -3,9 +3,14 @@
 #include "../include/Connection/TCPHandler.hpp"
 #include "../include/Response/Response.hpp"
 #include "../include/verbose/verbose.hpp"
+#include "../include/CGIHandler/CGIHandler.hpp"
 
 int main(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
+    // CGIHandler test;
+    // test.execute();
     std::string config_file;
     if (argc > 1)
         config_file = argv[1];
