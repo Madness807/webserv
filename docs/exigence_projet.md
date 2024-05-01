@@ -2,8 +2,9 @@
 
 ## Fonctionnalités Générales
 
-- [❓] Votre programme doit prendre un fichier de configuration en argument ou utiliser un chemin par défaut.
-- [❓] Vous ne pouvez pas exécuter un autre serveur web.
+- [✅] Vous ne pouvez pas exécuter un autre serveur web.
+- [✅] Votre programme doit prendre un fichier de configuration en argument ou utiliser un chemin par défaut.
+- [✅] Vous ne pouvez pas exécuter un autre serveur web.
 - [❓] Votre serveur ne doit jamais bloquer et le client doit être correctement renvoyé si nécessaire.
 - [✅] Il doit être non bloquant et utiliser qu’un seul `poll()` (ou équivalent) pour toutes les opérations entrées/sorties entre le client et le serveur (listen inclus).
 - [✅] `poll()` (ou équivalent) doit vérifier la lecture et l’écriture en même temps.

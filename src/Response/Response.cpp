@@ -7,18 +7,11 @@ Response::Response() {
 	initMimeType();
 }
 
-Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
+Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody(),)
 {   
 	initMimeType();// Initialize the MIME types
 	setServer(serverconfig);// Set the server
 	setMethod();// Set the methods
-
-	// if (_server.getStatusCode() != 200)
-	//     _statusCode = _server.getStatusCode();
-	// if (tcpConfig.getStatusCode() != 200)
-	//     _statusCode = tcpConfig.getStatusCode();
-
-
 	setContent();// Set the content of the response
 	setStatusLine();// Set the status of the response
 	setHeaderLine();// Set the header of the response
@@ -73,7 +66,7 @@ void    Response::setContent() //--> Creat body response
 	 std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
 
-void    Response::setErrorBody() //--> Creat Error Body response
+void    Response::setErrorBody()
 {
 	std::string errorPath = _server.getErrorPage().substr(0, _server.getErrorPage().find_last_of("/") + 1);
 	std::string errPath = _server.getRoot() + errorPath + intToString(getStatusCode()) + ".html";
@@ -226,12 +219,13 @@ void    Response::requestDelete() // --> DELETE
 	std::cout << "" << std::endl;
 }
 
-void    Response::getHtmlFile(std::string path) // --> GET HTML FILES
+void    Response::getHtmlFile(std::string path)
 {
 	std:: string root = _server.getRoot();
-	std::string pathRedirection = _server.getRoot() + path;// Get the path to the file
+	std::string pathRedirection = _server.getRoot() + path;
 	bool directoryListingState = getDirectoryListing();
-    std::cout << "directoryListingState: " << directoryListingState << std::endl;
+
+	// CHECK IF THE PATH IS A DIRECTORY
     struct stat pathStat;
     if (stat(pathRedirection.c_str(), &pathStat) == 0 && S_ISDIR(pathStat.st_mode))
 	{
@@ -247,43 +241,73 @@ void    Response::getHtmlFile(std::string path) // --> GET HTML FILES
         }
    	}
 
-		// Get the file extension
-		std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
-		std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
-		if (mimeIterator != mimeTypes.end())
-		_headers["Content-Type"] = mimeIterator->second;
+	// CHECK IF THE PATH IS A CGI IS TRUE
+	// lancer le cgi
+	if (isCGI)
+	{
+		CGIHandler cgiHandler();// creer un objet cgiHandler
 
-		// Open the file in binary mode and check if it's open
-		std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
-		if (!inFile.is_open())
-		{
-            std::cout << "J'aime les hommes\n";
-			setStatusCode(NOT_FOUND);
-			setErrorBody();
-			return;
-		}
+		cgiHandler.setPath(pathRedirection);// set le path du cgi
 
-		// Lecture du fichier
-		std::ostringstream ss;// Read the file
-		ss << inFile.rdbuf(); // Read the whole file
-		_body = ss.str();// Set the body to the file content
-		inFile.close();// Close the file
+		cgiHandler.launchCGI();
 
-		_headers["Content-Length"] = std::to_string(_body.size());
+		_headers["Content-Type"] = cgiHandler.getContentType();
+		_headers["Content-Length"] = cgiHandler.getContentLength();
+		_body = cgiHandler.getBody();
+
+
+		// setStatusCode(OK);
+		// setHeaders();
+		// setHeaderLine();
+		// setContent();
+		// return;
+	}
+
+
+	// IS NOT A DIRECTORY
+	// Get the file extension
+	std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
+	std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
+	if (mimeIterator != mimeTypes.end())
+	_headers["Content-Type"] = mimeIterator->second;
+
+	// Open the file in binary mode and check if it's open
+	std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
+	if (!inFile.is_open())
+	{
+		setStatusCode(NOT_FOUND);
+		setErrorBody();
+		return;
+	}
+	// Lecture du fichier
+	std::ostringstream ss;// Read the file
+	ss << inFile.rdbuf(); // Read the whole file
+	_body = ss.str();// Set the body to the file content
+	inFile.close();// Close the file
+	// Set the content length
+	_headers["Content-Length"] = std::to_string(_body.size());
 		
 	return;
 }
 
 std::string Response::getPath()
 {
-	std::string path_f_request = "";
-	std::string path_f_config = "";
+	std::string path_from_request = "";
+	std::string path_from_config = "";
 
-	path_f_request = _request.getPath();
+	path_from_request = _request.getPath();
+	bool isCGI = false;
 
 	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
 	if (it != _server.getMapLocation().end())
 	{
+		if (it->second.getCgiPath().length() != 0 && it->second.getCgiExtension().length() != 0)
+		{
+			isCGI = true;
+			path_from_config = it->second.getCgiPath();
+		}
+
+
 		std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
 		if (it2 == it->second.getMethods().end())
 		{
@@ -291,19 +315,16 @@ std::string Response::getPath()
 			setErrorBody();
 			return ("");
 		}
-		path_f_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
+		path_from_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
 		setDirectoryListing(it->second.getDirectoryListing());
 	}
     else {
-        // TODO check si ca casse rien mais on va dire que si la redirection a pas ete trouver c est un directory listing
         setDirectoryListing(true);
     }
-    std::cout << "path_f_config: " << path_f_config << std::endl;
-    std::cout << "path_f_request: " << path_f_request << std::endl;
-	if (path_f_config != "")
-		return(path_f_config);
+	if (path_from_config != "")
+		return(path_from_config);
 	else
-		return(path_f_request);
+		return(path_from_request);
 }
 
 //##################################################################
@@ -320,8 +341,8 @@ void Response::initMimeType()
 
 void Response::initResponseHeaders()
 {
-	_headers["Server"] = "MyCustomServer/1.0" ;  // Informations sur le serveur
-	_headers["Content-Type"] = ""; // Type de contenu par défaut
+	_headers["Server"] = "MyCustomServer/1.0" ;
+	_headers["Content-Type"] = "";
 }
 
 //##################################################################

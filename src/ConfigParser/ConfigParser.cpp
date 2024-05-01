@@ -86,8 +86,8 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 			location.setDirectoryListing("TRUE");
 		else if (line.find("off") != std::string::npos)
 			location.setDirectoryListing("FALSE");
-		else
-			std::cerr << "Error: invalid directory listing value" << std::endl;
+		// else
+		// 	std::cerr << "Error: invalid directory listing value" << std::endl;
 	}
 	return (location);
 }
