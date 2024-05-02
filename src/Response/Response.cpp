@@ -7,7 +7,7 @@ Response::Response() {
 	initMimeType();
 }
 
-Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody(),)
+Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
 {   
 	initMimeType();// Initialize the MIME types
 	setServer(serverconfig);// Set the server
@@ -221,9 +221,9 @@ void    Response::requestDelete() // --> DELETE
 
 void    Response::getHtmlFile(std::string path)
 {
-	std:: string root = _server.getRoot();
-	std::string pathRedirection = _server.getRoot() + path;
-	bool directoryListingState = getDirectoryListing();
+	std::string root = 				_server.getRoot();
+	std::string pathRedirection = 	_server.getRoot() + path;
+	bool directoryListingState = 	getDirectoryListing();
 
 	// CHECK IF THE PATH IS A DIRECTORY
     struct stat pathStat;
@@ -241,30 +241,19 @@ void    Response::getHtmlFile(std::string path)
         }
    	}
 
-	// CHECK IF THE PATH IS A CGI IS TRUE
-	// lancer le cgi
-	if (isCGI)
+	if (isCGI)// CHECK IF THE PATH IS A CGI
 	{
-		CGIHandler cgiHandler();// creer un objet cgiHandler
+		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
+		cgiHandler.execute();// execute le cgi
 
-		cgiHandler.setPath(pathRedirection);// set le path du cgi
-
-		cgiHandler.launchCGI();
-
-		_headers["Content-Type"] = cgiHandler.getContentType();
-		_headers["Content-Length"] = cgiHandler.getContentLength();
+		_headers["Content-Type"] = cgiHandler.getCgiContentType();
+		_headers["Content-Length"] = std::to_string(cgiHandler.getBody().size());
 		_body = cgiHandler.getBody();
 
-
-		// setStatusCode(OK);
-		// setHeaders();
-		// setHeaderLine();
-		// setContent();
-		// return;
+		return;
 	}
 
-
-	// IS NOT A DIRECTORY
+	// Check if the path is a file
 	// Get the file extension
 	std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
 	std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
@@ -279,12 +268,14 @@ void    Response::getHtmlFile(std::string path)
 		setErrorBody();
 		return;
 	}
+
 	// Lecture du fichier
 	std::ostringstream ss;// Read the file
 	ss << inFile.rdbuf(); // Read the whole file
 	_body = ss.str();// Set the body to the file content
 	inFile.close();// Close the file
-	// Set the content length
+
+
 	_headers["Content-Length"] = std::to_string(_body.size());
 		
 	return;
@@ -296,7 +287,7 @@ std::string Response::getPath()
 	std::string path_from_config = "";
 
 	path_from_request = _request.getPath();
-	bool isCGI = false;
+	//bool isCGI = false;
 
 	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
 	if (it != _server.getMapLocation().end())
@@ -304,9 +295,8 @@ std::string Response::getPath()
 		if (it->second.getCgiPath().length() != 0 && it->second.getCgiExtension().length() != 0)
 		{
 			isCGI = true;
-			path_from_config = it->second.getCgiPath();
+			path_from_request = it->second.getCgiPath();
 		}
-
 
 		std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
 		if (it2 == it->second.getMethods().end())
@@ -349,7 +339,7 @@ void Response::initResponseHeaders()
 //                          Others                                 #
 //##################################################################
 void Response::printHeaders() const
-{// Print the headers
+{
 	for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it) {
 		std::cout << it->first << ": " << it->second << "\n";
 	}

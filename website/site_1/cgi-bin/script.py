@@ -1,29 +1,23 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" sizes="32x32" href="/assets/img/42_Logo.ico">
-    <link rel="stylesheet" type="text/css" href="/page/style.css">
-    <title>Formulaire</title>
-</head>
-<body>
-    <h2>Formulaire de saisie</h2>
-    <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Collecter les valeurs du formulaire
-        $nom = htmlspecialchars($_POST['nom']);
-        $prenom = htmlspecialchars($_POST['prenom']);
-        $age = htmlspecialchars($_POST['age']);
+#!/usr/bin/env python3
+import cgi
+import html
 
-        // Afficher les valeurs collectées
-        echo "<h3>Informations reçues:</h3>";
-        echo "<p>Nom: $nom</p>";
-        echo "<p>Prénom: $prenom</p>";
-        echo "<p>Âge: $age</p>";
-    } else {
-        // Afficher le formulaire
-        echo '<form action="" method="post">
+def print_html_form():
+    print("Content-Type: text/html, charset=utf-8")
+    print()
+    print("""
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" sizes="32x32" href="/assets/img/42_Logo.ico">
+        <link rel="stylesheet" type="text/css" href="/page/style.css">
+        <title>Formulaire</title>
+    </head>
+    <body>
+        <h2>Formulaire de saisie</h2>
+        <form action="" method="post">
             <label for="nom">Nom :</label>
             <input type="text" id="nom" name="nom" required><br><br>
 
@@ -34,8 +28,37 @@
             <input type="number" id="age" name="age" required><br><br>
 
             <input type="submit" value="Envoyer">
-        </form>';
-    }
-    ?>
-</body>
-</html>
+        </form>
+    </body>
+    </html>
+    """)
+
+def main():
+    form = cgi.FieldStorage()
+    if "nom" in form and "prenom" in form and "age" in form:
+        nom = html.escape(form.getfirst("nom", ""))
+        prenom = html.escape(form.getfirst("prenom", ""))
+        age = html.escape(form.getfirst("age", ""))
+        
+        print("Content-type: text/html")
+        print()
+        print(f"""
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <title>Réponse du Formulaire</title>
+        </head>
+        <body>
+            <h2>Informations reçues</h2>
+            <p>Nom: {nom}</p>
+            <p>Prénom: {prenom}</p>
+            <p>Âge: {age}</p>
+        </body>
+        </html>
+        """)
+    else:
+        print_html_form()
+
+if __name__ == "__main__":
+    main()

@@ -5,6 +5,7 @@
  #include "../Request/Request.hpp"
  #include "../ConfigParser/ServerConfig.hpp"
  #include "../utils/utils.hpp"
+ #include "../CGIHandler/CGIHandler.hpp"
 
 class Response
 {
