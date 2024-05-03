@@ -25,12 +25,12 @@ Response::~Response() {}
 //##################################################################
 //                          Setter                                 #
 //##################################################################
-void    Response::setStatusLine() //--> Creat status response
+void							Response::setStatusLine()						//--> Creat status response
 {
 	_response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
 }
 
-void    Response::setHeaderLine() //--> Creat Header response
+void							Response::setHeaderLine()						//--> Creat Header response
 {
 	for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
 		if (!it->second.empty())
@@ -38,7 +38,7 @@ void    Response::setHeaderLine() //--> Creat Header response
 	_response.append("\r\n");
 }
 
-void    Response::setContent() //--> Creat body response
+void							Response::setContent()							//--> Creat body response
 {
 	if (getStatusCode() != 200)
 		setErrorBody();
@@ -66,7 +66,7 @@ void    Response::setContent() //--> Creat body response
 	 std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
 
-void    Response::setErrorBody()
+void							Response::setErrorBody()						// --> Error body
 {
 	std::string errorPath = _server.getErrorPage().substr(0, _server.getErrorPage().find_last_of("/") + 1);
 	std::string errPath = _server.getRoot() + errorPath + intToString(getStatusCode()) + ".html";
@@ -87,20 +87,20 @@ void    Response::setErrorBody()
 	inFile.close();
 }
 
-void    Response::setStatusCode(const int &code)
+void							Response::setStatusCode(const int &code)		// --> Set status code
 {
 	_statusCode = code;
 	_statusMessage = getStatusMessage(code);
 }
 
-void   Response::setMethod()
+void							Response::setMethod()							// --> Set the methods
 {
 	_methods["GET"] = &Response::requestGet;
 	_methods["POST"] = &Response::requestPost;
 	_methods["DELETE"] = &Response::requestDelete;
 }
 
-std::map<int, std::string>    Response::setStatusMessages()
+std::map<int, std::string>		Response::setStatusMessages()					//--> Set the status messages
 {
 	std::map<int, std::string>  messages;
 	messages[200] = "OK";
@@ -122,29 +122,30 @@ std::map<int, std::string>    Response::setStatusMessages()
 	return (messages);
 }
 
-void    Response::setServer(ServerConfig &serverconfig)
+void    						Response::setServer(ServerConfig &serverconfig)	// --> Set the server
 {
 	_server = serverconfig;
 }
 
-void    Response::setDirectoryListing(bool value)
+void    						Response::setDirectoryListing(bool value)		// --> Set the directory listing
 {
 	directoryListing = value;
 }
+
 //##################################################################
 //                          Getter                                 #
 //##################################################################
-int Response::getStatusCode() const
+int								Response::getStatusCode() const
 {
 	return (_statusCode);
 }
 
-const std::string   Response::getResponse() const
+const std::string				Response::getResponse() const
 {
 	return(_response);
 }
 
-const std::string Response::getStatusMessage(const int &code)
+const std::string				Response::getStatusMessage(const int &code)
 {
 	std::map<int, std::string>::iterator it = _statusMessages.find(code);
 	if (it != _statusMessages.end())
@@ -153,12 +154,12 @@ const std::string Response::getStatusMessage(const int &code)
 		return ("Error");
 }
 
-const Request Response::getRequest() const
+const Request 					Response::getRequest() const
 {
 	return (_request);
 }
 
-bool Response::getDirectoryListing() const
+bool							Response::getDirectoryListing() const
 {
 	return (directoryListing);
 }
@@ -166,7 +167,7 @@ bool Response::getDirectoryListing() const
 //                          Methods                                #
 //##################################################################
 
-void    Response::getHtmlFile(std::string path)
+void							Response::getHtmlFile(std::string path)
 {
 	std::string root = 				_server.getRoot();
 	std::string pathRedirection = 	_server.getRoot() + path;
@@ -243,7 +244,7 @@ void    Response::getHtmlFile(std::string path)
 	return;
 }
 
-std::string Response::getPath()
+std::string						Response::getPath()
 {
 	std::string path_from_request = "";
 	std::string path_from_config = "";
@@ -280,70 +281,7 @@ std::string Response::getPath()
 		return(path_from_request);
 }
 
-//##################################################################
-//                       HTTP REQUEST                              #
-//##################################################################
-
-void    Response::requestGet() // --> GET
-{
-	std::string getResponse = "";
-
-	std::cout << COLOR_GREEN << "REQUEST GET\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-	std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
-	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-	std::cout << "" << std::endl;
-
-	getResponse = getPath();
-	if (getStatusCode() != METHOD_NOT_ALLOWED)
-		getHtmlFile(getPath());
-}
-
-void    Response::requestPost() // --> POST
-{
-	//std::ofstream outFile;
-	std::string postPath = "";
-	std::stringstream bodysizeStr(_server.getMaxBodySize());
-	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-	std::cout << _request << std::endl;
-	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
-
-	// bodysizeStr >> _bodysize;
-	// std::cout << "BODYSIZE : " <<_bodysize << std::endl;
-	// if (_bodysize < _requestBody.size())
-	// {
-	// 	setStatusCode(413);
-	// 	setErrorBody();
-	// 	return;
-	// } PAS SUR QUE CELA MARCHE POUR LE MOMENT
-
-	//std::string dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
-	std::string dbPath = _server.getRoot() + "/upload/image.jpeg"; //TEST AVEC IMAGE
-
-	//outFile.open(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
-	std::ofstream outFile(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
-	
-	if (outFile.is_open())// Check if the file is open
-	{
-		std::cout << COLOR_GREEN << "l ouverture du fichier a reussi" << COLOR_RESET << std::endl;
-		outFile.write(_requestBody.c_str(), _requestBody.size());
-
-		//outFile << _requestBody + "\n";
-		setStatusCode(CREATED);
-		outFile.close();
-	}
-	else// If the file is not open
-	{
-		std::cout << COLOR_RED <<"l ouverture du fichier a echoue" << COLOR_RESET << std::endl;
-		setStatusCode(NOT_FOUND);
-		setErrorBody();
-		return;
-	}
-	//postPath = "/";
-	getHtmlFile("/page/index.html");
-}
-
-void    Response::requestDelete() // --> DELETE
+void							Response::requestDelete() // --> DELETE
 {
 	std::cout << COLOR_GREEN << "REQUEST DELETE\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
@@ -352,19 +290,7 @@ void    Response::requestDelete() // --> DELETE
 	std::cout << "" << std::endl;
 }
 
-//##################################################################
-//                       INIT MIME TYPES                           #
-//##################################################################
-void Response::initMimeType()
-{
-	mimeTypes[".html"] = "text/html; charset=UTF-8";
-	mimeTypes[".css"] = "text/css; charset=UTF-8";
-	mimeTypes[".jpg"] = "image/jpeg";
-	mimeTypes[".jpeg"] = "image/jpeg";
-	mimeTypes[".png"] = "image/png";
-}
-
-void Response::initResponseHeaders()
+void							Response::initResponseHeaders()
 {
 	_headers["Server"] = "MyCustomServer/1.0" ;
 	_headers["Content-Type"] = "";
@@ -373,19 +299,12 @@ void Response::initResponseHeaders()
 //##################################################################
 //                          Others                                 #
 //##################################################################
-void Response::printHeaders() const
+void							Response::printHeaders() const
 {
 	for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it) {
 		std::cout << it->first << ": " << it->second << "\n";
 	}
 	std::cout << std::endl;
-}
-
-std::string intToString(int value)
-{
-	std::ostringstream oss;
-	oss << value;
-	return oss.str();
 }
 
 std::ostream	&operator<<(std::ostream &out, const Response &response)
@@ -398,7 +317,7 @@ std::ostream	&operator<<(std::ostream &out, const Response &response)
 	return (out);
 }
 
-void Response::generateDirectoryListing(const std::string& directoryPath, const std::string& path) {
+void 							Response::generateDirectoryListing(const std::string& directoryPath, const std::string& path) {
 	std::ostringstream html;
 	html << "<html><body><h1>Directory Listing of " << directoryPath << "</h1><ul>";
 
