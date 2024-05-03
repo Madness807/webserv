@@ -38,7 +38,7 @@ void							Response::setHeaderLine()						//--> Creat Header response
 	_response.append("\r\n");
 }
 
-void							Response::setContent()							//--> Creat body response
+void							Response::setContent()							//--> construction de tout le contenu de la reponse
 {
 	if (getStatusCode() != 200)
 		setErrorBody();
@@ -178,69 +178,19 @@ void							Response::getHtmlFile(std::string path)
 	struct stat pathStat;
 	if (stat(pathRedirection.c_str(), &pathStat) == 0 && S_ISDIR(pathStat.st_mode))
 	{
-		if (directoryListingState)
-		{
-				generateDirectoryListing(pathRedirection, path);
-				return;
-		} else 
-		{
-				setStatusCode(FORBIDDEN);
-				setErrorBody();
-				return;
-		}
+		handleDirectory(path, pathRedirection, directoryListingState);
+		return;
    	}
 
 	// CHECK IF THE PATH IS A CGI
-	if (isCGI)
-	{
-		int success = 0;
-		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
-
-		if (_cgiExtension == ".py")
-		{
-			success = cgiHandler.execute();// execute le cgi
-			if (success == 500)
-			{
-				setStatusCode(500);
-				return;
-			}
-			_headers["Content-Type"] = cgiHandler.getCgiContentType();
-			_headers["Content-Length"] = std::to_string(cgiHandler.getBody().size());
-			_body = cgiHandler.getBody();
-			return;
-		}
-		else
-		{
-			perror("ERROR: CGI bad extension");
-			setStatusCode(500);
-			return;
-		}
-	}
-
-	// Check if the path is a file
-	// Get the file extension
-	std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
-	std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
-	if (mimeIterator != mimeTypes.end())
-	_headers["Content-Type"] = mimeIterator->second;
-
-	// Open the file in binary mode and check if it's open
-	std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
-	if (!inFile.is_open())
-	{
-		setStatusCode(NOT_FOUND);
-		setErrorBody();
+	if (isCGI) {
+		handleCGI(pathRedirection);
 		return;
 	}
 
-	// Lecture du fichier
-	std::ostringstream ss;// Read the file
-	ss << inFile.rdbuf(); // Read the whole file
-	_body = ss.str();// Set the body to the file content
-	inFile.close();// Close the file
+	// CHECK IF THE PATH IS A FILE
+    readAndSetFileContent(pathRedirection);
 
-	_headers["Content-Length"] = std::to_string(_body.size());
-		
 	return;
 }
 
@@ -281,19 +231,60 @@ std::string						Response::getPath()
 		return(path_from_request);
 }
 
-void							Response::requestDelete() // --> DELETE
-{
-	std::cout << COLOR_GREEN << "REQUEST DELETE\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-	//std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
-	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-	std::cout << "" << std::endl;
-}
-
 void							Response::initResponseHeaders()
 {
 	_headers["Server"] = "MyCustomServer/1.0" ;
 	_headers["Content-Type"] = "";
+}
+
+void							Response::handleDirectory(const std::string& path, const std::string& pathRedirection, bool directoryListingState) {
+    if (directoryListingState) {
+        generateDirectoryListing(pathRedirection, path);
+    } else {
+        setStatusCode(FORBIDDEN);
+        setErrorBody();
+    }
+}
+
+void							Response::handleCGI(const std::string& pathRedirection) {
+    int success = 0;
+    CGIHandler cgiHandler(pathRedirection);
+
+    if (_cgiExtension == ".py") {
+        success = cgiHandler.execute();
+        if (success == 500) {
+            setStatusCode(500);
+            return;
+        }
+        _headers["Content-Type"] = cgiHandler.getCgiContentType();
+        _headers["Content-Length"] = std::to_string(cgiHandler.getBody().size());
+        _body = cgiHandler.getBody();
+    } else {
+        perror("ERROR: CGI bad extension");
+        setStatusCode(500);
+    }
+}
+
+void							Response::readAndSetFileContent(const std::string& pathRedirection) {
+    std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
+    std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
+    if (mimeIterator != mimeTypes.end())
+        _headers["Content-Type"] = mimeIterator->second;
+
+    std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
+    if (!inFile.is_open())
+    {
+        setStatusCode(NOT_FOUND);
+        setErrorBody();
+        return;
+    }
+
+    std::ostringstream ss;
+    ss << inFile.rdbuf();
+    _body = ss.str();
+    inFile.close();
+
+    _headers["Content-Length"] = std::to_string(_body.size());
 }
 
 //##################################################################

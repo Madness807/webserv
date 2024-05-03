@@ -69,6 +69,9 @@ class Response
 
         // Methodes
         void                              generateDirectoryListing(const std::string& directoryPath, const std::string& path);
+        void                              handleDirectory(const std::string& path, const std::string& pathRedirection, bool directoryListingState);
+        void                              handleCGI(const std::string& pathRedirection);
+        void                              readAndSetFileContent(const std::string& pathRedirection);
         void                              printHeaders() const;
 
 };
