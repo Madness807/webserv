@@ -301,7 +301,7 @@ int TCPHandler::handlingRequest(Client &client)
 		}
 		else if (reading == 0)
 		{
-			std::cerr << "Client closed connection" << std::endl;
+			std::cout << "Client closed connection" << std::endl;
 			return (0);
 		}
 		else
