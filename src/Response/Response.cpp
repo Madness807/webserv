@@ -25,12 +25,12 @@ Response::~Response() {}
 //##################################################################
 //                          Setter                                 #
 //##################################################################
-void    Response::setStatusLine() //--> Creat status response
+void							Response::setStatusLine()						//--> Creat status response
 {
 	_response.append("HTTP/1.1 " + intToString(getStatusCode()) + " " + getStatusMessage(getStatusCode()) + "\r\n");
 }
 
-void    Response::setHeaderLine() //--> Creat Header response
+void							Response::setHeaderLine()						//--> Creat Header response
 {
 	for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
 		if (!it->second.empty())
@@ -38,7 +38,7 @@ void    Response::setHeaderLine() //--> Creat Header response
 	_response.append("\r\n");
 }
 
-void    Response::setContent() //--> Creat body response
+void							Response::setContent()							//--> Creat body response
 {
 	if (getStatusCode() != 200)
 		setErrorBody();
@@ -66,7 +66,7 @@ void    Response::setContent() //--> Creat body response
 	 std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 }
 
-void    Response::setErrorBody()
+void							Response::setErrorBody()						//--> Creat body error response
 {
 	std::string errorPath = _server.getErrorPage().substr(0, _server.getErrorPage().find_last_of("/") + 1);
 	std::string errPath = _server.getRoot() + errorPath + intToString(getStatusCode()) + ".html";
@@ -87,20 +87,20 @@ void    Response::setErrorBody()
 	inFile.close();
 }
 
-void    Response::setStatusCode(const int &code)
+void							Response::setStatusCode(const int &code)		//--> Creat status code response
 {
 	_statusCode = code;
 	_statusMessage = getStatusMessage(code);
 }
 
-void   Response::setMethod()
+void							Response::setMethod()							//--> Set the methods
 {
 	_methods["GET"] = &Response::requestGet;
 	_methods["POST"] = &Response::requestPost;
 	_methods["DELETE"] = &Response::requestDelete;
 }
 
-std::map<int, std::string>    Response::setStatusMessages()
+std::map<int, std::string>		Response::setStatusMessages()					//--> Set the status messages
 {
 	std::map<int, std::string>  messages;
 	messages[200] = "OK";
@@ -122,29 +122,30 @@ std::map<int, std::string>    Response::setStatusMessages()
 	return (messages);
 }
 
-void    Response::setServer(ServerConfig &serverconfig)
+void							Response::setServer(ServerConfig &serverconfig)	//--> Set the server
 {
 	_server = serverconfig;
 }
 
-void    Response::setDirectoryListing(bool value)
+void							Response::setDirectoryListing(bool value)		//--> Set the directory listing
 {
 	directoryListing = value;
 }
+
 //##################################################################
 //                          Getter                                 #
 //##################################################################
-int Response::getStatusCode() const
+int								Response::getStatusCode() const					//--> Get the status code
 {
 	return (_statusCode);
 }
 
-const std::string   Response::getResponse() const
+const std::string				Response::getResponse() const					//--> Get the response
 {
 	return(_response);
 }
 
-const std::string Response::getStatusMessage(const int &code)
+const std::string				Response::getStatusMessage(const int &code)		//--> Get the status message
 {
 	std::map<int, std::string>::iterator it = _statusMessages.find(code);
 	if (it != _statusMessages.end())
@@ -153,20 +154,21 @@ const std::string Response::getStatusMessage(const int &code)
 		return ("Error");
 }
 
-const Request Response::getRequest() const
+const Request					Response::getRequest() const					//--> Get the request
 {
 	return (_request);
 }
 
-bool Response::getDirectoryListing() const
+bool							Response::getDirectoryListing() const			//--> Get the directory listing
 {
 	return (directoryListing);
 }
+
 //##################################################################
 //                          Methods                                #
 //##################################################################
 
-void    Response::getHtmlFile(std::string path)
+void							Response::getHtmlFile(std::string path)			// construction de la reponse
 {
 	std::string root = 				_server.getRoot();
 	std::string pathRedirection = 	_server.getRoot() + path;
@@ -243,7 +245,7 @@ void    Response::getHtmlFile(std::string path)
 	return;
 }
 
-std::string Response::getPath()
+std::string						Response::getPath()								// --> Get the path of ..
 {
 	std::string path_from_request = "";
 	std::string path_from_config = "";
@@ -284,7 +286,7 @@ std::string Response::getPath()
 //                       HTTP REQUEST                              #
 //##################################################################
 
-void    Response::requestGet() // --> GET
+void							Response::requestGet()							// http request GET
 {
 	std::string getResponse = "";
 
@@ -299,7 +301,7 @@ void    Response::requestGet() // --> GET
 		getHtmlFile(getPath());
 }
 
-void    Response::requestPost() // --> POST
+void							Response::requestPost()							// http request POST
 {
 	//std::ofstream outFile;
 	std::string postPath = "";
@@ -343,7 +345,7 @@ void    Response::requestPost() // --> POST
 	getHtmlFile("/page/index.html");
 }
 
-void    Response::requestDelete() // --> DELETE
+void							Response::requestDelete()						// http request DELETE
 {
 	std::cout << COLOR_GREEN << "REQUEST DELETE\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
@@ -353,9 +355,9 @@ void    Response::requestDelete() // --> DELETE
 }
 
 //##################################################################
-//                       INIT MIME TYPES                           #
+//                           INIT                                  #
 //##################################################################
-void Response::initMimeType()
+void							Response::initMimeType()						//--> Initialize the MIME types
 {
 	mimeTypes[".html"] = "text/html; charset=UTF-8";
 	mimeTypes[".css"] = "text/css; charset=UTF-8";
@@ -364,7 +366,7 @@ void Response::initMimeType()
 	mimeTypes[".png"] = "image/png";
 }
 
-void Response::initResponseHeaders()
+void 							Response::initResponseHeaders()					//--> Initialize the response headers
 {
 	_headers["Server"] = "MyCustomServer/1.0" ;
 	_headers["Content-Type"] = "";
@@ -373,7 +375,7 @@ void Response::initResponseHeaders()
 //##################################################################
 //                          Others                                 #
 //##################################################################
-void Response::printHeaders() const
+void							Response::printHeaders() const					//--> Print the headers
 {
 	for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it) {
 		std::cout << it->first << ": " << it->second << "\n";
@@ -381,14 +383,14 @@ void Response::printHeaders() const
 	std::cout << std::endl;
 }
 
-std::string intToString(int value)
+std::string						intToString(int value)							//--> Convert int to string
 {
 	std::ostringstream oss;
 	oss << value;
 	return oss.str();
 }
 
-std::ostream	&operator<<(std::ostream &out, const Response &response)
+std::ostream					&operator<<(std::ostream &out, const Response &response)	// --> Overload the << operator
 {
 	out << "" << std::endl;
 	out << COLOR_GREEN << " # REPONSE DES REQUETES HTTP" << COLOR_RESET << std::endl;
@@ -398,7 +400,8 @@ std::ostream	&operator<<(std::ostream &out, const Response &response)
 	return (out);
 }
 
-void Response::generateDirectoryListing(const std::string& directoryPath, const std::string& path) {
+void							Response::generateDirectoryListing(const std::string& directoryPath, const std::string& path)	//--> Generate the directory listing
+{
 	std::ostringstream html;
 	html << "<html><body><h1>Directory Listing of " << directoryPath << "</h1><ul>";
 
