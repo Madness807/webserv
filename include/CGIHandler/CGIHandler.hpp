@@ -15,7 +15,7 @@ class CGIHandler {
 		~CGIHandler();
 
 		// Méthodes///////////////////
-		void		execute();
+		int		execute();
 		//void		execute(const std::vector<char>& requestBody);	// exécute le CGI
 
 		// Getters

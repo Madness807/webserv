@@ -165,92 +165,55 @@ bool Response::getDirectoryListing() const
 //##################################################################
 //                          Methods                                #
 //##################################################################
-void    Response::requestGet() // --> GET
-{
-	std::string getResponse = "";
-
-	std::cout << COLOR_GREEN << "REQUEST GET\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-	std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
-	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-	std::cout << "" << std::endl;
-
-	getResponse = getPath();
-	if (getStatusCode() != METHOD_NOT_ALLOWED)
-		getHtmlFile(getPath());
-}
-
-void    Response::requestPost() // --> POST
-{
-	std::ofstream outFile;
-	std::string postPath = "";
-
-	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-	std::cout << _request << std::endl;
-	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
-
-	std::string dbPath = _server.getRoot() + _server.getLocationConfig("/submit-form").getRedirect();
-	outFile.open(dbPath, std::ios::out | std::ios::app);
-	
-    if (outFile.is_open())
-	{
-		std::cout << "---------------> 1\n";
-		outFile << _requestBody + "\n";
-		setStatusCode(CREATED);
-		outFile.close();
-	}
-	else
-	{
-		std::cout << "---------------> 2\n";
-		setStatusCode(NOT_FOUND);
-		setErrorBody();
-		return;
-	}
-	postPath = "/";
-	getHtmlFile(postPath);
-}
-
-void    Response::requestDelete() // --> DELETE
-{
-	std::cout << COLOR_GREEN << "REQUEST DELETE\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
-	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-	//std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
-	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-	std::cout << "" << std::endl;
-}
 
 void    Response::getHtmlFile(std::string path)
 {
 	std::string root = 				_server.getRoot();
 	std::string pathRedirection = 	_server.getRoot() + path;
 	bool directoryListingState = 	getDirectoryListing();
+	isCGI = false;
 
 	// CHECK IF THE PATH IS A DIRECTORY
-    struct stat pathStat;
-    if (stat(pathRedirection.c_str(), &pathStat) == 0 && S_ISDIR(pathStat.st_mode))
+	struct stat pathStat;
+	if (stat(pathRedirection.c_str(), &pathStat) == 0 && S_ISDIR(pathStat.st_mode))
 	{
-        if (directoryListingState)
+		if (directoryListingState)
 		{
-            	generateDirectoryListing(pathRedirection, path);
-            	return;
-        } else 
+				generateDirectoryListing(pathRedirection, path);
+				return;
+		} else 
 		{
-            	setStatusCode(FORBIDDEN);
-            	setErrorBody();
-            	return;
-        }
+				setStatusCode(FORBIDDEN);
+				setErrorBody();
+				return;
+		}
    	}
 
-	if (isCGI)// CHECK IF THE PATH IS A CGI
+	// CHECK IF THE PATH IS A CGI
+	if (isCGI)
 	{
+		int success = 0;
 		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
-		cgiHandler.execute();// execute le cgi
 
-		_headers["Content-Type"] = cgiHandler.getCgiContentType();
-		_headers["Content-Length"] = std::to_string(cgiHandler.getBody().size());
-		_body = cgiHandler.getBody();
-
-		return;
+		if (_cgiExtension == ".py")
+		{
+			success = cgiHandler.execute();// execute le cgi
+			if (success == 500)
+			{
+				setStatusCode(500);
+				return;
+			}
+			_headers["Content-Type"] = cgiHandler.getCgiContentType();
+			_headers["Content-Length"] = std::to_string(cgiHandler.getBody().size());
+			_body = cgiHandler.getBody();
+			return;
+		}
+		else
+		{
+			perror("ERROR: CGI bad extension");
+			setStatusCode(500);
+			return;
+		}
 	}
 
 	// Check if the path is a file
@@ -275,7 +238,6 @@ void    Response::getHtmlFile(std::string path)
 	_body = ss.str();// Set the body to the file content
 	inFile.close();// Close the file
 
-
 	_headers["Content-Length"] = std::to_string(_body.size());
 		
 	return;
@@ -296,6 +258,7 @@ std::string Response::getPath()
 		{
 			isCGI = true;
 			path_from_request = it->second.getCgiPath();
+			_cgiExtension = it->second.getCgiExtension();
 		}
 
 		std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
@@ -308,13 +271,85 @@ std::string Response::getPath()
 		path_from_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
 		setDirectoryListing(it->second.getDirectoryListing());
 	}
-    else {
-        setDirectoryListing(true);
-    }
+	else {
+		setDirectoryListing(true);
+	}
 	if (path_from_config != "")
 		return(path_from_config);
 	else
 		return(path_from_request);
+}
+
+//##################################################################
+//                       HTTP REQUEST                              #
+//##################################################################
+
+void    Response::requestGet() // --> GET
+{
+	std::string getResponse = "";
+
+	std::cout << COLOR_GREEN << "REQUEST GET\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
+	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+	std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
+	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+	std::cout << "" << std::endl;
+
+	getResponse = getPath();
+	if (getStatusCode() != METHOD_NOT_ALLOWED)
+		getHtmlFile(getPath());
+}
+
+void    Response::requestPost() // --> POST
+{
+	//std::ofstream outFile;
+	std::string postPath = "";
+	std::stringstream bodysizeStr(_server.getMaxBodySize());
+	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
+	std::cout << _request << std::endl;
+	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
+
+	// bodysizeStr >> _bodysize;
+	// std::cout << "BODYSIZE : " <<_bodysize << std::endl;
+	// if (_bodysize < _requestBody.size())
+	// {
+	// 	setStatusCode(413);
+	// 	setErrorBody();
+	// 	return;
+	// } PAS SUR QUE CELA MARCHE POUR LE MOMENT
+
+	//std::string dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
+	std::string dbPath = _server.getRoot() + "/upload/image.jpeg"; //TEST AVEC IMAGE
+
+	//outFile.open(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
+	std::ofstream outFile(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
+	
+	if (outFile.is_open())// Check if the file is open
+	{
+		std::cout << COLOR_GREEN << "l ouverture du fichier a reussi" << COLOR_RESET << std::endl;
+		outFile.write(_requestBody.c_str(), _requestBody.size());
+
+		//outFile << _requestBody + "\n";
+		setStatusCode(CREATED);
+		outFile.close();
+	}
+	else// If the file is not open
+	{
+		std::cout << COLOR_RED <<"l ouverture du fichier a echoue" << COLOR_RESET << std::endl;
+		setStatusCode(NOT_FOUND);
+		setErrorBody();
+		return;
+	}
+	//postPath = "/";
+	getHtmlFile("/page/index.html");
+}
+
+void    Response::requestDelete() // --> DELETE
+{
+	std::cout << COLOR_GREEN << "REQUEST DELETE\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
+	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
+	//std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
+	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+	std::cout << "" << std::endl;
 }
 
 //##################################################################
@@ -364,32 +399,30 @@ std::ostream	&operator<<(std::ostream &out, const Response &response)
 }
 
 void Response::generateDirectoryListing(const std::string& directoryPath, const std::string& path) {
-    std::ostringstream html;
-    html << "<html><body><h1>Directory Listing of " << directoryPath << "</h1><ul>";
+	std::ostringstream html;
+	html << "<html><body><h1>Directory Listing of " << directoryPath << "</h1><ul>";
 
-    DIR *dir;
-    struct dirent *entry;
-    if ((dir = opendir(directoryPath.c_str())) != NULL) {
-        while ((entry = readdir(dir)) != NULL) {
-            std::string hrefPath = path + "/" +entry->d_name;
+	DIR *dir;
+	struct dirent *entry;
+	if ((dir = opendir(directoryPath.c_str())) != NULL) {
+		while ((entry = readdir(dir)) != NULL) {
+			std::string hrefPath = path + "/" +entry->d_name;
 			if (entry->d_type == DT_DIR) {
-                // Pour les répertoires, ajoutez un slash à la fin du nom
-                html << "<li><a href=\"" << hrefPath << "/\">" << entry->d_name << "/</a></li>";
-            } else {
-                html << "<li><a href=\"" << hrefPath << "\">" << entry->d_name << "</a></li>";
-            }
-        }
-        closedir(dir);
-    } else {
-        setStatusCode(INTERNAL_SERVER_ERROR);
-        setErrorBody();
-        return;
-    }
+				// Pour les répertoires, ajoutez un slash à la fin du nom
+				html << "<li><a href=\"" << hrefPath << "/\">" << entry->d_name << "/</a></li>";
+			} else {
+				html << "<li><a href=\"" << hrefPath << "\">" << entry->d_name << "</a></li>";
+			}
+		}
+		closedir(dir);
+	} else {
+		setStatusCode(INTERNAL_SERVER_ERROR);
+		setErrorBody();
+		return;
+	}
 
-    html << "</ul></body></html>";
-    _body = html.str();
-    _headers["Content-Type"] = "text/html";
-    _headers["Content-Length"] = std::to_string(_body.size());
+	html << "</ul></body></html>";
+	_body = html.str();
+	_headers["Content-Type"] = "text/html";
+	_headers["Content-Length"] = std::to_string(_body.size());
 }
-
-

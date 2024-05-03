@@ -163,8 +163,7 @@ void TCPHandler::runServer()
 			continue;
 		}
 		for (int i = 0; i <= _maxFd; i++)
-		{
-			if (FD_ISSET(i, &copyW))
+		{			if (FD_ISSET(i, &copyW))
 			{
 				handlingNewClient(i); // accept new client
 				handlingCommunication(i);
@@ -316,7 +315,6 @@ int TCPHandler::handlingRequest(Client &client)
 
 	Response response(buffer, test);
 	_response = response;
-
 	return (reading);
 }
 

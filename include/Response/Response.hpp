@@ -23,8 +23,9 @@ class Response
         std::string                             _requestBody;
         bool                                    directoryListing;
         bool                                    isCGI;
+        std::string                             _cgiExtension;
         std::map<std::string, std::string>      mimeTypes;// Map des types MIME pour les content-type
-
+        int                                     _bodysize;
     // SETTERS PRIVÉ
         void                                    setStatusCode(const int &code);
         std::map<int, std::string>              setStatusMessages();
@@ -39,6 +40,7 @@ class Response
         void                                    initResponseHeaders();// Initialise la map des méthodes
         void                                    setDirectoryListing(bool value);// Active ou désactive le listing des répertoires
         void                                    setCGI(bool value);// Active ou désactive le listing des répertoires
+        void                                    setCGIExtension(const std::string &extension);// Active ou désactive le listing des répertoires
 
     // GETTERS PRIVÉ
         void                                    getHtmlFile(std::string path);
@@ -63,9 +65,11 @@ class Response
         const std::string                 getResponse() const;
         bool                              getDirectoryListing() const;
         bool                              getCGI() const;
-        void                              printHeaders() const;
+        void                              getcgiExtension() const;
 
-        void generateDirectoryListing(const std::string& directoryPath, const std::string& path);
+        // Methodes
+        void                              generateDirectoryListing(const std::string& directoryPath, const std::string& path);
+        void                              printHeaders() const;
 
 };
 

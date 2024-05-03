@@ -62,7 +62,7 @@ std::string CGIHandler::getCgiContentType() const {
 //                           Methodes                              #
 //##################################################################
 
-void CGIHandler::execute()
+int CGIHandler::execute()
 {
 	int pid, status;
 	int fd[2];
@@ -71,11 +71,9 @@ void CGIHandler::execute()
 	std::string buf_body;
 	char tmp[20000];
 	const char* tmpPath = _path.c_str();
-	//extern char** environ;
-	//const char *args[] = {"/usr/bin/python3", tmpPath, NULL};
 	const char *args[] = {"/usr/bin/python3", tmpPath, NULL};
 
-
+	std::cout << "check 1"  << std::endl;
 	if(pipe(fd) == -1)
 	{
 		perror("Pipe");
@@ -93,12 +91,15 @@ void CGIHandler::execute()
 	if(pid == 0) // child
 	{
 		close(fd[0]);
+	std::cout << "check 2"  << std::endl;
 		dup2(fd[1], STDOUT_FILENO);
+	std::cout << "check 3"  << std::endl;
+
 		close(fd[1]);
 
 		execve(args[0], const_cast<char**>(args), NULL);
-		perror("Excve : ");
-		exit(-1);
+		perror("ERROR: execve: failed to execute the CGI script");
+		return(500);
 	}
 
 	else // parent
@@ -134,6 +135,7 @@ void CGIHandler::execute()
 
 		close(fd[0]);
 	}
+	return (0);
 }
 
 
