@@ -17,6 +17,7 @@ class Request
 	std::string							_path;
 	std::string							_query;
 	std::string							_raw;
+	std::string							_boundary;
 
 	//Parsing
 	int									parse(const std::string &str);
@@ -31,6 +32,7 @@ class Request
 	void								setMethod(const std::string &method);
 	void								setBody(const std::string &line);
 	void								setRet(int ret);
+	void								setBoundary(const std::string &content_type);
     public:
     // Constructeur et destructeur
 		Request();
@@ -53,6 +55,7 @@ class Request
 		const std::string							&getPath() const;
 		const std::string							&getQuery() const;
 		const std::string							&getRaw() const;
+		const std::string							&getBoundary() const;
 
 	// Utils
 		void										resetHeaders();

@@ -76,6 +76,10 @@ const std::string	&Request::getRaw() const{
 const std::string	&Request::getOneHeaders(const std::string &key){
 	return (_headers[key]);
 }
+const std::string	&Request::getBoundary() const
+{
+	return (_boundary);
+}
 
 //##################################################################
 //                          SETTERS                                #
@@ -98,6 +102,14 @@ void Request::setBody(const std::string &line)
 void Request::setRet(int ret)
 {
 	this->_ret = ret;
+}
+
+void Request::setBoundary(const std::string &content_type)
+{
+	size_t startPos;
+	startPos = content_type.find("=") + 1;
+	_boundary = content_type.substr(startPos);
+	std::cout << "Boundary --> " << _boundary << std::endl;
 }
 
 /* -------------------- Initialization Methods Vector --------------------*/

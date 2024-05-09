@@ -50,7 +50,7 @@ class Response
         void                                    requestGet();
         void                                    requestPost();
         void                                    requestDelete();
-        int                                     saveImage(const char* imageData, size_t size, const std::string& filename);
+        int                                     saveImage(const std::string &imageData, const std::string &boundary, const std::string& filename);
         int                                     addForm(std::string &filename);
 
     public:

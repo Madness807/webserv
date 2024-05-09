@@ -131,6 +131,7 @@ int	Request::parse(const std::string &str)
 			this->_env_cgi["Www-Authenticate"] = this->_headers["Www-Authenticate"];
 	this->setBody(str.substr(i, std::string::npos));
 	this->findQuery();
+	this->setBoundary(getOneHeaders("Content-Type"));
     return (this->getRet());
 }
 

@@ -322,7 +322,6 @@ void							Response::requestPost()							// http request POST
 	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
 		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
-		std::cout << dbPath << std::endl;
 		if (!addForm(dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
 
@@ -331,7 +330,7 @@ void							Response::requestPost()							// http request POST
 	{
 		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
 		std::cout << dbPath << std::endl;
-		if (!saveImage(_requestBody.c_str(), _requestBody.length(), dbPath))
+		if (!saveImage(_requestBody, _request.getBoundary(), dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
 	}
 	
@@ -393,19 +392,42 @@ void 							Response::initResponseHeaders()					//--> Initialize the response he
 //                          Others                                 #
 //##################################################################
 
-int Response::saveImage(const char* imageData, size_t size, const std::string& filename)
+int Response::saveImage(const std::string &imageData, const std::string &boundary, const std::string &filename)
 {
-    // Ouvrir un fichier en mode binaire pour écrire les données de l'image
-    std::ofstream outFile(filename.c_str(), std::ios::out | std::ios::binary);
-    if (!outFile.is_open())
+	std::cout << boundary << std::endl;
+	size_t startPos = imageData.find("Content-Type: image/png");
+    if (startPos != std::string::npos)
 	{
-        std::cerr << "Erreur lors de l'ouverture du fichier -> Image." << std::endl;
-        return (0);
-    }
+        startPos = imageData.find("\r\n\r\n", startPos) + 4; // Sauter l'en-tête jusqu'au début des données
+        size_t endPos = imageData.find(boundary, startPos) - 2; // -2 pour enlever le \r\n avant la limite
 
-    outFile.write(imageData, size);
-	setStatusCode(CREATED);
-    outFile.close();
+        if (startPos != std::string::npos && endPos != std::string::npos)
+		{
+            std::ofstream file(filename, std::ios::out | std::ios::binary);
+            if (!file) {
+                std::cerr << "Erreur lors de l'ouverture du fichier pour écriture." << std::endl;
+                return (0);
+            }
+
+            file.write(imageData.data() + startPos,  endPos - startPos);
+            file.close();
+        } else
+            std::cerr << "Limites des données d'image non trouvées." << std::endl;
+    }
+	else
+        std::cerr << "En-tête Content-Type non trouvé." << std::endl;
+	// static int nb;
+	// std::string file = filename + "image_" + intToString(nb++) + ".png";
+    // std::ofstream outFile(file.c_str(), std::ios::out | std::ios::binary);
+    // if (!outFile.is_open())
+	// {
+    //     std::cerr << "Erreur lors de l'ouverture du fichier -> Image." << std::endl;
+    //     return (0);
+    // }
+	// size_t startPos = imageData.find("\r\n\r\n")
+    // outFile.write(imageData, size);
+	// setStatusCode(CREATED);
+    // outFile.close();
 	return (1);
 }
 
