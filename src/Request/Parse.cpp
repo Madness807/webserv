@@ -112,7 +112,7 @@ int	Request::parse(const std::string &str)
     size_t		i = 0;
 	size_t		j = 0;
 
-
+	_bodySize = str.length();
     this->readFirstLine(nextLine(str, i));
 	while ((line = nextLine(str, i)) != "\r" && line != "" && this->_ret != 400)
 	{

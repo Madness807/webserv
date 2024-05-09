@@ -55,7 +55,7 @@ class Response
 
         // CONSTRUCTEUR / DESTRUCTEUR
         Response();
-        Response(const Request &request, ServerConfig &serverconfig);
+        Response(std::string &request, ServerConfig &serverconfig);
         ~Response();
 
         // GETTERS PUBLIC

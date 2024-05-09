@@ -87,7 +87,12 @@ void Request::setMethod(const std::string &method)
 
 void Request::setBody(const std::string &line)
 {
-	this->_body = line;
+	if (line.length() > _bodySize)
+	{
+		setRet(413);
+		return;
+	}
+	_body = line;
 }
 
 void Request::setRet(int ret)

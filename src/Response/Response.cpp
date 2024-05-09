@@ -7,7 +7,7 @@ Response::Response() {
 	initMimeType();
 }
 
-Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
+Response::Response(std::string &request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
 {   
 	initMimeType();// Initialize the MIME types
 	setServer(serverconfig);// Set the server

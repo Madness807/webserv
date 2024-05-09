@@ -12,6 +12,7 @@ class Request
 	std::map<std::string, std::string>	_env_cgi;
 	int									_ret;
 	std::string							_body;
+	int									_bodySize;
 	std::string							_port;
 	std::string							_path;
 	std::string							_query;
