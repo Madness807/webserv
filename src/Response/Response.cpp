@@ -304,7 +304,7 @@ void							Response::requestGet()							// http request GET
 void							Response::requestPost()							// http request POST
 {
 	//std::ofstream outFile;
-	std::string postPath = "";
+	std::string dbPath = "";
 	std::stringstream bodysizeStr(_server.getMaxBodySize());
 	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << _request << std::endl;
@@ -318,30 +318,47 @@ void							Response::requestPost()							// http request POST
 	// 	setErrorBody();
 	// 	return;
 	// } PAS SUR QUE CELA MARCHE POUR LE MOMENT
-
-	//std::string dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
-	std::string dbPath = _server.getRoot() + "/upload/image.jpeg"; //TEST AVEC IMAGE
-
-	//outFile.open(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
-	std::ofstream outFile(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
-	
-	if (outFile.is_open())// Check if the file is open
+	std::cout << _request.getOneHeaders("Content-Type") << std::endl;
+	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
-		std::cout << COLOR_GREEN << "l ouverture du fichier a reussi" << COLOR_RESET << std::endl;
-		outFile.write(_requestBody.c_str(), _requestBody.size());
+		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
+		std::cout << dbPath << std::endl;
+		if (!addForm(dbPath))
+			setStatusCode(INTERNAL_SERVER_ERROR);
 
-		//outFile << _requestBody + "\n";
-		setStatusCode(CREATED);
-		outFile.close();
 	}
-	else// If the file is not open
+	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
-		std::cout << COLOR_RED <<"l ouverture du fichier a echoue" << COLOR_RESET << std::endl;
-		setStatusCode(NOT_FOUND);
+		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
+		std::cout << dbPath << std::endl;
+		if (!saveImage(_requestBody.c_str(), _requestBody.length(), dbPath))
+			setStatusCode(INTERNAL_SERVER_ERROR);
+	}
+	
+	// if (outFile.is_open())// Check if the file is open
+	// {
+	// 	std::cout << COLOR_GREEN << "l ouverture du fichier a reussi" << COLOR_RESET << std::endl;
+	// 	outFile.write(_requestBody.c_str(), _requestBody.size());
+
+	// 	if (postType == "form")
+	// 		outFile << _requestBody + "\n";
+	// 	else
+	// 		outFile << _requestBody;
+	// 	setStatusCode(CREATED);
+	// 	outFile.close();
+	// }
+	// else// If the file is not open
+	// {
+	// 	std::cout << COLOR_RED <<"l ouverture du fichier a echoue" << COLOR_RESET << std::endl;
+	// 	setStatusCode(NOT_FOUND);
+	// 	setErrorBody();
+	// 	return;
+	// }
+	if (getStatusCode() != 200)
+	{
 		setErrorBody();
 		return;
 	}
-	//postPath = "/";
 	getHtmlFile("/page/index.html");
 }
 
@@ -375,6 +392,39 @@ void 							Response::initResponseHeaders()					//--> Initialize the response he
 //##################################################################
 //                          Others                                 #
 //##################################################################
+
+int Response::saveImage(const char* imageData, size_t size, const std::string& filename)
+{
+    // Ouvrir un fichier en mode binaire pour écrire les données de l'image
+    std::ofstream outFile(filename.c_str(), std::ios::out | std::ios::binary);
+    if (!outFile.is_open())
+	{
+        std::cerr << "Erreur lors de l'ouverture du fichier -> Image." << std::endl;
+        return (0);
+    }
+
+    outFile.write(imageData, size);
+	setStatusCode(CREATED);
+    outFile.close();
+	return (1);
+}
+
+int	Response::addForm(std::string &filename)
+{
+	std::ofstream outFile (filename.c_str(), std::ios::app | std::ios::out);
+	if (!outFile.is_open())
+	{
+        std::cerr << "Erreur lors de l'ouverture du fichier -> Form." << std::endl;
+        return (0);
+    }
+
+	// outFile.write(_requestBody.c_str(), _requestBody.size());
+	outFile << _requestBody + "\n";
+	setStatusCode(CREATED);
+	outFile.close();
+	return (1);
+}
+
 void							Response::printHeaders() const					//--> Print the headers
 {
 	for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it) {
