@@ -7,10 +7,10 @@ Response::Response() {
 	initMimeType();
 }
 
-Response::Response(std::string &request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
+Response::Response(std::string &request, ServerConfig &serverConfig): _request(request, serverConfig), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
 {   
 	initMimeType();// Initialize the MIME types
-	setServer(serverconfig);// Set the server
+	setServer(serverConfig);// Set the server
 	setMethod();// Set the methods
 	setContent();// Set the content of the response
 	setStatusLine();// Set the status of the response
@@ -310,28 +310,24 @@ void							Response::requestPost()							// http request POST
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
-	// bodysizeStr >> _bodysize;
-	// std::cout << "BODYSIZE : " <<_bodysize << std::endl;
-	// if (_bodysize < _requestBody.size())
-	// {
-	// 	setStatusCode(413);
-	// 	setErrorBody();
-	// 	return;
-	// } PAS SUR QUE CELA MARCHE POUR LE MOMENT
-	std::cout << _request.getOneHeaders("Content-Type") << std::endl;
 	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
 		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
 		if (!addForm(dbPath))
+		{
+			std::cout << "form" << std::endl;
 			setStatusCode(INTERNAL_SERVER_ERROR);
+		}
 
 	}
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
 		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
-		std::cout << dbPath << std::endl;
 		if (!saveImage(_requestBody, _request.getBoundary(), dbPath))
+		{
+			std::cout << "image" << std::endl;
 			setStatusCode(INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	// if (outFile.is_open())// Check if the file is open
@@ -394,7 +390,7 @@ void 							Response::initResponseHeaders()					//--> Initialize the response he
 
 int Response::saveImage(const std::string &imageData, const std::string &boundary, const std::string &filename)
 {
-	std::cout << boundary << std::endl;
+	static int nb;
 	size_t startPos = imageData.find("Content-Type: image/png");
     if (startPos != std::string::npos)
 	{
@@ -403,13 +399,18 @@ int Response::saveImage(const std::string &imageData, const std::string &boundar
 
         if (startPos != std::string::npos && endPos != std::string::npos)
 		{
-            std::ofstream file(filename, std::ios::out | std::ios::binary);
-            if (!file) {
+			std::string outFile = filename + "image_" + intToString(nb++) + ".png";
+            std::ofstream file(outFile, std::ios::out | std::ios::binary);
+			std::cout << file.is_open() << " & " << outFile << std::endl;
+            if (!file.is_open())
+			{
                 std::cerr << "Erreur lors de l'ouverture du fichier pour écriture." << std::endl;
                 return (0);
             }
 
-            file.write(imageData.data() + startPos,  endPos - startPos);
+			std::cout << "Binary Data: " << imageData.data() + startPos << std::endl;
+            file.write(imageData.data() + startPos,  std::string::npos);
+			setStatusCode(CREATED);
             file.close();
         } else
             std::cerr << "Limites des données d'image non trouvées." << std::endl;

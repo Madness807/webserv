@@ -5,8 +5,9 @@
 //##################################################################
 Request::Request() {}
 
-Request::Request(std::string &str): _method (""), _version(""), _ret(200), _body(""), _port("80"), _path(""), _query(""), _raw(str)
+Request::Request(std::string &str, ServerConfig server): _method (""), _version(""), _ret(200), _body(""), _port("80"), _path(""), _query(""), _raw(str)
 {
+	_bodySize = std::atoi(server.getMaxBodySize().c_str());
 	this->_methods = this->initMethods();
 	this->resetHeaders();
 	this->_env_cgi.clear();
@@ -109,7 +110,6 @@ void Request::setBoundary(const std::string &content_type)
 	size_t startPos;
 	startPos = content_type.find("=") + 1;
 	_boundary = content_type.substr(startPos);
-	std::cout << "Boundary --> " << _boundary << std::endl;
 }
 
 /* -------------------- Initialization Methods Vector --------------------*/

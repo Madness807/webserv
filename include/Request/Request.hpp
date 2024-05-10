@@ -2,6 +2,7 @@
 #define REQUEST_HPP
 
 #include "../define.hpp"
+#include "../ConfigParser/ServerConfig.hpp"
 
 class Request
 {
@@ -36,7 +37,7 @@ class Request
     public:
     // Constructeur et destructeur
 		Request();
-        Request(std::string &str);
+        Request(std::string &str, ServerConfig server);
         ~Request();
 
 	// Copie d'assignation

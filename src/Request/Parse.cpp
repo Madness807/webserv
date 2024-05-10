@@ -131,7 +131,8 @@ int	Request::parse(const std::string &str)
 			this->_env_cgi["Www-Authenticate"] = this->_headers["Www-Authenticate"];
 	this->setBody(str.substr(i, std::string::npos));
 	this->findQuery();
-	this->setBoundary(getOneHeaders("Content-Type"));
+	if (!getOneHeaders("Content-Type").find("multipart/form-data"))
+		this->setBoundary(getOneHeaders("Content-Type"));
     return (this->getRet());
 }
 
@@ -161,7 +162,7 @@ std::ostream	&operator<<(std::ostream &out, const Request &request)
 
 	out << std::endl << "Request body :" << std::endl << request.getBody() << std::endl;
 
-	out << "\nCode status on Request: " << request.getRet() << std::endl;
+	// out << "\nCode status on Request: " << request.getRet() << std::endl;
 
 	return (out);
 }
