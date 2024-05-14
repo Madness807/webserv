@@ -36,8 +36,10 @@ class CGIHandler {
 		std::string		readOutput();													// lit la sortie du CGI
 		int				createPipe(const std::vector<char>& requestBody, int& outFd);	// crée un pipe
 		//void			launchCGI(CGIHandler &cgiHandler);									// lance le CGI
-
-		// Setters							
+		int				launchChild(int *fd, const char** args);
+		int				launchParent(int *fd, int pid);
+		int				findHeadAndBody(std::string buf);
+		// Setters
 
 													// getter du chemin du fichier CGI
 
