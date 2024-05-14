@@ -3,7 +3,8 @@
 //##################################################################
 //                          Constructeur                           #
 //##################################################################
-Response::Response() {
+Response::Response()
+{
 	initMimeType();
 }
 
@@ -164,6 +165,72 @@ bool							Response::getDirectoryListing() const			//--> Get the directory listi
 	return (directoryListing);
 }
 
+int 							Response::saveImage(const std::string &imageData, const std::string &boundary, const std::string &filename)	//--> Save Upload Image Data
+{
+	static int nb;
+	size_t startPos = imageData.find("Content-Type: image/png");
+    if (startPos != std::string::npos)
+	{
+        startPos = imageData.find("\r\n\r\n", startPos) + 4; // Sauter l'en-tête jusqu'au début des données
+        size_t endPos = imageData.find(boundary, startPos) - 2; // -2 pour enlever le \r\n avant la limite
+
+        if (startPos != std::string::npos && endPos != std::string::npos)
+		{
+			std::string outFile = filename + "image_" + intToString(nb++) + ".png";
+            std::ofstream file(outFile, std::ios::out | std::ios::binary);
+			// std::cout << file.is_open() << " & " << outFile << std::endl;
+            if (!file.is_open())
+			{
+                std::cerr << COLOR_RED << "Erreur lors de l'ouverture du fichier pour écriture." << COLOR_RESET << std::endl;
+                return (1);
+            }
+
+			// std::cout << "Binary Data: " << imageData.data() + startPos << std::endl;
+            file.write(imageData.data() + startPos,  std::string::npos);
+			setStatusCode(CREATED);
+            file.close();
+        } else
+            std::cerr << COLOR_RED <<  "Limites des données d'image non trouvées." << COLOR_RESET << std::endl;
+    }
+	else
+        std::cerr << COLOR_RED << "En-tête Content-Type non trouvé." << COLOR_RESET << std::endl;
+	// static int nb;
+	// std::string file = filename + "image_" + intToString(nb++) + ".png";
+    // std::ofstream outFile(file.c_str(), std::ios::out | std::ios::binary);
+    // if (!outFile.is_open())
+	// {
+    //     std::cerr << "Erreur lors de l'ouverture du fichier -> Image." << std::endl;
+    //     return (0);
+    // }
+	// size_t startPos = imageData.find("\r\n\r\n")
+    // outFile.write(imageData, size);
+	// setStatusCode(CREATED);
+    // outFile.close();
+	return (0);
+}
+
+int								Response::addForm(std::string &filename) 		//--> Add info formulaire
+{
+	std::ofstream outFile (filename.c_str(), std::ios::app | std::ios::out);
+	if (!outFile.is_open())
+	{
+        std::cerr << COLOR_RED << "Erreur lors de l'ouverture du fichier -> Form." << COLOR_RESET << std::endl;
+        return (1);
+    }
+
+	outFile << _requestBody + "\n";
+	setStatusCode(CREATED);
+	outFile.close();
+	return (0);
+}
+
+int								Response::deleteResources(std::string &path)
+{
+	if (std::remove(path.c_str()))
+		return (1);
+	return (0);
+}
+
 //##################################################################
 //                          Methods                                #
 //##################################################################
@@ -304,7 +371,8 @@ void							Response::requestGet()							// http request GET
 void							Response::requestPost()							// http request POST
 {
 	//std::ofstream outFile;
-	std::string dbPath = "";
+	std::string dbPath = getPath();
+	std::cout << "---------------------------> " << dbPath << std::endl;
 	std::stringstream bodysizeStr(_server.getMaxBodySize());
 	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << _request << std::endl;
@@ -313,9 +381,9 @@ void							Response::requestPost()							// http request POST
 	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
 		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
-		if (!addForm(dbPath))
+		if (addForm(dbPath))
 		{
-			std::cout << "form" << std::endl;
+			// std::cout << "form" << std::endl; //--> Test path
 			setStatusCode(INTERNAL_SERVER_ERROR);
 		}
 
@@ -323,32 +391,13 @@ void							Response::requestPost()							// http request POST
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
 		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
-		if (!saveImage(_requestBody, _request.getBoundary(), dbPath))
+		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
 		{
-			std::cout << "image" << std::endl;
+			// std::cout << "image" << std::endl; //--> Test path
 			setStatusCode(INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// if (outFile.is_open())// Check if the file is open
-	// {
-	// 	std::cout << COLOR_GREEN << "l ouverture du fichier a reussi" << COLOR_RESET << std::endl;
-	// 	outFile.write(_requestBody.c_str(), _requestBody.size());
 
-	// 	if (postType == "form")
-	// 		outFile << _requestBody + "\n";
-	// 	else
-	// 		outFile << _requestBody;
-	// 	setStatusCode(CREATED);
-	// 	outFile.close();
-	// }
-	// else// If the file is not open
-	// {
-	// 	std::cout << COLOR_RED <<"l ouverture du fichier a echoue" << COLOR_RESET << std::endl;
-	// 	setStatusCode(NOT_FOUND);
-	// 	setErrorBody();
-	// 	return;
-	// }
 	if (getStatusCode() != 200)
 	{
 		setErrorBody();
@@ -387,66 +436,6 @@ void 							Response::initResponseHeaders()					//--> Initialize the response he
 //##################################################################
 //                          Others                                 #
 //##################################################################
-
-int Response::saveImage(const std::string &imageData, const std::string &boundary, const std::string &filename)
-{
-	static int nb;
-	size_t startPos = imageData.find("Content-Type: image/png");
-    if (startPos != std::string::npos)
-	{
-        startPos = imageData.find("\r\n\r\n", startPos) + 4; // Sauter l'en-tête jusqu'au début des données
-        size_t endPos = imageData.find(boundary, startPos) - 2; // -2 pour enlever le \r\n avant la limite
-
-        if (startPos != std::string::npos && endPos != std::string::npos)
-		{
-			std::string outFile = filename + "image_" + intToString(nb++) + ".png";
-            std::ofstream file(outFile, std::ios::out | std::ios::binary);
-			std::cout << file.is_open() << " & " << outFile << std::endl;
-            if (!file.is_open())
-			{
-                std::cerr << "Erreur lors de l'ouverture du fichier pour écriture." << std::endl;
-                return (0);
-            }
-
-			std::cout << "Binary Data: " << imageData.data() + startPos << std::endl;
-            file.write(imageData.data() + startPos,  std::string::npos);
-			setStatusCode(CREATED);
-            file.close();
-        } else
-            std::cerr << "Limites des données d'image non trouvées." << std::endl;
-    }
-	else
-        std::cerr << "En-tête Content-Type non trouvé." << std::endl;
-	// static int nb;
-	// std::string file = filename + "image_" + intToString(nb++) + ".png";
-    // std::ofstream outFile(file.c_str(), std::ios::out | std::ios::binary);
-    // if (!outFile.is_open())
-	// {
-    //     std::cerr << "Erreur lors de l'ouverture du fichier -> Image." << std::endl;
-    //     return (0);
-    // }
-	// size_t startPos = imageData.find("\r\n\r\n")
-    // outFile.write(imageData, size);
-	// setStatusCode(CREATED);
-    // outFile.close();
-	return (1);
-}
-
-int	Response::addForm(std::string &filename)
-{
-	std::ofstream outFile (filename.c_str(), std::ios::app | std::ios::out);
-	if (!outFile.is_open())
-	{
-        std::cerr << "Erreur lors de l'ouverture du fichier -> Form." << std::endl;
-        return (0);
-    }
-
-	// outFile.write(_requestBody.c_str(), _requestBody.size());
-	outFile << _requestBody + "\n";
-	setStatusCode(CREATED);
-	outFile.close();
-	return (1);
-}
 
 void							Response::printHeaders() const					//--> Print the headers
 {

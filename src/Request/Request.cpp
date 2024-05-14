@@ -92,11 +92,11 @@ void Request::setMethod(const std::string &method)
 
 void Request::setBody(const std::string &line)
 {
-	if (line.length() > _bodySize)
-	{
-		setRet(413);
-		return;
-	}
+	// if (line.length() > _bodySize)
+	// {
+	// 	setRet(413);
+	// 	return;
+	// }
 	_body = line;
 }
 
