@@ -64,7 +64,7 @@ std::string CGIHandler::getCgiContentType() const {
 
 int CGIHandler::execute()
 {
-	int pid, status;
+	int pid;
 	int fd[2];
 	int reading = 0;
 	std::string buf_header;
@@ -72,8 +72,8 @@ int CGIHandler::execute()
 	char tmp[20000];
 	const char* tmpPath = _path.c_str();
 	const char *args[] = {"/usr/bin/python3", tmpPath, NULL};
+	int exitStatus;
 
-	std::cout << "check 1"  << std::endl;
 	if(pipe(fd) == -1)
 	{
 		perror("Pipe");
@@ -91,20 +91,22 @@ int CGIHandler::execute()
 	if(pid == 0) // child
 	{
 		close(fd[0]);
-	std::cout << "check 2"  << std::endl;
 		dup2(fd[1], STDOUT_FILENO);
-	std::cout << "check 3"  << std::endl;
-
 		close(fd[1]);
-
 		execve(args[0], const_cast<char**>(args), NULL);
-		perror("ERROR: execve: failed to execute the CGI script");
-		return(500);
+		exit(-1);
 	}
 
 	else // parent
 	{
+		int status;
 		waitpid(pid, &status, 0); // Attendez le processus enfant spécifique
+		if(WIFEXITED(status))
+		{
+			exitStatus = WEXITSTATUS(status); // tout c est bien passe, enfnt a quitte meme si excve a echoue
+			if (exitStatus != 0)
+				return(500);
+		}
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		std::string buf;
@@ -135,7 +137,8 @@ int CGIHandler::execute()
 
 		close(fd[0]);
 	}
-	return (0);
+	std::cout << "exitStatus : " << exitStatus << std::endl;
+	return(exitStatus);
 }
 
 

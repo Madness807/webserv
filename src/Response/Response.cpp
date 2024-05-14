@@ -15,6 +15,7 @@ Response::Response(const Request& request, ServerConfig& serverconfig): _request
 	setContent();// Set the content of the response
 	setStatusLine();// Set the status of the response
 	setHeaderLine();// Set the header of the response
+	_isCGI = false;
 }
 
 //##################################################################
@@ -173,7 +174,6 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	std::string root = 				_server.getRoot();
 	std::string pathRedirection = 	_server.getRoot() + path;
 	bool directoryListingState = 	getDirectoryListing();
-	isCGI = false;
 
 	// CHECK IF THE PATH IS A DIRECTORY
 	struct stat pathStat;
@@ -192,16 +192,12 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
    	}
 
 	// CHECK IF THE PATH IS A CGI
-	std::cout << "check cgi value : " << isCGI << std::endl;
-	if (isCGI)
+	if (this->_isCGI)
 	{
 		int success = 0;
-		std::cout << "beginning isCGI" << "pathe redirection : " << pathRedirection << std::endl;
 		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
-		std::cout << "isCGI" << "cgi exension : "<< this->_cgiExtension << std::endl;
 		if (_cgiExtension == ".py")
 		{
-			std::cout << "TEST" << std::endl;
 			success = cgiHandler.execute();// execute le cgi
 			if (success == 500)
 			{
@@ -255,14 +251,12 @@ std::string						Response::getPath()								// --> Get the path of ..
 
 	path_from_request = _request.getPath();
 	//bool isCGI = false;
-	std::cout << "getPath" <<std::endl;
 	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
 	if (it != _server.getMapLocation().end())
 	{
 		if (it->second.getCgiPath().length() != 0 && it->second.getCgiExtension().length() != 0)
 		{
-			isCGI = true;
-			std::cout << "CGIS is true : " << isCGI << std::endl;
+			this->_isCGI = true;
 			path_from_request = it->second.getCgiPath();
 			_cgiExtension = it->second.getCgiExtension();
 		}

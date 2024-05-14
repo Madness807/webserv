@@ -22,7 +22,7 @@ class Response
         std::string                             _body;
         std::string                             _requestBody;
         bool                                    directoryListing;
-        bool                                    isCGI;
+        bool                                    _isCGI;
         std::string                             _cgiExtension;
         std::map<std::string, std::string>      mimeTypes;// Map des types MIME pour les content-type
         int                                     _bodysize;
