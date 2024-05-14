@@ -125,42 +125,90 @@ int	Server::getStatusCode() const{
 //##################################################################
 //                           Methodes                              #
 //##################################################################
-int Server::Init()
-{
-	// socket creation
-	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
-	if (_serverSocket == -1)
-	{
-		std::cerr << "Error: Server socket creation failed" << std::endl;
-		setStatusCode(500);
-		exit(-1);
-	}
-	if (fcntl(_serverSocket, F_SETFL, O_NONBLOCK) == -1)
-	{
-		perror("server fnctl");
-	}
-	// option to prevent error "address already in use”."
-	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
-		std::cerr << "Error: Server setsockopt failed" << std::endl;
-		exit(-1);
-	}
-	// bind the socket to an address
-	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
-	{
-		perror("bind failed");
-		std::cerr << "Error: Bind failed" << std::endl;
-		setStatusCode(500);
 
-		exit(-1);
+ int Server::Init()
+{
+    struct timeval timeout;
+    timeout.tv_sec = 10;  // Timeout in seconds
+    timeout.tv_usec = 0;  // And microseconds
+    
+    // socket creation
+    _serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
+    if (_serverSocket == -1)
+    {
+        std::cerr << "Error: Server socket creation failed" << std::endl;
+        setStatusCode(500);
+        exit(-1);
+    }
+    if (fcntl(_serverSocket, F_SETFL, O_NONBLOCK) == -1)
+    {
+        perror("server fnctl");
+    }
+    // option to prevent error "address already in use”."
+    // if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &timeout, sizeof(timeout)) < 0) {
+    //     std::cerr << "Error: Server setsockopt failed" << std::endl;
+    //     exit(-1);
+    // }
+
+
+	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &timeout, sizeof(timeout)) < 0) {
+    perror("ERROR: setsockopt failed");
+    return -1;
 	}
-	if(listen(_serverSocket, 255) < 0)// mettre variable pour waiting list
-	{
-		std::cerr << "Error: Listen failed" << std::endl;
-		setStatusCode(500);
-		exit(-1);
-	}
-	return (_serverSocket);
+
+    // bind the socket to an address
+    if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
+    {
+        perror("bind failed");
+        std::cerr << "Error: Bind failed" << std::endl;
+        setStatusCode(500);
+
+        exit(-1);
+    }
+    if(listen(_serverSocket, 255) < 0)// mettre variable pour waiting list
+    {
+        std::cerr << "Error: Listen failed" << std::endl;
+        setStatusCode(500);
+        exit(-1);
+    }
+    return (_serverSocket);
 }
+// int Server::Init()
+// {
+// 	// socket creation
+// 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
+// 	if (_serverSocket == -1)
+// 	{
+// 		std::cerr << "Error: Server socket creation failed" << std::endl;
+// 		setStatusCode(500);
+// 		exit(-1);
+// 	}
+// 	if (fcntl(_serverSocket, F_SETFL, O_NONBLOCK) == -1)
+// 	{
+// 		perror("server fnctl");
+// 	}
+// 	// option to prevent error "address already in use”."
+// 	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
+// 		std::cerr << "Error: Server setsockopt failed" << std::endl;
+// 		exit(-1);
+// 	}
+// 	// bind the socket to an address
+// 	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
+// 	{
+// 		perror("bind failed");
+// 		std::cerr << "Error: Bind failed" << std::endl;
+// 		setStatusCode(500);
+
+// 		exit(-1);
+// 	}
+// 	if(listen(_serverSocket, 255) < 0)// mettre variable pour waiting list
+// 	{
+// 		std::cerr << "Error: Listen failed" << std::endl;
+// 		setStatusCode(500);
+// 		exit(-1);
+// 	}
+// 	return (_serverSocket);
+// }
 
 void Server::sendToClient(int clientSocket, const char* message, int messageSize)
 {

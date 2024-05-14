@@ -313,7 +313,7 @@ int TCPHandler::handlingRequest(Client &client)
 		}
 	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
 
-	std::cout << "REQUEST: -->> " << buffer << std::endl;
+	std::cout <<  COLOR_GREEN << "REQUEST: -->> " << buffer << COLOR_RESET << std::endl << std::endl;
 	Response response(buffer, test);
 	_response = response;
 	return (reading);

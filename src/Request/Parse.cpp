@@ -129,8 +129,8 @@ int	Request::parse(const std::string &str)
 	}
 	if (this->_headers["Www-Authenticate"] != "")
 			this->_env_cgi["Www-Authenticate"] = this->_headers["Www-Authenticate"];
-	// this->setBody(str.substr(i, std::string::npos));
-	this->setBody(str.substr(i));
+	this->setBody(str.substr(i, std::string::npos));
+	// this->setBody(str.substr(i));
 	this->findQuery();
 	if (!getOneHeaders("Content-Type").find("multipart/form-data"))
 		this->setBoundary(getOneHeaders("Content-Type"));
@@ -150,7 +150,7 @@ std::ostream	&operator<<(std::ostream &out, const Request &request)
 	out << "Path: " << request.getPath() << std::endl;
 	out << "Query: " << request.getQuery() << std::endl;
 	out << "Boundary: " << request.getBoundary() << std::endl;
-	out << "Raw: " << request.getRaw() << std::endl;
+	// out << "Raw: " << request.getRaw() << std::endl;
 
 	out << COLOR_BLUE << "HEADER" << COLOR_RESET << std::endl;
 	out << COLOR_BLUE << "-------" << COLOR_RESET << std::endl;

@@ -10,6 +10,8 @@ Response::Response()
 
 Response::Response(std::string &request, ServerConfig &serverConfig): _request(request, serverConfig), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
 {   
+	// std::cout << COLOR_GREEN << request << COLOR_RESET << std::endl << std::endl;
+	// std::cout << request << std::endl;
 	initMimeType();// Initialize the MIME types
 	setServer(serverConfig);// Set the server
 	setMethod();// Set the methods
@@ -167,17 +169,23 @@ bool							Response::getDirectoryListing() const			//--> Get the directory listi
 
 int 							Response::saveImage(const std::string &imageData, const std::string &boundary, const std::string &filename)	//--> Save Upload Image Data
 {
+	std::cout << "je suis au 3.1" << std::endl;
+
 	static int nb;
 	size_t startPos = imageData.find("Content-Type: image/png");
     if (startPos != std::string::npos)
 	{
+		std::cout << "je suis au 3.2" << std::endl;
+
         startPos = imageData.find("\r\n\r\n", startPos) + 4; // Sauter l'en-tête jusqu'au début des données
         size_t endPos = imageData.find(boundary, startPos) - 2; // -2 pour enlever le \r\n avant la limite
 
         if (startPos != std::string::npos && endPos != std::string::npos)
 		{
+			std::cout << "je suis au 3.3" << std::endl;
+
 			std::string outFile = filename + "image_" + intToString(nb++) + ".png";
-            std::ofstream file(outFile, std::ios::out | std::ios::binary);
+            std::ofstream file(outFile, std::ios::out | std::ios::app | std::ios::binary);
 			// std::cout << file.is_open() << " & " << outFile << std::endl;
             if (!file.is_open())
 			{
@@ -241,6 +249,8 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	std::string pathRedirection = 	_server.getRoot() + path;
 	bool directoryListingState = 	getDirectoryListing();
 	isCGI = false;
+
+	std::cout << "je suis au 4" << std::endl;
 
 	// CHECK IF THE PATH IS A DIRECTORY
 	struct stat pathStat;
@@ -372,17 +382,20 @@ void							Response::requestPost()							// http request POST
 {
 	//std::ofstream outFile;
 	std::string dbPath = getPath();
-	std::cout << "---------------------------> " << dbPath << std::endl;
 	std::stringstream bodysizeStr(_server.getMaxBodySize());
 	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
+	std::cout << "je suis au 1" << std::endl;
+
 	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
+		std::cout << "je suis au 2" << std::endl;
 		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
 		if (addForm(dbPath))
 		{
+			std::cout << "je suis au 2.1" << std::endl;
 			// std::cout << "form" << std::endl; //--> Test path
 			setStatusCode(INTERNAL_SERVER_ERROR);
 		}
@@ -390,15 +403,20 @@ void							Response::requestPost()							// http request POST
 	}
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
-		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
+		std::cout << "je suis au 3" << std::endl;
+		dbPath = _server.getRoot() + "/upload/image.png"; //TEST AVEC IMAGE
+
+		std::cout  << "je print la request body" << _request.getBody() << std::endl;
+
+
 		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
-		{
+		{	
 			// std::cout << "image" << std::endl; //--> Test path
 			setStatusCode(INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	if (getStatusCode() != 200)
+	if (getStatusCode() >= 400 && 500 >= getStatusCode())
 	{
 		setErrorBody();
 		return;
