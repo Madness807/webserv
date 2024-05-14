@@ -39,7 +39,7 @@ def main():
         nom = html.escape(form.getfirst("nom", ""))
         prenom = html.escape(form.getfirst("prenom", ""))
         age = html.escape(form.getfirst("age", ""))
-        
+
         print("Content-type: text/html")
         print()
         print(f"""

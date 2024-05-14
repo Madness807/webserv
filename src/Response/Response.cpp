@@ -8,7 +8,7 @@ Response::Response() {
 }
 
 Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
-{   
+{
 	initMimeType();// Initialize the MIME types
 	setServer(serverconfig);// Set the server
 	setMethod();// Set the methods
@@ -183,7 +183,7 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 		{
 				generateDirectoryListing(pathRedirection, path);
 				return;
-		} else 
+		} else
 		{
 				setStatusCode(FORBIDDEN);
 				setErrorBody();
@@ -192,13 +192,16 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
    	}
 
 	// CHECK IF THE PATH IS A CGI
+	std::cout << "check cgi value : " << isCGI << std::endl;
 	if (isCGI)
 	{
 		int success = 0;
+		std::cout << "beginning isCGI" << "pathe redirection : " << pathRedirection << std::endl;
 		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
-
+		std::cout << "isCGI" << "cgi exension : "<< this->_cgiExtension << std::endl;
 		if (_cgiExtension == ".py")
 		{
+			std::cout << "TEST" << std::endl;
 			success = cgiHandler.execute();// execute le cgi
 			if (success == 500)
 			{
@@ -241,7 +244,7 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	inFile.close();// Close the file
 
 	_headers["Content-Length"] = std::to_string(_body.size());
-		
+
 	return;
 }
 
@@ -252,13 +255,14 @@ std::string						Response::getPath()								// --> Get the path of ..
 
 	path_from_request = _request.getPath();
 	//bool isCGI = false;
-
+	std::cout << "getPath" <<std::endl;
 	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
 	if (it != _server.getMapLocation().end())
 	{
 		if (it->second.getCgiPath().length() != 0 && it->second.getCgiExtension().length() != 0)
 		{
 			isCGI = true;
+			std::cout << "CGIS is true : " << isCGI << std::endl;
 			path_from_request = it->second.getCgiPath();
 			_cgiExtension = it->second.getCgiExtension();
 		}
@@ -324,7 +328,7 @@ void							Response::requestPost()							// http request POST
 
 	//outFile.open(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
 	std::ofstream outFile(dbPath, std::ios::out | std::ios::app | std::ios::binary);// Open the file in binary mode
-	
+
 	if (outFile.is_open())// Check if the file is open
 	{
 		std::cout << COLOR_GREEN << "l ouverture du fichier a reussi" << COLOR_RESET << std::endl;
