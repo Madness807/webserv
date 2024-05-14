@@ -313,7 +313,36 @@ int TCPHandler::handlingRequest(Client &client)
 		}
 	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
 
+	// std::string::size_type idx = buffer.find("Content-Length: ");
+	// if (idx == std::string::npos) {
+	// 	std::cerr << "Content-Length header not found" << std::endl;
+	// 	return -1;
+	// }
+	// idx += 16; // Length of "Content-Length: "
+	// std::string::size_type endIdx = buffer.find("\r\n", idx);
+	// if (endIdx == std::string::npos) {
+	// 	std::cerr << "Invalid Content-Length header" << std::endl;
+	// 	return -1;
+	// }
+	// size_t contentLength = std::stoul(buffer.substr(idx, endIdx - idx));
+
+	// // Read the rest of the data
+	// while (buffer.size() < contentLength) {
+	// 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
+	// 	if (reading > 0) {
+	// 		buffer.append(tmp, reading);
+	// 	} else if (reading == 0) {
+	// 		std::cout << "Client closed connection" << std::endl;
+	// 		return 0;
+	// 	} else {
+	// 		std::cerr << "Error recv" << std::endl;
+	// 		this->_servers[client.getServerIdx()].setStatusCode(500);
+	// 		clientIsDisconnected(client);
+	// 		return -1;
+	// 	}
+	// }
 	Response response(buffer, test);
+	std::cout << "buffer siiiize : " << buffer.size() << std::endl;
 	_response = response;
 	return (reading);
 }
