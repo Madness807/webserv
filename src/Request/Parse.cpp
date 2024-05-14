@@ -148,6 +148,7 @@ std::ostream	&operator<<(std::ostream &out, const Request &request)
 	out << "Port: " << request.getPort() << std::endl;
 	out << "Path: " << request.getPath() << std::endl;
 	out << "Query: " << request.getQuery() << std::endl;
+	out << "Boundary: " << request.getBoundary() << std::endl;
 	out << "Raw: " << request.getRaw() << std::endl;
 
 	out << COLOR_BLUE << "HEADER" << COLOR_RESET << std::endl;
