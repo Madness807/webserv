@@ -52,6 +52,7 @@ class Response
         void                                    requestDelete();
         int                                     saveImage(const std::string &imageData, const std::string &boundary, const std::string& filename);
         int                                     addForm(std::string &filename);
+        int                                     deleteResources(std::string &path);
 
     public:
 

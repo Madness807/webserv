@@ -129,7 +129,8 @@ int	Request::parse(const std::string &str)
 	}
 	if (this->_headers["Www-Authenticate"] != "")
 			this->_env_cgi["Www-Authenticate"] = this->_headers["Www-Authenticate"];
-	this->setBody(str.substr(i, std::string::npos));
+	// this->setBody(str.substr(i, std::string::npos));
+	this->setBody(str.substr(i));
 	this->findQuery();
 	if (!getOneHeaders("Content-Type").find("multipart/form-data"))
 		this->setBoundary(getOneHeaders("Content-Type"));
