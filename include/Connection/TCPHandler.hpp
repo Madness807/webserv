@@ -9,6 +9,7 @@
 #include "../define.hpp"
 #include "../utils/utils.hpp"
 
+#define BUFFER_SIZE 30000
 class TCPHandler
 {
 	private :

@@ -6,6 +6,8 @@
 #include <vector>
 #include "../define.hpp"
 
+#define BUFFERSIZE 20000
+
 class CGIHandler {
 	public:
 		// constructeur et destructeur

@@ -155,12 +155,14 @@ void TCPHandler::runServer()
 		fd_set copyW = _masterFd;
 		fd_set copyR = _masterFd;
 		socketCount = select(_maxFd + 1, &copyW, &copyR, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
-		if (socketCount == -1){
+		if (socketCount == -1)
+		{
 			std::cerr << "Error : SocketCount " << std::endl;
 			continue;
 		}
 		for (int i = 0; i <= _maxFd; i++)
-		{			if (FD_ISSET(i, &copyW))
+		{
+			if (FD_ISSET(i, &copyW))
 			{
 				handlingNewClient(i); // accept new client
 				handlingCommunication(i);
@@ -200,7 +202,7 @@ int TCPHandler::closeFd()
 		std::cout << COLOR_YELLOW << "CLOSING Server Socket " << "[" << it->getServerSocket() << "]" << COLOR_RESET << std::endl;
 		if (close(it->getServerSocket()) == -1)
 		{
-			std::cerr << "Error closing fd 2" << std::endl;
+			std::cerr << "Error closing fd" << std::endl;
 		}
 	}
 	std::vector<int> fdClients = getFdClients();
@@ -284,7 +286,7 @@ int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
 	std::string buffer;
-	char tmp[50000];
+	char tmp[BUFFER_SIZE];
 	ServerConfig &test = this->_servers[client.getServerIdx()].getServerConfigRef();
 
 	do
@@ -309,8 +311,6 @@ int TCPHandler::handlingRequest(Client &client)
 		}
 	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
 
-	std::cout << "BUFFER : " << buffer << std::endl;
-	std::cout << "buffer siiiize : " << buffer.size() << std::endl;
 	Response response(buffer, test);
 	_response = response;
 	return (reading);

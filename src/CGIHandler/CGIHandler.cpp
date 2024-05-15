@@ -108,7 +108,7 @@ int CGIHandler::launchParent(int *fd, int pid)
 {
 	int status;
 	int reading = 0;
-	char tmp[20000];
+	char tmp[BUFFERSIZE];
 	int exitStatus;
 
 	waitpid(pid, &status, 0);
