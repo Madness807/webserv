@@ -69,7 +69,7 @@ int CGIHandler::execute()
 	int fd[2];
 	const char* tmpPath = _path.c_str();
 	const char *args[] = {"/usr/bin/python3", tmpPath, NULL};
-	int exitStatus;
+	int exitStatus = 0;
 
 	if(pipe(fd) == -1)
 	{
