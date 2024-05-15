@@ -5,7 +5,7 @@
 #include "../Response/Response.hpp"
 #include "../define.hpp"
 
-#define BUFFER_SIZE 1024
+//#define BUFFER_SIZE 50000
 class Server
 {
 	private:

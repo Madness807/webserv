@@ -8,16 +8,15 @@ Response::Response()
 	initMimeType();
 }
 
-Response::Response(std::string &request, ServerConfig &serverConfig): _request(request, serverConfig), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
+Response::Response(const Request& request, ServerConfig& serverconfig): _request(request), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
 {
-	// std::cout << COLOR_GREEN << request << COLOR_RESET << std::endl << std::endl;
-	// std::cout << request << std::endl;
 	initMimeType();// Initialize the MIME types
 	setServer(serverConfig);// Set the server
 	setMethod();// Set the methods
 	setContent();// Set the content of the response
 	setStatusLine();// Set the status of the response
 	setHeaderLine();// Set the header of the response
+	_isCGI = false;
 }
 
 //##################################################################
@@ -248,7 +247,6 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	std::string root = 				_server.getRoot();
 	std::string pathRedirection = 	_server.getRoot() + path;
 	bool directoryListingState = 	getDirectoryListing();
-	isCGI = false;
 
 	std::cout << "je suis au 4" << std::endl;
 
@@ -269,11 +267,10 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
    	}
 
 	// CHECK IF THE PATH IS A CGI
-	if (isCGI)
+	if (this->_isCGI)
 	{
 		int success = 0;
 		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
-
 		if (_cgiExtension == ".py")
 		{
 			success = cgiHandler.execute();// execute le cgi
@@ -329,13 +326,12 @@ std::string						Response::getPath()								// --> Get the path of ..
 
 	path_from_request = _request.getPath();
 	//bool isCGI = false;
-
 	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
 	if (it != _server.getMapLocation().end())
 	{
 		if (it->second.getCgiPath().length() != 0 && it->second.getCgiExtension().length() != 0)
 		{
-			isCGI = true;
+			this->_isCGI = true;
 			path_from_request = it->second.getCgiPath();
 			_cgiExtension = it->second.getCgiExtension();
 		}

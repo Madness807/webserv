@@ -1,7 +1,6 @@
 #include "../../include/Connection/TCPHandler.hpp"
 
 TCPHandler *g_tcpHandlerInstance = NULL;
-void globalSignalHandler(int signal);
 
 // ##################################################################
 //                    Constructor && Destructor                     #
@@ -154,16 +153,16 @@ void TCPHandler::runServer()
 		setupMasterFd();
 		printSocketState();// Print the state of the sockets
 		fd_set copyW = _masterFd;
-		//fd_set copyR = _masterFd;
-		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
+		fd_set copyR = _masterFd;
+		socketCount = select(_maxFd + 1, &copyW, &copyR, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
 		if (socketCount == -1)
-		socketCount = select(_maxFd + 1, &copyW, NULL, NULL, NULL); // numero du fd le + eleve, lecture, ecriture (les sockets sont tjrs prete pour l ecriture), exceptions, delai d'attente
-		if (socketCount == -1){
+		{
 			std::cerr << "Error : SocketCount " << std::endl;
 			continue;
 		}
 		for (int i = 0; i <= _maxFd; i++)
-		{			if (FD_ISSET(i, &copyW))
+		{
+			if (FD_ISSET(i, &copyW))
 			{
 				handlingNewClient(i); // accept new client
 				handlingCommunication(i);
@@ -199,11 +198,11 @@ int TCPHandler::closeFd()
 {
 	for (std::vector<Server>::iterator it = _servers.begin(); it != _servers.end(); ++it)
 	{
-		std::cout << COLOR_YELLOW << "CLOSING Server Socket "
-				  << "[" << it->getServerSocket() << "]" << COLOR_RESET << std::endl;
+		std::cout << "" << std::endl;
+		std::cout << COLOR_YELLOW << "CLOSING Server Socket " << "[" << it->getServerSocket() << "]" << COLOR_RESET << std::endl;
 		if (close(it->getServerSocket()) == -1)
 		{
-			std::cerr << "Error closing fd 2" << std::endl;
+			std::cerr << "Error closing fd" << std::endl;
 		}
 	}
 	std::vector<int> fdClients = getFdClients();
@@ -283,7 +282,6 @@ int TCPHandler::clientIsDisconnected(Client &client)
 	return (0);
 }
 
-// Request and Response##############################################
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
