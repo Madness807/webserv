@@ -9,7 +9,7 @@ Response::Response()
 }
 
 Response::Response(std::string &request, ServerConfig &serverConfig): _request(request, serverConfig), _statusCode(_request.getRet()), _statusMessages(setStatusMessages()), _statusMessage(""), _body(""), _requestBody(_request.getBody())
-{   
+{
 	// std::cout << COLOR_GREEN << request << COLOR_RESET << std::endl << std::endl;
 	// std::cout << request << std::endl;
 	initMimeType();// Initialize the MIME types
@@ -194,7 +194,7 @@ int 							Response::saveImage(const std::string &imageData, const std::string &
             }
 
 			// std::cout << "Binary Data: " << imageData.data() + startPos << std::endl;
-            file.write(imageData.data() + startPos,  std::string::npos);
+            file.write(imageData.data() + startPos,  endPos - startPos);
 			setStatusCode(CREATED);
             file.close();
         } else
@@ -260,7 +260,7 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 		{
 				generateDirectoryListing(pathRedirection, path);
 				return;
-		} else 
+		} else
 		{
 				setStatusCode(FORBIDDEN);
 				setErrorBody();
@@ -318,7 +318,7 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	inFile.close();// Close the file
 
 	_headers["Content-Length"] = std::to_string(_body.size());
-		
+
 	return;
 }
 
@@ -404,13 +404,13 @@ void							Response::requestPost()							// http request POST
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
 		std::cout << "je suis au 3" << std::endl;
-		dbPath = _server.getRoot() + "/upload/image.png"; //TEST AVEC IMAGE
+		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
 
 		std::cout  << "je print la request body" << _request.getBody() << std::endl;
 
 
 		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
-		{	
+		{
 			// std::cout << "image" << std::endl; //--> Test path
 			setStatusCode(INTERNAL_SERVER_ERROR);
 		}

@@ -128,10 +128,10 @@ int	Server::getStatusCode() const{
 
  int Server::Init()
 {
-    struct timeval timeout;
-    timeout.tv_sec = 10;  // Timeout in seconds
-    timeout.tv_usec = 0;  // And microseconds
-    
+    // struct timeval timeout;
+    // timeout.tv_sec = 10;  // Timeout in seconds
+    // timeout.tv_usec = 0;  // And microseconds
+
     // socket creation
     _serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
     if (_serverSocket == -1)
@@ -144,17 +144,17 @@ int	Server::getStatusCode() const{
     {
         perror("server fnctl");
     }
-    // option to prevent error "address already in use”."
-    // if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &timeout, sizeof(timeout)) < 0) {
-    //     std::cerr << "Error: Server setsockopt failed" << std::endl;
-    //     exit(-1);
-    // }
+    //option to prevent error "address already in use”."
+    if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_opt, sizeof(_opt)) < 0) {
+        std::cerr << "Error: Server setsockopt failed" << std::endl;
+        exit(-1);
+    }
 
 
-	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &timeout, sizeof(timeout)) < 0) {
-    perror("ERROR: setsockopt failed");
-    return -1;
-	}
+	// if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &timeout, sizeof(timeout)) < 0) {
+    // perror("ERROR: setsockopt failed");
+    // return -1;
+	// }
 
     // bind the socket to an address
     if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)

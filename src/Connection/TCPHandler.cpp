@@ -288,7 +288,7 @@ int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
 	std::string buffer;
-	char tmp[BUFFER_SIZE];
+	char tmp[30000];
 	ServerConfig &test = this->_servers[client.getServerIdx()].getServerConfigRef();
 
 	do
