@@ -284,11 +284,90 @@ int TCPHandler::clientIsDisconnected(Client &client)
 }
 
 // Request and Response##############################################
+
+// int TCPHandler::handlingRequest(Client &client)
+// {
+//     int reading = 0;
+//     std::string buffer;
+//     char tmp[20000];
+//     ServerConfig &test = this->_servers[client.getServerIdx()].getServerConfigRef();
+
+// // Read all chunks
+// do {
+//     // Read data into the buffer until we have the chunk size
+//     std::string::size_type idx;
+//     do {
+//         memset(tmp, 0, sizeof(tmp)); // Clear the buffer
+//         reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
+//         if (reading > 0) {
+//             buffer.append(tmp, reading);
+//         } else if (reading == 0) {
+//             std::cout << "Client closed connection" << std::endl;
+//             return 0;
+//         } else {
+//             std::cerr << "Error recv" << std::endl;
+//             this->_servers[client.getServerIdx()].setStatusCode(500);
+//             clientIsDisconnected(client);
+//             return -1;
+//         }
+//         idx = buffer.find("\r\n");
+//     } while (idx == std::string::npos);
+
+//     // Now we should have the chunk size in the buffer
+//     std::string chunkSizeStr = buffer.substr(0, idx);
+//     if (chunkSizeStr.empty()) {
+//         std::cerr << "Chunk size not found" << std::endl;
+//         return -1;
+//     }
+
+//     long unsigned int chunkSize;
+//     std::stringstream ss;
+//     ss << std::hex << chunkSizeStr;
+//     ss >> chunkSize;
+
+// 	std::cout << ">>>> chunksize : " << chunkSize << std::endl;
+
+//     // If chunk size is 0, this is the last chunk
+//     if (chunkSize == 0) {
+//         break;
+//     }
+
+//     // Read the chunk data
+//     buffer.erase(0, idx + 2); // Remove the chunk size and the following \r\n from the buffer
+//     while (buffer.size() < chunkSize) {
+// 		std::cout << ">> while " << std::endl;
+//         reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
+//         if (reading > 0) {
+// 			std::cout << "ttttttmp : " << tmp << std::endl;
+//             buffer.append(tmp, reading);
+// 			std::cout << "buuuuuuuuffer : " << buffer << std::endl;
+
+//         } else if (reading == 0) {
+//             std::cout << "Client closed connection" << std::endl;
+//             return 0;
+//         } else {
+//             std::cerr << "Error recv" << std::endl;
+//             this->_servers[client.getServerIdx()].setStatusCode(500);
+//             clientIsDisconnected(client);
+//             return -1;
+//         }
+//     }
+
+//     // Remove the chunk data from the buffer
+//     buffer.erase(0, chunkSize + 2); // Remove the chunk data and the following \r\n from the buffer
+// } while (true);
+
+//     Response response(buffer, test);
+//     std::cout << "buffer siiiize : " << buffer.size() << std::endl;
+//     _response = response;
+//     return reading;
+// }
+
 int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
 	std::string buffer;
-	char tmp[BUFFER_SIZE];
+	char tmp[50000];
 	ServerConfig &test = this->_servers[client.getServerIdx()].getServerConfigRef();
 
 	do
@@ -313,39 +392,15 @@ int TCPHandler::handlingRequest(Client &client)
 		}
 	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
 
-	// std::string::size_type idx = buffer.find("Content-Length: ");
-	// if (idx == std::string::npos) {
-	// 	std::cerr << "Content-Length header not found" << std::endl;
-	// 	return -1;
-	// }
-	// idx += 16; // Length of "Content-Length: "
-	// std::string::size_type endIdx = buffer.find("\r\n", idx);
-	// if (endIdx == std::string::npos) {
-	// 	std::cerr << "Invalid Content-Length header" << std::endl;
-	// 	return -1;
-	// }
-	// size_t contentLength = std::stoul(buffer.substr(idx, endIdx - idx));
-
-	// // Read the rest of the data
-	// while (buffer.size() < contentLength) {
-	// 	reading = recv(client.getSocketClient(), tmp, sizeof(tmp) - 1, 0); // Leave space for null terminator
-	// 	if (reading > 0) {
-	// 		buffer.append(tmp, reading);
-	// 	} else if (reading == 0) {
-	// 		std::cout << "Client closed connection" << std::endl;
-	// 		return 0;
-	// 	} else {
-	// 		std::cerr << "Error recv" << std::endl;
-	// 		this->_servers[client.getServerIdx()].setStatusCode(500);
-	// 		clientIsDisconnected(client);
-	// 		return -1;
-	// 	}
-	// }
-	Response response(buffer, test);
+	std::cout << "BUFFER : " << buffer << std::endl;
 	std::cout << "buffer siiiize : " << buffer.size() << std::endl;
+	Response response(buffer, test);
 	_response = response;
 	return (reading);
 }
+
+
+
 
 int TCPHandler::handlingResponse(Client &client)
 {
