@@ -9,7 +9,6 @@
 #include "../define.hpp"
 #include "../utils/utils.hpp"
 
-
 class TCPHandler
 {
 	private :
@@ -64,4 +63,7 @@ class TCPHandler
 		void printNewClientStatus(bool clientConnected, int port);
 		void printNewClientInfo(const Client& newClient);
 };
+
+void globalSignalHandler(int signal);
+
 #endif

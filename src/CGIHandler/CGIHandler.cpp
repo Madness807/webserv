@@ -1,6 +1,5 @@
 #include "../../include/CGIHandler/CGIHandler.hpp"
 #include <unistd.h>
-
 #include <stdio.h>
 
 //##################################################################
@@ -10,7 +9,7 @@ CGIHandler::CGIHandler(){}
 
 CGIHandler::CGIHandler(std::string path)
 {
-    this->_path = path;
+	this->_path = path;
 }
 
 CGIHandler::~CGIHandler(){}
@@ -37,25 +36,27 @@ std::string CGIHandler::getPath() const
 	return this->_path;
 }
 
-std::string CGIHandler::getCgiContentType() const {
-    std::istringstream headerStream(_header); // Créez un flux à partir de _header pour lire ligne par ligne
-    std::string line;
+std::string CGIHandler::getCgiContentType() const
+{
+	std::istringstream headerStream(_header); // Crée flux à partir de _header pour lire ligne par ligne
+	std::string line;
 
-    while (std::getline(headerStream, line)) { // Lisez chaque ligne dans 'line'
-
-	std::cout << "je print la ligne" << line << std::endl;
-	std::cout << "" << std::endl;
-
-        if (line.find("Content-Type") != std::string::npos) {
-            size_t startPos = line.find(":") + 1; // Trouvez la position du début du type de contenu
-            // Supprimez les espaces blancs au début
-            while (startPos < line.length() && isspace(line[startPos])) {
-                startPos++;
-            }
-            return line.substr(startPos); // Retournez le type de contenu
-        }
-    }
-    return ""; // Retournez une chaîne vide si le type de contenu n'est pas trouvé
+	while (std::getline(headerStream, line))
+	{
+		//std::cout << "je print la ligne" << line << std::endl;
+		//std::cout << "" << std::endl;
+		if (line.find("Content-Type") != std::string::npos)
+		{
+			size_t startPos = line.find(":") + 1; // Trouvez la position du début du type de contenu
+			// Supprimez les espaces blancs au début
+			while (startPos < line.length() && isspace(line[startPos]))
+			{
+				startPos++;
+			}
+			return line.substr(startPos); // Retournez le type de contenu
+		}
+	}
+	return ""; // Retournez une chaîne vide si le type de contenu n'est pas trouvé
 }
 
 //##################################################################
@@ -83,18 +84,16 @@ int CGIHandler::execute()
 		perror("Fork");
 		exit(-1);
 	}
-	if(pid == 0) // child
+	if(pid == 0)
 	{
 		launchChild(fd, args);
 	}
-	else // parent
+	else
 	{
 		exitStatus = launchParent(fd, pid);
 	}
-	//std::cout << "exitStatus : " << exitStatus << std::endl;
 	return(exitStatus);
 }
-
 
 int CGIHandler::launchChild(int *fd, const char** args)
 {
@@ -112,10 +111,10 @@ int CGIHandler::launchParent(int *fd, int pid)
 	char tmp[20000];
 	int exitStatus;
 
-	waitpid(pid, &status, 0); // Attendez le processus enfant spécifique
+	waitpid(pid, &status, 0);
 	if(WIFEXITED(status))
 	{
-		exitStatus = WEXITSTATUS(status); // tout c est bien passe, enfnt a quitte meme si excve a echoue
+		exitStatus = WEXITSTATUS(status); // tout c est bien passe, enfant a quitte meme si excve a echoue
 		if (exitStatus != 0)
 			return(500);
 	}
@@ -132,26 +131,22 @@ int CGIHandler::launchParent(int *fd, int pid)
 		}
 	}
 	while (reading > 0);
-
 	findHeadAndBody(buf);
 	close(fd[0]);
-	
+
 	return (exitStatus);
 }
 
 int CGIHandler::findHeadAndBody(std::string buf)
 {
-	// Trouvez la position de la séquence de deux sauts de ligne (\n\r\n)
 	size_t headerEndPos = buf.find("\n\n");
 	if (headerEndPos != std::string::npos)
 	{
-		// Divisez la sortie en en-tête et corps
 		_header = buf.substr(0, headerEndPos);
-		_body = buf.substr(headerEndPos + 2); // +4 pour passer la séquence de deux sauts de ligne
+		_body = buf.substr(headerEndPos + 2); // +2 pour passer \n\n
 	}
 	else
 	{
-		// Si la séquence de deux sauts de ligne n'est pas trouvée, traitez toute la sortie comme du corps
 		_body = buf;
 	}
 	return(0);

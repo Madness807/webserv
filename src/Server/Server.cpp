@@ -127,10 +127,6 @@ int	Server::getStatusCode() const{
 //##################################################################
 int Server::Init()
 {
-	// struct timeval timeout;
-	// timeout.tv_sec = 5;  // Timeout in seconds
-	// timeout.tv_usec = 0;  // And microseconds
-
 	// socket creation
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP, 0 = IP
 	if (_serverSocket == -1)
@@ -148,13 +144,6 @@ int Server::Init()
 		std::cerr << "Error: Server setsockopt failed" << std::endl;
 		exit(-1);
 	}
-
-
-	// if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &timeout, sizeof(timeout)) < 0) {
-	// 	perror("ERROR: setsockopt failed");
-	// 	return -1;
-	// }
-
 	// bind the socket to an address
 	if (bind(_serverSocket, (sockaddr *)&_addr, sizeof(_addr)) < 0)
 	{
