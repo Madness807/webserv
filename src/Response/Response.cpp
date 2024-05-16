@@ -168,21 +168,15 @@ bool							Response::getDirectoryListing() const			//--> Get the directory listi
 
 int 							Response::saveImage(const std::string &imageData, const std::string &boundary, const std::string &filename)	//--> Save Upload Image Data
 {
-	std::cout << "je suis au 3.1" << std::endl;
-
 	static int nb;
 	size_t startPos = imageData.find("Content-Type: image/png");
     if (startPos != std::string::npos)
 	{
-		std::cout << "je suis au 3.2" << std::endl;
-
         startPos = imageData.find("\r\n\r\n", startPos) + 4; // Sauter l'en-tête jusqu'au début des données
         size_t endPos = imageData.find(boundary, startPos) - 2; // -2 pour enlever le \r\n avant la limite
 
         if (startPos != std::string::npos && endPos != std::string::npos)
 		{
-			std::cout << "je suis au 3.3" << std::endl;
-
 			std::string outFile = filename + "image_" + intToString(nb++) + ".png";
             std::ofstream file(outFile, std::ios::out | std::ios::app | std::ios::binary);
 			// std::cout << file.is_open() << " & " << outFile << std::endl;
@@ -247,8 +241,6 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	std::string root = 				_server.getRoot();
 	std::string pathRedirection = 	_server.getRoot() + path;
 	bool directoryListingState = 	getDirectoryListing();
-
-	std::cout << "je suis au 4" << std::endl;
 
 	// CHECK IF THE PATH IS A DIRECTORY
 	struct stat pathStat;
@@ -325,7 +317,9 @@ std::string						Response::getPath()								// --> Get the path of ..
 	std::string path_from_config = "";
 
 	path_from_request = _request.getPath();
-	//bool isCGI = false;
+
+	std::cout << "PATH FROM REQUEST: " << path_from_request << std::endl;
+
 	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
 	if (it != _server.getMapLocation().end())
 	{
@@ -336,8 +330,10 @@ std::string						Response::getPath()								// --> Get the path of ..
 			_cgiExtension = it->second.getCgiExtension();
 		}
 
-		std::vector<std::string>::iterator it2 = std::find(it->second.getMethods().begin(), it->second.getMethods().end(), _request.getMethod()); // --> Check if Method allowed for this path
-		if (it2 == it->second.getMethods().end())
+		std::vector<std::string> methods = it->second.getMethods();
+	    std::string requestMethod = _request.getMethod();
+		std::vector<std::string>::iterator it2 = std::find(methods.begin(), methods.end(), requestMethod);
+        if (it2 == methods.end())
 		{
 			setStatusCode(METHOD_NOT_ALLOWED);
 			setErrorBody();
@@ -383,28 +379,23 @@ void							Response::requestPost()							// http request POST
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
-	std::cout << "je suis au 1" << std::endl;
-
+	getHtmlFile(getPath());
+	if (getStatusCode() >= 400 && 500 >= getStatusCode())
+	{
+		setErrorBody();
+		return;
+	}
 	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
-		std::cout << "je suis au 2" << std::endl;
 		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
 		if (addForm(dbPath))
 		{
-			std::cout << "je suis au 2.1" << std::endl;
-			// std::cout << "form" << std::endl; //--> Test path
 			setStatusCode(INTERNAL_SERVER_ERROR);
 		}
-
 	}
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
-		std::cout << "je suis au 3" << std::endl;
 		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
-
-		std::cout  << "je print la request body" << _request.getBody() << std::endl;
-
-
 		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
 		{
 			// std::cout << "image" << std::endl; //--> Test path
@@ -412,6 +403,7 @@ void							Response::requestPost()							// http request POST
 		}
 	}
 
+	//getHtmlFile(getPath());
 	if (getStatusCode() >= 400 && 500 >= getStatusCode())
 	{
 		setErrorBody();

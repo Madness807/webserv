@@ -286,7 +286,7 @@ int TCPHandler::handlingRequest(Client &client)
 {
 	int reading = 0;
 	std::string buffer;
-	char tmp[30000];
+	char tmp[300000];
 	ServerConfig &test = this->_servers[client.getServerIdx()].getServerConfigRef();
 
 	do
@@ -311,7 +311,7 @@ int TCPHandler::handlingRequest(Client &client)
 		}
 	} while (reading > 0 && buffer.find("\r\n\r\n") == std::string::npos);
 
-	std::cout <<  COLOR_GREEN << "REQUEST: -->> " << buffer << COLOR_RESET << std::endl << std::endl;
+	//std::cout <<  COLOR_GREEN << "REQUEST: -->> " << buffer << COLOR_RESET << std::endl << std::endl;
 	Response response(buffer, test);
 	_response = response;
 	return (reading);

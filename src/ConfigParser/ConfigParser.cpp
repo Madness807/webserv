@@ -72,6 +72,8 @@ LocationConfig parsingSrvConf::parseLocationConfig(std::string line, LocationCon
 		std::string method;
 		std::vector<std::string> methods;
 
+		// VERIFIER QUE IL Y A AU MOIN UNE METHODE
+
 		while (std::getline(ss, method, ','))
 		{
 			method.erase(0, method.find_first_not_of(" "));
