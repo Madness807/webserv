@@ -1,0 +1,36 @@
+/* Resetting default browser styles */
+body, h1, h2, p, ul {
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url("assets/img/space-background.jpg") no-repeat center center fixed;
+    background-size: cover;
+    color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+}
+
+.error-message {
+    margin-bottom: 20px;
+}
+
+.error-message h1 {
+    font-size: 100px;
+    margin: 0;
+}
+
+.error-message p {
+    font-size: 20px;
+    margin: 5px 0;
+}
+

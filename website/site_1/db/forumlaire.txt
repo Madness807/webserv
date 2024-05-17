@@ -1,9 +1,0 @@
-nom=Nicki&prenom=Larson&age=23456
-nom=ghfgh&prenom=hjf&age=54
-nom=tnf&prenom=hfghf&age=46
-nom=gfdg&prenom=gfgf&age=534543
-nom=Nicki&prenom=hjf&age=4354
-nom=ghfgh&prenom=Larson&age=23456
-nom=ghfgh&prenom=Larson&age=23456
-nom=ghfgh&prenom=Larson&age=23456
-nom=gfgf&prenom=gfgfg&age=5465

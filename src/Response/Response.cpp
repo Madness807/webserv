@@ -244,14 +244,18 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 
 	// CHECK IF THE PATH IS A DIRECTORY
 	struct stat pathStat;
+	std::cout << "1\n";
 	if (stat(pathRedirection.c_str(), &pathStat) == 0 && S_ISDIR(pathStat.st_mode))
 	{
+		std::cout << "1.2\n";
 		if (directoryListingState)
 		{
+				std::cout << "1.3\n";
 				generateDirectoryListing(pathRedirection, path);
 				return;
 		} else
 		{
+				std::cout << "1.4\n";
 				setStatusCode(FORBIDDEN);
 				setErrorBody();
 				return;
@@ -259,15 +263,19 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
    	}
 
 	// CHECK IF THE PATH IS A CGI
+	std::cout << "2\n";
 	if (this->_isCGI)
 	{
+		std::cout << "2.1\n";
 		int success = 0;
 		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
 		if (_cgiExtension == ".py")
 		{
+			std::cout << "2.2\n";
 			success = cgiHandler.execute();// execute le cgi
 			if (success == 500)
 			{
+				std::cout << "2.2.1\n";
 				setStatusCode(500);
 				return;
 			}
@@ -278,6 +286,7 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 		}
 		else
 		{
+			std::cout << "2.3\n";
 			perror("ERROR: CGI bad extension");
 			setStatusCode(500);
 			return;
@@ -286,6 +295,7 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 
 	// Check if the path is a file
 	// Get the file extension
+	std::cout << "3\n";
 	std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
 	std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
 	if (mimeIterator != mimeTypes.end())
@@ -293,13 +303,33 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 
 	// Open the file in binary mode and check if it's open
 	std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
+	std::cout << "5. " << pathRedirection << std::endl;
 	if (!inFile.is_open())
 	{
-		setStatusCode(NOT_FOUND);
+		std::cout << "6\n";
+		int err = errno;
+		if (err == ENOENT)
+		{
+			std::cout << "6.1\n";
+            std::cerr << "Erreur: Le fichier n'existe pas." << std::endl;
+			setStatusCode(NOT_FOUND);
+        }
+		else if (err == EACCES)
+		{
+			std::cout << "6.2\n";
+            std::cerr << "Erreur: Permission refusée." << std::endl;
+			setStatusCode(FORBIDDEN);
+        }
+		else
+		{
+			std::cout << "6.3\n";
+            std::cerr << "Erreur: " << std::strerror(err) << std::endl;
+			setStatusCode(NOT_FOUND);
+        }
 		setErrorBody();
 		return;
 	}
-
+	std::cout << "7\n";
 	// Lecture du fichier
 	std::ostringstream ss;// Read the file
 	ss << inFile.rdbuf(); // Read the whole file
@@ -317,8 +347,6 @@ std::string						Response::getPath()								// --> Get the path of ..
 	std::string path_from_config = "";
 
 	path_from_request = _request.getPath();
-
-	std::cout << "PATH FROM REQUEST: " << path_from_request << std::endl;
 
 	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
 	if (it != _server.getMapLocation().end())
@@ -357,15 +385,12 @@ std::string						Response::getPath()								// --> Get the path of ..
 
 void							Response::requestGet()							// http request GET
 {
-	std::string getResponse = "";
-
 	std::cout << COLOR_GREEN << "REQUEST GET\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
 	std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 	std::cout << "" << std::endl;
 
-	getResponse = getPath();
 	if (getStatusCode() != METHOD_NOT_ALLOWED)
 		getHtmlFile(getPath());
 }
@@ -379,12 +404,12 @@ void							Response::requestPost()							// http request POST
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
-	getHtmlFile(getPath());
-	if (getStatusCode() >= 400 && 500 >= getStatusCode())
-	{
-		setErrorBody();
-		return;
-	}
+	// getHtmlFile(getPath());
+	// if (getStatusCode() >= 400 && 500 >= getStatusCode())
+	// {
+	// 	setErrorBody();
+	// 	return;
+	// }
 	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
 		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
@@ -409,7 +434,7 @@ void							Response::requestPost()							// http request POST
 		setErrorBody();
 		return;
 	}
-	getHtmlFile("/page/index.html");
+	getHtmlFile("/index.html");
 }
 
 void							Response::requestDelete()						// http request DELETE
