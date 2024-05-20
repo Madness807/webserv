@@ -425,7 +425,12 @@ void							Response::requestDelete()						// http request DELETE
 	std::cout << "" << std::endl;
 
 	std::string deletePath(_server.getRoot() + _request.getPath() + findPathToDelete());
-	std::cout << deletePath << std::endl;
+	if (deletePath.find(".."))
+	{
+		setStatusCode(403);
+		setErrorBody();
+		return;
+	}
 	if (pathIsFile(deletePath))
 	{
 		if (hasWritePermission(deletePath))
