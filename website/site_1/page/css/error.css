@@ -8,7 +8,7 @@ body, html {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
-    background: url("assets/img/space-background.jpg") no-repeat center center fixed;
+    /* background: url("assets/img/space-background.jpg") no-repeat center center fixed; */
     background-size: cover;
     color: red;
     display: flex;

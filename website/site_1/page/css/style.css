@@ -44,12 +44,12 @@ ul li {
     color: #dc3545; /* Red */
 }
 
-/* Responsive styles */
+/* Responsive styles
 @media (max-width: 768px) {
     h1 {
         font-size: 20px;
     }
     h2 {
         font-size: 18px;
-    }
-}
+    } */
+/* } */

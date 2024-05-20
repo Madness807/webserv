@@ -137,6 +137,7 @@ void							Response::setDirectoryListing(bool value)		//--> Set the directory li
 //##################################################################
 //                          Getter                                 #
 //##################################################################
+
 int								Response::getStatusCode() const					//--> Get the status code
 {
 	return (_statusCode);
@@ -164,6 +165,138 @@ const Request					Response::getRequest() const					//--> Get the request
 bool							Response::getDirectoryListing() const			//--> Get the directory listing
 {
 	return (directoryListing);
+}
+
+
+//##################################################################
+//                          Methods                                #
+//##################################################################
+
+void							Response::getHtmlFile(std::string path)			// construction de la reponse
+{
+	std::string root = 				_server.getRoot();
+	std::string pathRedirection = 	_server.getRoot() + path;
+	bool directoryListingState = 	getDirectoryListing();
+
+	// CHECK IF THE PATH IS A DIRECTORY
+	struct stat pathStat;
+	if (stat(pathRedirection.c_str(), &pathStat) == 0 && S_ISDIR(pathStat.st_mode))
+	{
+		if (directoryListingState)
+		{
+				generateDirectoryListing(pathRedirection, path);
+				return;
+		} else
+		{
+				setStatusCode(FORBIDDEN);
+				setErrorBody();
+				return;
+		}
+   	}
+
+	// CHECK IF THE PATH IS A CGI
+	if (this->_isCGI)
+	{
+		int success = 0;
+		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
+		if (_cgiExtension == ".py")
+		{
+			success = cgiHandler.execute();// execute le cgi
+			if (success == 500)
+			{
+				setStatusCode(500);
+				return;
+			}
+			_headers["Content-Type"] = cgiHandler.getCgiContentType();
+			_headers["Content-Length"] = std::to_string(cgiHandler.getBody().size());
+			_body = cgiHandler.getBody();
+			return;
+		}
+		else
+		{
+			perror("ERROR: CGI bad extension");
+			setStatusCode(500);
+			return;
+		}
+	}
+
+	// Check if the path is a file
+	// Get the file extension
+	std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
+	std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
+	if (mimeIterator != mimeTypes.end())
+	_headers["Content-Type"] = mimeIterator->second;
+
+	// Open the file in binary mode and check if it's open
+	std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
+	if (!inFile.is_open())
+	{
+		int err = errno;
+		if (err == ENOENT)
+		{
+            std::cerr << "Erreur: Le fichier n'existe pas." << std::endl;
+			setStatusCode(NOT_FOUND);
+        }
+		else if (err == EACCES)
+		{
+            std::cerr << "Erreur: Permission refusée." << std::endl;
+			setStatusCode(FORBIDDEN);
+        }
+		else
+		{
+            std::cerr << "Erreur: " << std::strerror(err) << std::endl;
+			setStatusCode(NOT_FOUND);
+        }
+		setErrorBody();
+		return;
+	}
+	// Lecture du fichier
+	std::ostringstream ss;// Read the file
+	ss << inFile.rdbuf(); // Read the whole file
+	_body = ss.str();// Set the body to the file content
+	inFile.close();// Close the file
+
+	_headers["Content-Length"] = std::to_string(_body.size());
+
+	return;
+}
+
+std::string						Response::getPath()								// --> Get the path of ..
+{
+	std::string path_from_request = "";
+	std::string path_from_config = "";
+
+	path_from_request = _request.getPath();
+
+	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
+	if (it != _server.getMapLocation().end())
+	{
+		if (it->second.getCgiPath().length() != 0 && it->second.getCgiExtension().length() != 0)
+		{
+			this->_isCGI = true;
+			path_from_request = it->second.getCgiPath();
+			_cgiExtension = it->second.getCgiExtension();
+		}
+
+		std::vector<std::string> methods = it->second.getMethods();
+	    std::string requestMethod = _request.getMethod();
+		std::vector<std::string>::iterator it2 = std::find(methods.begin(), methods.end(), requestMethod);
+        if (it2 == methods.end())
+		{
+			setStatusCode(METHOD_NOT_ALLOWED);
+			setErrorBody();
+			return ("");
+		}
+		path_from_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
+		setDirectoryListing(it->second.getDirectoryListing());
+	}
+	else {
+		setDirectoryListing(true);
+	}
+	if (path_from_config != "")
+		return(path_from_config);
+	else
+		return(path_from_request);
 }
 
 int 							Response::saveImage(const std::string &imageData, const std::string &boundary, const std::string &filename)	//--> Save Upload Image Data
@@ -225,158 +358,20 @@ int								Response::addForm(std::string &filename) 		//--> Add info formulaire
 	return (0);
 }
 
-int								Response::deleteResources(std::string &path)
+std::string						Response::findPathToDelete()
 {
-	if (std::remove(path.c_str()))
-		return (1);
-	return (0);
-}
-
-//##################################################################
-//                          Methods                                #
-//##################################################################
-
-void							Response::getHtmlFile(std::string path)			// construction de la reponse
-{
-	std::string root = 				_server.getRoot();
-	std::string pathRedirection = 	_server.getRoot() + path;
-	bool directoryListingState = 	getDirectoryListing();
-
-	// CHECK IF THE PATH IS A DIRECTORY
-	struct stat pathStat;
-	std::cout << "1\n";
-	if (stat(pathRedirection.c_str(), &pathStat) == 0 && S_ISDIR(pathStat.st_mode))
-	{
-		std::cout << "1.2\n";
-		if (directoryListingState)
-		{
-				std::cout << "1.3\n";
-				generateDirectoryListing(pathRedirection, path);
-				return;
-		} else
-		{
-				std::cout << "1.4\n";
-				setStatusCode(FORBIDDEN);
-				setErrorBody();
-				return;
-		}
-   	}
-
-	// CHECK IF THE PATH IS A CGI
-	std::cout << "2\n";
-	if (this->_isCGI)
-	{
-		std::cout << "2.1\n";
-		int success = 0;
-		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
-		if (_cgiExtension == ".py")
-		{
-			std::cout << "2.2\n";
-			success = cgiHandler.execute();// execute le cgi
-			if (success == 500)
-			{
-				std::cout << "2.2.1\n";
-				setStatusCode(500);
-				return;
-			}
-			_headers["Content-Type"] = cgiHandler.getCgiContentType();
-			_headers["Content-Length"] = std::to_string(cgiHandler.getBody().size());
-			_body = cgiHandler.getBody();
-			return;
-		}
-		else
-		{
-			std::cout << "2.3\n";
-			perror("ERROR: CGI bad extension");
-			setStatusCode(500);
-			return;
-		}
-	}
-
-	// Check if the path is a file
-	// Get the file extension
-	std::cout << "3\n";
-	std::string extension = pathRedirection.substr(pathRedirection.find_last_of('.') + 1);
-	std::map<std::string, std::string>::iterator mimeIterator = mimeTypes.find("." + extension);
-	if (mimeIterator != mimeTypes.end())
-	_headers["Content-Type"] = mimeIterator->second;
-
-	// Open the file in binary mode and check if it's open
-	std::ifstream inFile(pathRedirection.c_str(), std::ios::binary);
-	std::cout << "5. " << pathRedirection << std::endl;
-	if (!inFile.is_open())
-	{
-		std::cout << "6\n";
-		int err = errno;
-		if (err == ENOENT)
-		{
-			std::cout << "6.1\n";
-            std::cerr << "Erreur: Le fichier n'existe pas." << std::endl;
-			setStatusCode(NOT_FOUND);
-        }
-		else if (err == EACCES)
-		{
-			std::cout << "6.2\n";
-            std::cerr << "Erreur: Permission refusée." << std::endl;
-			setStatusCode(FORBIDDEN);
-        }
-		else
-		{
-			std::cout << "6.3\n";
-            std::cerr << "Erreur: " << std::strerror(err) << std::endl;
-			setStatusCode(NOT_FOUND);
-        }
-		setErrorBody();
-		return;
-	}
-	std::cout << "7\n";
-	// Lecture du fichier
-	std::ostringstream ss;// Read the file
-	ss << inFile.rdbuf(); // Read the whole file
-	_body = ss.str();// Set the body to the file content
-	inFile.close();// Close the file
-
-	_headers["Content-Length"] = std::to_string(_body.size());
-
-	return;
-}
-
-std::string						Response::getPath()								// --> Get the path of ..
-{
-	std::string path_from_request = "";
-	std::string path_from_config = "";
-
-	path_from_request = _request.getPath();
-
-	std::map<std::string, LocationConfig>::const_iterator it = _server.getMapLocation().find(_request.getPath()); // --> Check if path exist
-	if (it != _server.getMapLocation().end())
-	{
-		if (it->second.getCgiPath().length() != 0 && it->second.getCgiExtension().length() != 0)
-		{
-			this->_isCGI = true;
-			path_from_request = it->second.getCgiPath();
-			_cgiExtension = it->second.getCgiExtension();
-		}
-
-		std::vector<std::string> methods = it->second.getMethods();
-	    std::string requestMethod = _request.getMethod();
-		std::vector<std::string>::iterator it2 = std::find(methods.begin(), methods.end(), requestMethod);
-        if (it2 == methods.end())
-		{
-			setStatusCode(METHOD_NOT_ALLOWED);
-			setErrorBody();
-			return ("");
-		}
-		path_from_config = it->second.getRedirect(); // tester dans le cas ou cest un path qui provient du fichier de config
-		setDirectoryListing(it->second.getDirectoryListing());
-	}
-	else {
-		setDirectoryListing(true);
-	}
-	if (path_from_config != "")
-		return(path_from_config);
-	else
-		return(path_from_request);
+	 size_t startPos = _requestBody.find("\"path\":\"");
+    if (startPos == std::string::npos) {
+        // La clé "path" n'a pas été trouvée
+        return "";
+    }
+    startPos += 8; // Pour dépasser le préfixe "\"path\":\""
+    size_t endPos = _requestBody.find("\"", startPos);
+    if (endPos == std::string::npos) {
+        // La fin de la valeur n'a pas été trouvée
+        return "";
+    }
+    return (_requestBody.substr(startPos, endPos - startPos));
 }
 
 //##################################################################
@@ -389,6 +384,7 @@ void							Response::requestGet()							// http request GET
 	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
 	std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+	std::cout << _request << std::endl;
 	std::cout << "" << std::endl;
 
 	if (getStatusCode() != METHOD_NOT_ALLOWED)
@@ -443,12 +439,52 @@ void							Response::requestDelete()						// http request DELETE
 	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
 	//std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
+	std::cout << _request << std::endl;
 	std::cout << "" << std::endl;
+
+	std::cout << "1\n";
+	std::string deletePath(_server.getRoot() + _request.getPath() + findPathToDelete());
+	std::cout << deletePath << std::endl;
+	if (pathIsFile(deletePath))
+	{
+		std::cout << "2\n";
+		if (hasWritePermission(deletePath))
+		{
+			std::cout << "3\n";
+			if (deletePath.find(_server.getRoot() + "/delete_item/") == 0)
+			{
+				std::cout << "4\n";
+				if (remove(deletePath.c_str()) == 0)
+					setStatusCode(204); // No Content
+				else
+					setStatusCode(403); // Forbidden, erreur lors de la suppression
+			}
+		}
+		else
+		{
+			std::cout << "5\n";
+			setStatusCode(403); // Forbidden, pas de permission d'écriture
+		}
+	}
+	else
+	{
+		std::cout << "6\n";
+		setStatusCode(404); // Not Found
+	}
+	if (getStatusCode() >= 400 || getStatusCode() <= 500)
+	{
+		std::cout << "7: " << intToString(getStatusCode()) << std::endl;
+		setErrorBody();
+		return;
+	}
+	std::cout << "8\n";
+	getHtmlFile("/index.html");
 }
 
 //##################################################################
 //                           INIT                                  #
 //##################################################################
+
 void							Response::initMimeType()						//--> Initialize the MIME types
 {
 	mimeTypes[".html"] = "text/html; charset=UTF-8";
