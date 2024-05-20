@@ -361,16 +361,12 @@ int								Response::addForm(std::string &filename) 		//--> Add info formulaire
 std::string						Response::findPathToDelete()
 {
 	 size_t startPos = _requestBody.find("\"path\":\"");
-    if (startPos == std::string::npos) {
-        // La clé "path" n'a pas été trouvée
-        return "";
-    }
+    if (startPos == std::string::npos)
+        return ""; // La clé "path" n'a pas été trouvée
     startPos += 8; // Pour dépasser le préfixe "\"path\":\""
     size_t endPos = _requestBody.find("\"", startPos);
-    if (endPos == std::string::npos) {
-        // La fin de la valeur n'a pas été trouvée
-        return "";
-    }
+    if (endPos == std::string::npos)
+        return ""; // La fin de la valeur n'a pas été trouvée
     return (_requestBody.substr(startPos, endPos - startPos));
 }
 
@@ -393,38 +389,25 @@ void							Response::requestGet()							// http request GET
 
 void							Response::requestPost()							// http request POST
 {
-	//std::ofstream outFile;
 	std::string dbPath = getPath();
 	std::stringstream bodysizeStr(_server.getMaxBodySize());
 	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
-	// getHtmlFile(getPath());
-	// if (getStatusCode() >= 400 && 500 >= getStatusCode())
-	// {
-	// 	setErrorBody();
-	// 	return;
-	// }
 	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
 		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
 		if (addForm(dbPath))
-		{
 			setStatusCode(INTERNAL_SERVER_ERROR);
-		}
 	}
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
 		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
 		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
-		{
-			// std::cout << "image" << std::endl; //--> Test path
 			setStatusCode(INTERNAL_SERVER_ERROR);
-		}
 	}
 
-	//getHtmlFile(getPath());
 	if (getStatusCode() >= 400 && 500 >= getStatusCode())
 	{
 		setErrorBody();
@@ -437,23 +420,18 @@ void							Response::requestDelete()						// http request DELETE
 {
 	std::cout << COLOR_GREEN << "REQUEST DELETE\t🖥️   ->   🗄️\t\t" << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << COLOR_GREEN << "┌───────────────────────────────────────────────────┐" << COLOR_RESET << std::endl;
-	//std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request.getRaw() << std::endl;
+	std::cout << COLOR_GREEN << "│ " << COLOR_RESET << _request << std::endl;
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
-	std::cout << _request << std::endl;
 	std::cout << "" << std::endl;
 
-	std::cout << "1\n";
 	std::string deletePath(_server.getRoot() + _request.getPath() + findPathToDelete());
 	std::cout << deletePath << std::endl;
 	if (pathIsFile(deletePath))
 	{
-		std::cout << "2\n";
 		if (hasWritePermission(deletePath))
 		{
-			std::cout << "3\n";
 			if (deletePath.find(_server.getRoot() + "/delete_item/") == 0)
 			{
-				std::cout << "4\n";
 				if (remove(deletePath.c_str()) == 0)
 					setStatusCode(204); // No Content
 				else
@@ -461,23 +439,15 @@ void							Response::requestDelete()						// http request DELETE
 			}
 		}
 		else
-		{
-			std::cout << "5\n";
 			setStatusCode(403); // Forbidden, pas de permission d'écriture
-		}
 	}
 	else
-	{
-		std::cout << "6\n";
 		setStatusCode(404); // Not Found
-	}
 	if (getStatusCode() >= 400 || getStatusCode() <= 500)
 	{
-		std::cout << "7: " << intToString(getStatusCode()) << std::endl;
 		setErrorBody();
 		return;
 	}
-	std::cout << "8\n";
 	getHtmlFile("/index.html");
 }
 
