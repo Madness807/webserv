@@ -328,18 +328,6 @@ int 							Response::saveImage(const std::string &imageData, const std::string &
     }
 	else
         std::cerr << COLOR_RED << "En-tête Content-Type non trouvé." << COLOR_RESET << std::endl;
-	// static int nb;
-	// std::string file = filename + "image_" + intToString(nb++) + ".png";
-    // std::ofstream outFile(file.c_str(), std::ios::out | std::ios::binary);
-    // if (!outFile.is_open())
-	// {
-    //     std::cerr << "Erreur lors de l'ouverture du fichier -> Image." << std::endl;
-    //     return (0);
-    // }
-	// size_t startPos = imageData.find("\r\n\r\n")
-    // outFile.write(imageData, size);
-	// setStatusCode(CREATED);
-    // outFile.close();
 	return (0);
 }
 
