@@ -197,12 +197,12 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	// CHECK IF THE PATH IS A CGI
 	if (this->_isCGI)
 	{
-		int success = 0;
+		int ret = 0;
 		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
 		if (_cgiExtension == ".py")
 		{
-			success = cgiHandler.execute();// execute le cgi
-			if (success == 500)
+			ret = cgiHandler.execute();// execute le cgi
+			if (ret == 500)
 			{
 				setStatusCode(500);
 				return;
@@ -394,7 +394,7 @@ void							Response::requestPost()							// http request POST
 	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
-	
+
 	// std::cout << "Request Body Size: " << _request.getBodySize()
 	// 	<< " | _Body Size Max: " << ft_atoi(_server.getMaxBodySize())
 	// 		<< std::endl;
