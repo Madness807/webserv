@@ -197,12 +197,12 @@ void							Response::getHtmlFile(std::string path)			// construction de la repon
 	// CHECK IF THE PATH IS A CGI
 	if (this->_isCGI)
 	{
-		int success = 0;
+		int ret = 0;
 		CGIHandler cgiHandler(pathRedirection);// creer un objet cgiHandler
 		if (_cgiExtension == ".py")
 		{
-			success = cgiHandler.execute();// execute le cgi
-			if (success == 500)
+			ret = cgiHandler.execute();// execute le cgi
+			if (ret == 500)
 			{
 				setStatusCode(500);
 				return;
@@ -383,7 +383,14 @@ void							Response::requestGet()							// http request GET
 	std::cout << _request << std::endl;
 	std::cout << "" << std::endl;
 
-	if (getStatusCode() != METHOD_NOT_ALLOWED)
+	if (_server.getErrorCode() != 200)
+	{
+		setStatusCode(_server.getErrorCode());
+		setErrorBody();
+	}
+	else if (getStatusCode() != 200)
+		setErrorBody();
+	else
 		getHtmlFile(getPath());
 }
 
@@ -395,7 +402,13 @@ void							Response::requestPost()							// http request POST
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 	
-	if ()
+	if (_server.getErrorCode() != 200)
+	{
+		setStatusCode(_server.getErrorCode());
+		setErrorBody();
+		return;
+	}
+
 	if (_request.getBodySize() > ft_atoi(_server.getMaxBodySize())) // Check bodySize
 		setStatusCode(413);
 	else if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
@@ -427,8 +440,13 @@ void							Response::requestDelete()						// http request DELETE
 	std::cout << COLOR_GREEN << "└───────────────────────────────────────────────────┘" << COLOR_RESET << std::endl;
 	std::cout << "" << std::endl;
 
+	if (_server.getErrorCode() != 200)
+	{
+		setStatusCode(_server.getErrorCode());
+		setErrorBody();
+		return;
+	}
 	std::string deletePath(_server.getRoot() + _request.getPath() + findPathToDelete());
-	std::cout << deletePath << std::endl;
 	if (deletePath.find("..") == 0)
 	{
 		setStatusCode(403);
