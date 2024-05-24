@@ -11,6 +11,7 @@ ServerConfig::ServerConfig() {
     _index = "";
     _error_page = "";
     _root = "";
+    _code_error = 200;
 }
 ServerConfig::~ServerConfig() {
 }
@@ -91,6 +92,9 @@ void ServerConfig::setRoot(std::string root) {
 void ServerConfig::setLocations_map(std::map<std::string, LocationConfig> locations_map) {
     _locations_map = locations_map;
 }
+void ServerConfig::setErrorCode(int code){
+    _error_page = code;
+}
 
 //##################################################################
 //                          GETTERS                                #
@@ -124,6 +128,9 @@ LocationConfig ServerConfig::getLocationConfig(std::string path) {
 }
 const std::map<std::string, LocationConfig> &ServerConfig::getMapLocation() const{
     return _locations_map;
+}
+int ServerConfig::getErrorCode() const{
+    return _code_error;
 }
 
 //##################################################################

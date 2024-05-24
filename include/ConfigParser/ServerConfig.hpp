@@ -13,6 +13,7 @@ class ServerConfig{
         std::string _index;
         std::string _error_page;
         std::string _root;
+        int         _code_error;
         std::pair<std::string, int> _pair_ip_port;
         std::map<std::string, LocationConfig > _locations_map;
 
@@ -30,6 +31,7 @@ class ServerConfig{
         void setErrorPage(std::string error_page);
         void setRoot(std::string root);
         void setLocations_map(std::map<std::string, LocationConfig > _locations_map);
+        void setErrorCode(int code);
 
         // GETTERS
         std::string getServerName() const;
@@ -40,6 +42,7 @@ class ServerConfig{
         std::string getErrorPage() const;
         std::string getRoot() const;
         std::pair<std::string, int> getPairIpPort();
+        int getErrorCode() const;
         
         LocationConfig getLocationConfig(std::string path);
         const std::map<std::string, LocationConfig> &getMapLocation() const;

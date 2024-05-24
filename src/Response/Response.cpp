@@ -394,17 +394,26 @@ void							Response::requestPost()							// http request POST
 	std::cout << COLOR_GREEN << "REQUEST POST\t 🧑🏻‍💻 -> 🗄️\t  " << getCurrentTimestamp() << COLOR_RESET <<std::endl;
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
+	
+	// std::cout << "Request Body Size: " << _request.getBodySize()
+	// 	<< " | _Body Size Max: " << ft_atoi(_server.getMaxBodySize())
+	// 		<< std::endl;
 
-	if (_request.getBodySize() > _bodysize) // Check bodySize
+	if (_request.getBodySize() > ft_atoi(_server.getMaxBodySize())) // Check bodySize
+	{
+		// std::cout << "1\n";
 		setStatusCode(413);
+	}
 	else if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
+		// std::cout << "2\n";
 		dbPath = _server.getRoot() + "/db/forumlaire.txt";
 		if (addForm(dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
 	}
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
+		// std::cout << "3\n";
 		dbPath = _server.getRoot() + "/upload/";
 		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
@@ -412,6 +421,7 @@ void							Response::requestPost()							// http request POST
 
 	if (getStatusCode() >= 400 && 500 >= getStatusCode())
 	{
+		// std::cout << "4\n";
 		setErrorBody();
 		return;
 	}

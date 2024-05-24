@@ -81,10 +81,9 @@ const std::string	&Request::getBoundary() const
 {
 	return (_boundary);
 }
-
 int Request::getBodySize() const
 {
-	return (_bodySize);
+	return (_body.length());
 }
 
 //##################################################################

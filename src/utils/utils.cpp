@@ -50,3 +50,43 @@ int hasWritePermission(const std::string &path)
     
     return (0);
 }
+
+int ft_isspace(char c)
+{
+	if (c == ' ')
+		return (1);
+	return (0);
+}
+
+int ft_atoi(std::string str)
+{
+	const char *tmp = str.c_str();
+    if (tmp == nullptr) {
+        return 0; // ou gérer l'erreur comme vous le souhaitez
+    }
+
+    int result = 0;
+    int sign = 1;
+    int i = 0;
+
+    // Ignorer les espaces blancs initiaux
+    while (ft_isspace(tmp[i])) {
+        i++;
+    }
+
+    // Vérifier le signe
+    if (tmp[i] == '-') {
+        sign = -1;
+        i++;
+    } else if (str[i] == '+') {
+        i++;
+    }
+
+    // Parcourir chaque caractère de la chaîne
+    while (tmp[i] != '\0' && isdigit(tmp[i])) {
+        result = result * 10 + (tmp[i] - '0');
+        i++;
+    }
+
+    return sign * result;
+}
