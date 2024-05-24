@@ -4,3 +4,10 @@ nom=Larson&prenom=Nicki&age=3
 nom=Larson&prenom=Nicki&age=3
 nom=Larson&prenom=Nicki&age=3
 nom=Larson&prenom=Nicki&age=35
+nom=Nicki&prenom=Larson&age=345678&submit_info=Envoyer
+delete_filename=image_1.png&delete_file=Delete
+nom=Nicki&prenom=Larson&age=234567&submit_info=Envoyer
+delete_filename=image_1.png&delete_file=Delete
+delete_filename=image_1.png&delete_file=Delete
+delete_filename=image_1.png&delete_file=Delete
+delete_filename=test.txt&delete_file=Delete

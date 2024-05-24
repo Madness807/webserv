@@ -115,6 +115,7 @@ int CGIHandler::launchParent(int *fd, int pid)
 	if(WIFEXITED(status))
 	{
 		exitStatus = WEXITSTATUS(status); // tout c est bien passe, enfant a quitte meme si excve a echoue
+		std::cout << exitStatus << std::endl;
 		if (exitStatus != 0)
 			return(500);
 	}

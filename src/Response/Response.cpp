@@ -423,7 +423,8 @@ void							Response::requestPost()							// http request POST
 		setErrorBody();
 		return;
 	}
-	getHtmlFile("/index.html");
+	if (!_isCGI)
+		getHtmlFile("/index.html");
 }
 
 void							Response::requestDelete()						// http request DELETE
