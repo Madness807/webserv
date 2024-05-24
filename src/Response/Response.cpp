@@ -383,7 +383,12 @@ void							Response::requestGet()							// http request GET
 	std::cout << _request << std::endl;
 	std::cout << "" << std::endl;
 
-	if (getStatusCode() != METHOD_NOT_ALLOWED)
+	if (_server.getErrorCode() != 200)
+		setStatusCode(_server.getErrorCode());
+
+	if (getStatusCode() != 200)
+		setErrorBody();
+	else
 		getHtmlFile(getPath());
 }
 
@@ -395,33 +400,26 @@ void							Response::requestPost()							// http request POST
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
-	// std::cout << "Request Body Size: " << _request.getBodySize()
-	// 	<< " | _Body Size Max: " << ft_atoi(_server.getMaxBodySize())
-	// 		<< std::endl;
-
 	if (_request.getBodySize() > ft_atoi(_server.getMaxBodySize())) // Check bodySize
-	{
-		// std::cout << "1\n";
 		setStatusCode(413);
-	}
 	else if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
-		// std::cout << "2\n";
 		dbPath = _server.getRoot() + "/db/forumlaire.txt";
 		if (addForm(dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
 	}
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
-		// std::cout << "3\n";
 		dbPath = _server.getRoot() + "/upload/";
 		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
 	}
 
+	if (_server.getErrorCode() != 200)
+		setStatusCode(_server.getErrorCode());
+
 	if (getStatusCode() >= 400 && 500 >= getStatusCode())
 	{
-		// std::cout << "4\n";
 		setErrorBody();
 		return;
 	}
@@ -437,7 +435,6 @@ void							Response::requestDelete()						// http request DELETE
 	std::cout << "" << std::endl;
 
 	std::string deletePath(_server.getRoot() + _request.getPath() + findPathToDelete());
-	std::cout << deletePath << std::endl;
 	if (deletePath.find("..") == 0)
 	{
 		setStatusCode(403);
@@ -461,6 +458,10 @@ void							Response::requestDelete()						// http request DELETE
 	}
 	else
 		setStatusCode(404); // Not Found
+
+	if (_server.getErrorCode() != 200) // Check if Error on server
+		setStatusCode(_server.getErrorCode());
+
 	if (getStatusCode() >= 400 || getStatusCode() <= 500)
 	{
 		setErrorBody();
