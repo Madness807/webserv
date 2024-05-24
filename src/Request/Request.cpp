@@ -82,22 +82,17 @@ const std::string	&Request::getBoundary() const
 	return (_boundary);
 }
 
+int Request::getBodySize() const
+{
+	return (_bodySize);
+}
+
 //##################################################################
 //                          SETTERS                                #
 //##################################################################
 void Request::setMethod(const std::string &method)
 {
 	this->_method = method;
-}
-
-void Request::setBody(const std::string &line)
-{
-	// if (line.length() > _bodySize)
-	// {
-	// 	setRet(413);
-	// 	return;
-	// }
-	_body = line;
 }
 
 void Request::setRet(int ret)
@@ -110,6 +105,11 @@ void Request::setBoundary(const std::string &content_type)
 	size_t startPos;
 	startPos = content_type.find("=") + 1;
 	_boundary = content_type.substr(startPos);
+}
+
+void Request::setBody(std::string body)
+{
+	_body = body;
 }
 
 /* -------------------- Initialization Methods Vector --------------------*/

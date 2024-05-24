@@ -395,15 +395,17 @@ void							Response::requestPost()							// http request POST
 	std::cout << _request << std::endl;
 	std::cout << COLOR_GREEN << "" << COLOR_RESET << std::endl;
 
-	if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
+	if (_request.getBodySize() > _bodysize) // Check bodySize
+		setStatusCode(413);
+	else if (!_request.getOneHeaders("Content-Type").find("application/x-www-form-urlencoded"))
 	{
-		dbPath = _server.getRoot() + "/db/forumlaire.txt"; //TEST AVEC UN FICHIER TXT
+		dbPath = _server.getRoot() + "/db/forumlaire.txt";
 		if (addForm(dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
 	}
 	else if (!_request.getOneHeaders("Content-Type").find("multipart/form-data"))
 	{
-		dbPath = _server.getRoot() + "/upload/"; //TEST AVEC IMAGE
+		dbPath = _server.getRoot() + "/upload/";
 		if (saveImage(_requestBody, _request.getBoundary(), dbPath))
 			setStatusCode(INTERNAL_SERVER_ERROR);
 	}
@@ -425,7 +427,8 @@ void							Response::requestDelete()						// http request DELETE
 	std::cout << "" << std::endl;
 
 	std::string deletePath(_server.getRoot() + _request.getPath() + findPathToDelete());
-	if (deletePath.find(".."))
+	std::cout << deletePath << std::endl;
+	if (deletePath.find("..") == 0)
 	{
 		setStatusCode(403);
 		setErrorBody();

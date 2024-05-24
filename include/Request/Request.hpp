@@ -31,9 +31,9 @@ class Request
 
     // Setters
 	void								setMethod(const std::string &method);
-	void								setBody(const std::string &line);
 	void								setRet(int ret);
 	void								setBoundary(const std::string &content_type);
+	void								setBody(std::string body);
     public:
     // Constructeur et destructeur
 		Request();
@@ -57,6 +57,7 @@ class Request
 		const std::string							&getQuery() const;
 		const std::string							&getRaw() const;
 		const std::string							&getBoundary() const;
+		int											getBodySize() const;
 
 	// Utils
 		void										resetHeaders();
